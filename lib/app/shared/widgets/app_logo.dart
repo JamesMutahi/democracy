@@ -10,13 +10,13 @@ class AppLogo extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Logo(width: 120, height: 120),
+        Logo(width: 200, height: 200),
         SizedBox(width: 15),
         Text(
           'People \nOf \nKenya',
           style: Theme.of(
             context,
-          ).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold),
+          ).textTheme.displayMedium!.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );

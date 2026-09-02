@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
-    show WebsocketStatus, WebSocketService;
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+    show WebSocketService;
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -15,6 +13,7 @@ import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/user/bloc/profile/profile_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -25,22 +24,19 @@ void showParticipantProfile({
   required Broadcast broadcast,
   required User user,
 }) {
-  final broadcastBloc = context.read<BroadcastBloc>();
   showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(15),
-        topRight: Radius.circular(15),
-      ),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (_) => MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: broadcastBloc),
+        BlocProvider.value(value: context.read<BroadcastBloc>()),
         BlocProvider(
           create: (context) =>
-              ProfileBloc(webSocketService: context.read<WebSocketService>()),
+              ProfileBloc(webSocketService: context.read<WebSocketService>())
+                ..add(ProfileEvent.load(username: user.username)),
         ),
       ],
       child: ParticipantProfile(broadcast: broadcast, user: user),
@@ -54,7 +50,6 @@ class ParticipantProfile extends StatefulWidget {
     required this.broadcast,
     required this.user,
   });
-
   final Broadcast broadcast;
   final User user;
 
@@ -66,11 +61,6 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
   @override
   void initState() {
     super.initState();
-    _subscribe();
-  }
-
-  void _subscribe() {
-    // subscribe and get user
     context.read<ProfileBloc>().add(
       ProfileEvent.load(username: widget.user.username),
     );
@@ -78,399 +68,353 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
 
   @override
   Widget build(BuildContext context) {
-    User me = context.read<AuthBloc>().state.user!;
-    double coverPhotoHeight = MediaQuery.of(context).size.height / 7;
-    double profilePicHeight = MediaQuery.of(context).size.height / 10;
+    final me = context.read<AuthBloc>().state.user!;
+    final colorScheme = Theme.of(context).colorScheme;
 
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<UserDetailBloc, UserDetailState>(
-          listener: (context, state) {
-            if (state is UserUpdated) {
-              context.read<ProfileBloc>().add(
-                ProfileEvent.updated(user: state.user),
-              );
-            }
-          },
-        ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              _subscribe();
-            }
-          },
-        ),
-      ],
-      child: PopScope(
-        onPopInvokedWithResult: (_, _) {
-          context.read<UserDetailBloc>().add(
-            UserDetailEvent.unsubscribe(user: widget.user),
+    return BlocListener<UserDetailBloc, UserDetailState>(
+      listener: (context, state) {
+        if (state is UserUpdated) {
+          context.read<ProfileBloc>().add(
+            ProfileEvent.updated(user: state.user),
           );
-        },
-        child: BlocBuilder<BroadcastBloc, BroadcastState>(
-          buildWhen: (previous, current) =>
-              current.broadcastId == widget.broadcast.id,
-          builder: (context, state) {
-            bool canManageCoHosts = state.broadcast!.host.id == me.id;
-            bool canManageSpeakers =
-                state.broadcast!.host.id == me.id ||
-                state.broadcast!.coHosts.any((c) => c.id == me.id);
+        }
+      },
+      child: BlocBuilder<BroadcastBloc, BroadcastState>(
+        buildWhen: (previous, current) =>
+            current.broadcastId == widget.broadcast.id,
+        builder: (context, state) {
+          final broadcast = state.broadcast!;
+          final isHost = broadcast.host.id == widget.user.id;
+          final isCoHost = broadcast.coHosts.any((c) => c.id == widget.user.id);
+          final isSpeaker = broadcast.speakers.any(
+            (s) => s.id == widget.user.id,
+          );
+          final isMuted = broadcast.muted.any((id) => id == widget.user.id);
 
-            bool isHost = state.broadcast!.host.id == widget.user.id;
+          final canManageCoHosts = broadcast.host.id == me.id;
+          final canManageSpeakers =
+              broadcast.host.id == me.id ||
+              broadcast.coHosts.any((c) => c.id == me.id);
 
-            bool isCoHost = state.broadcast!.coHosts.any(
-              (c) => c.id == widget.user.id,
-            );
+          final inviteIsPending = broadcast.speakerInvites.any(
+            (i) => i.userId == widget.user.id && i.isAccepted == null,
+          );
+          final hasRejectedInvite = broadcast.speakerInvites.any(
+            (i) => i.userId == widget.user.id && i.isAccepted == false,
+          );
 
-            bool isSpeaker = state.broadcast!.speakers.any(
-              (s) => s.id == widget.user.id,
-            );
-            bool isMuted = state.broadcast!.muted.any(
-              (id) => id == widget.user.id,
-            );
-            bool inviteIsPending = state.broadcast!.speakerInvites.any(
-              (invite) =>
-                  invite.userId == widget.user.id && invite.isAccepted == null,
-            );
-            bool hasRejectedInvite = state.broadcast!.speakerInvites.any(
-              (invite) =>
-                  invite.userId == widget.user.id && invite.isAccepted == false,
-            );
-            return SafeArea(
-              child: Stack(
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        height: coverPhotoHeight,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: CachedNetworkImageProvider(
-                              widget.user.coverPhoto,
-                              cacheKey: 'cover ${widget.user.id}',
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 100),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            top: BorderSide(
-                              color: Theme.of(
-                                context,
-                              ).disabledColor.withAlpha(30),
-                            ),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            ListTile(
-                              onTap: () {
-                                context.read<ChatDetailBloc>().add(
-                                  ChatDetailEvent.create(user: widget.user),
-                                );
-                              },
-                              leading: Icon(Symbols.mail_rounded),
-                              title: Text('Send Direct Message'),
-                            ),
-                            if (canManageSpeakers &&
-                                !isHost &&
-                                !isSpeaker &&
-                                !isCoHost &&
-                                !inviteIsPending)
-                              ListTile(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return InviteSpeakerDialog(
-                                        broadcast: widget.broadcast,
-                                        user: widget.user,
-                                      );
-                                    },
-                                  );
-                                },
-                                leading: Icon(
-                                  Symbols.mic_rounded,
-                                  color: Colors.blue,
-                                ),
-                                title: Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(text: 'Invite to speak'),
-                                      TextSpan(
-                                        text: hasRejectedInvite
-                                            ? ' (Declined)'
-                                            : '',
-                                        style: TextStyle(
-                                          color: Theme.of(context).hintColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                            if (canManageSpeakers && inviteIsPending)
-                              ListTile(
-                                onTap: () {},
-                                leading: Icon(Icons.hourglass_empty_rounded),
-                                title: Text('Invite pending...'),
-                                trailing: TextButton(
-                                  onPressed: () {
-                                    final invite = state
-                                        .broadcast!
-                                        .speakerInvites
-                                        .firstWhere(
-                                          (invite) =>
-                                              invite.userId == widget.user.id,
-                                        );
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (BuildContext context) {
-                                        return CancelInviteDialog(
-                                          invite: invite,
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Text(
-                                    'Cancel',
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                ),
-                              ),
-
-                            if (canManageSpeakers && isSpeaker)
-                              ListTile(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return RemoveSpeakerDialog(
-                                        broadcast: widget.broadcast,
-                                        user: widget.user,
-                                      );
-                                    },
-                                  );
-                                },
-                                leading: Icon(Symbols.close_rounded),
-                                title: Text('Remove from speakers'),
-                              ),
-
-                            if (canManageCoHosts &&
-                                isSpeaker &&
-                                !inviteIsPending)
-                              ListTile(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return InviteCoHostDialog(
-                                        broadcast: widget.broadcast,
-                                        user: widget.user,
-                                      );
-                                    },
-                                  );
-                                },
-                                leading: Icon(
-                                  Symbols.mic_rounded,
-                                  color: Colors.blue,
-                                ),
-                                title: Text('Invite to co-host'),
-                              ),
-
-                            if (canManageCoHosts && isCoHost)
-                              ListTile(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return RemoveCoHostDialog(
-                                        broadcast: widget.broadcast,
-                                        user: widget.user,
-                                      );
-                                    },
-                                  );
-                                },
-                                leading: Icon(Symbols.close_rounded),
-                                title: Text('Remove from co-hosts'),
-                              ),
-
-                            if ((canManageCoHosts && isCoHost) ||
-                                (canManageSpeakers && isSpeaker))
-                              ListTile(
-                                onTap: isMuted
-                                    ? null
-                                    : () {
-                                        showDialog(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (context) {
-                                            return MuteSpeakerDialog(
-                                              broadcast: widget.broadcast,
-                                              user: widget.user,
-                                            );
-                                          },
-                                        );
-                                      },
-                                leading: Icon(
-                                  isMuted
-                                      ? Symbols.mic_off_rounded
-                                      : Symbols.volume_down_rounded,
-                                ),
-                                title: Text(
-                                  isMuted ? 'Muted' : 'Mute their mic',
-                                ),
-                              )
-                            else if (isSpeaker && me.id == widget.user.id)
-                              ListTile(
-                                onTap: isMuted
-                                    ? null
-                                    : () {
-                                        context.read<SpeakerDetailBloc>().add(
-                                          SpeakerDetailEvent.toggleMute(
-                                            broadcast: widget.broadcast,
-                                            isMuted: !isMuted,
-                                          ),
-                                        );
-                                      },
-                                leading: Icon(
-                                  isMuted
-                                      ? Symbols.mic_off_rounded
-                                      : Symbols.mic_rounded,
-                                ),
-                                title: Text(
-                                  isMuted ? 'Muted' : 'Mute their mic',
-                                ),
-                              ),
-
-                            /// Blocked status is host's data not the current user (me)
-                            BlocBuilder<ProfileBloc, ProfileState>(
-                              buildWhen: (previous, current) {
-                                return current.user?.id == widget.user.id;
-                              },
-                              builder: (context, state) {
-                                return ListTile(
-                                  iconColor: Colors.red,
-                                  textColor: Colors.red,
-                                  onTap: () {
-                                    if (state.status == ProfileStatus.success) {
-                                      showDialog(
-                                        context: context,
-                                        barrierDismissible: false,
-                                        builder: (context) {
-                                          return BlockDialog(user: widget.user);
-                                        },
-                                      );
-                                    }
-                                  },
-                                  leading: Icon(Symbols.block_rounded),
-                                  title: state.status == ProfileStatus.success
-                                      ? Text(
-                                          state.user!.isBlocked
-                                              ? 'Unblock'
-                                              : 'Block',
-                                        )
-                                      : SpinKitThreeBounce(
-                                          size: 20,
-                                          color: Colors.red,
-                                        ),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              onTap: () {
-                                //   TODO:
-                              },
-                              leading: Icon(
-                                Symbols.report_rounded,
-                                color: Colors.red,
-                              ),
-                              title: Text(
-                                'Report',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  // Drag Handle
+                  Container(
+                    margin: const EdgeInsets.only(top: 12, bottom: 8),
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                  Positioned(
-                    top: profilePicHeight,
-                    left: 10,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+
+                  // Header
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
                       children: [
-                        CircleAvatar(
-                          radius: 45,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).scaffoldBackgroundColor,
-                          child: CircleAvatar(
-                            radius: 42,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: CachedNetworkImageProvider(
-                                    widget.user.image,
-                                    cacheKey: 'profile ${widget.user.id}',
-                                  ),
-                                ),
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                            ),
-                          ),
+                        ProfileImage(
+                          userId: widget.user.id,
+                          username: widget.user.username,
+                          imageUrl: widget.user.image,
+                          radius: 32,
                         ),
-                        Container(
-                          margin: EdgeInsets.only(left: 5),
+                        const SizedBox(width: 16),
+                        Expanded(
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 widget.user.name,
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               Text(
                                 '@${widget.user.username}',
-                                style: TextStyle(
-                                  color: Theme.of(context).disabledColor,
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
                               ),
                             ],
                           ),
                         ),
+                        OutlinedButton(
+                          onPressed: () => context.router.push(
+                            ProfileRoute(username: widget.user.username),
+                          ),
+                          child: const Text('View Profile'),
+                        ),
                       ],
                     ),
                   ),
-                  Positioned(
-                    top: 15,
-                    right: 15,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        context.router.push(
-                          ProfileRoute(username: widget.user.username),
-                        );
-                      },
-                      child: Text("Profile"),
-                    ),
+                  const Divider(height: 1),
+
+                  // Meeting Controls Section
+                  if (canManageSpeakers || canManageCoHosts || isSpeaker) ...[
+                    _SectionHeader(title: 'Meeting Controls'),
+                    if (canManageSpeakers &&
+                        !isHost &&
+                        !isSpeaker &&
+                        !isCoHost &&
+                        !inviteIsPending)
+                      _ProfileActionTile(
+                        icon: Icons.mic_rounded,
+                        iconColor: colorScheme.primary,
+                        title: 'Invite to speak',
+                        subtitle: hasRejectedInvite
+                            ? '(Previously declined)'
+                            : null,
+                        onTap: () => _showDialog(
+                          context,
+                          InviteSpeakerDialog(
+                            broadcast: broadcast,
+                            user: widget.user,
+                          ),
+                        ),
+                      ),
+                    if (canManageSpeakers && inviteIsPending)
+                      _ProfileActionTile(
+                        icon: Icons.hourglass_empty_rounded,
+                        iconColor: colorScheme.outline,
+                        title: 'Invite pending',
+                        trailing: TextButton(
+                          onPressed: () {
+                            final invite = broadcast.speakerInvites.firstWhere(
+                              (i) => i.userId == widget.user.id,
+                            );
+                            _showDialog(
+                              context,
+                              CancelInviteDialog(invite: invite),
+                            );
+                          },
+                          child: const Text(
+                            'Cancel',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ),
+                    if (canManageSpeakers && isSpeaker)
+                      _ProfileActionTile(
+                        icon: Icons.person_remove_rounded,
+                        iconColor: colorScheme.error,
+                        title: 'Remove from speakers',
+                        onTap: () => _showDialog(
+                          context,
+                          RemoveSpeakerDialog(
+                            broadcast: broadcast,
+                            user: widget.user,
+                          ),
+                        ),
+                      ),
+                    if (canManageCoHosts && isSpeaker && !inviteIsPending)
+                      _ProfileActionTile(
+                        icon: Icons.star_rounded,
+                        iconColor: colorScheme.tertiary,
+                        title: 'Invite to co-host',
+                        onTap: () => _showDialog(
+                          context,
+                          InviteCoHostDialog(
+                            broadcast: broadcast,
+                            user: widget.user,
+                          ),
+                        ),
+                      ),
+                    if (canManageCoHosts && isCoHost)
+                      _ProfileActionTile(
+                        icon: Icons.person_remove_rounded,
+                        iconColor: colorScheme.error,
+                        title: 'Remove from co-hosts',
+                        onTap: () => _showDialog(
+                          context,
+                          RemoveCoHostDialog(
+                            broadcast: broadcast,
+                            user: widget.user,
+                          ),
+                        ),
+                      ),
+                    if ((canManageCoHosts && isCoHost) ||
+                        (canManageSpeakers && isSpeaker))
+                      _ProfileActionTile(
+                        icon: isMuted
+                            ? Icons.mic_off_rounded
+                            : Icons.volume_down_rounded,
+                        iconColor: isMuted
+                            ? colorScheme.error
+                            : colorScheme.onSurface,
+                        title: isMuted
+                            ? 'Unmute participant'
+                            : 'Mute participant',
+                        enabled: !isMuted,
+                        onTap: () => _showDialog(
+                          context,
+                          MuteSpeakerDialog(
+                            broadcast: broadcast,
+                            user: widget.user,
+                          ),
+                        ),
+                      ),
+                    if (isSpeaker && me.id == widget.user.id)
+                      _ProfileActionTile(
+                        icon: isMuted
+                            ? Icons.mic_off_rounded
+                            : Icons.mic_rounded,
+                        iconColor: isMuted
+                            ? colorScheme.error
+                            : colorScheme.primary,
+                        title: isMuted ? 'Unmute myself' : 'Mute myself',
+                        enabled: !isMuted,
+                        onTap: () {
+                          context.read<SpeakerDetailBloc>().add(
+                            SpeakerDetailEvent.toggleMute(
+                              broadcast: broadcast,
+                              isMuted: !isMuted,
+                            ),
+                          );
+                        },
+                      ),
+                    const SizedBox(height: 8),
+                  ],
+
+                  _ProfileActionTile(
+                    icon: Icons.mail_rounded,
+                    iconColor: colorScheme.primary,
+                    title: 'Send Direct Message',
+                    onTap: () {
+                      context.read<ChatDetailBloc>().add(
+                        ChatDetailEvent.create(user: widget.user),
+                      );
+                      context.router.popTop();
+                    },
                   ),
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                    buildWhen: (previous, current) {
+                      return current.user?.id == widget.user.id;
+                    },
+                    builder: (context, state) {
+                      return ListTile(
+                        iconColor: Colors.red,
+                        textColor: Colors.red,
+                        onTap: () {
+                          if (state.status == ProfileStatus.success) {
+                            state.user!.isBlocked
+                                ? context.read<UserDetailBloc>().add(
+                                    UserDetailEvent.block(user: widget.user),
+                                  )
+                                : showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (context) {
+                                      return BlockDialog(user: widget.user);
+                                    },
+                                  );
+                          }
+                        },
+                        leading: Icon(Symbols.block_rounded),
+                        title: state.status == ProfileStatus.success
+                            ? Text(state.user!.isBlocked ? 'Unblock' : 'Block')
+                            : SpinKitThreeBounce(size: 20, color: Colors.red),
+                      );
+                    },
+                  ),
+                  _ProfileActionTile(
+                    icon: Icons.flag_rounded,
+                    iconColor: colorScheme.error,
+                    title: 'Report',
+                    textColor: colorScheme.error,
+                    onTap: () {
+                      // TODO: Implement report logic
+                    },
+                  ),
+                  const SizedBox(height: 24),
                 ],
               ),
-            );
-          },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showDialog(BuildContext context, Widget dialog) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => dialog,
+    );
+    context.router.popTop(); // Close bottom sheet
+  }
+}
+
+// Helper Widgets for Profile
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title});
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      child: Text(
+        title.toUpperCase(),
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.2,
         ),
       ),
+    );
+  }
+}
+
+class _ProfileActionTile extends StatelessWidget {
+  const _ProfileActionTile({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    this.subtitle,
+    this.textColor,
+    this.trailing,
+    this.enabled = true,
+    this.onTap,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String? subtitle;
+  final Color? textColor;
+  final Widget? trailing;
+  final bool enabled;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      enabled: enabled,
+      onTap: onTap,
+      leading: Icon(icon, color: iconColor),
+      title: Text(title, style: TextStyle(color: textColor)),
+      subtitle: subtitle != null
+          ? Text(
+              subtitle!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            )
+          : null,
+      trailing: trailing,
     );
   }
 }

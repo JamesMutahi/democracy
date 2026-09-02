@@ -163,13 +163,7 @@ class _PetitionDetailState extends State<_PetitionDetail> {
                     expandedHeight: 240,
                     pinned: true,
                     backgroundColor: Colors.transparent,
-                    leading: CircleAvatar(
-                      radius: 35,
-                      backgroundColor: Theme.of(
-                        context,
-                      ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
-                      child: AutoLeadingButton(),
-                    ),
+                    leading: AutoLeadingButton(),
                     actions: [
                       CircleAvatar(
                         radius: 35,
@@ -284,8 +278,6 @@ class _PetitionDetailState extends State<_PetitionDetail> {
       ),
     );
   }
-
-  // --- UI Helper Widgets ---
 
   Widget _buildViewsBadge(int views) {
     return Container(

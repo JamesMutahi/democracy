@@ -70,28 +70,28 @@ class _ChatPageState extends State<ChatPage> {
           },
           body: Stack(
             children: [
-              Chats(),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  margin: EdgeInsets.only(right: 10, bottom: 10),
-                  child: FloatingActionButton(
-                    heroTag: 'message',
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        showDragHandle: true,
-                        isScrollControlled: true,
-                        useSafeArea: true,
-                        backgroundColor: Theme.of(
-                          context,
-                        ).scaffoldBackgroundColor,
-                        shape: const BeveledRectangleBorder(),
-                        builder: (context) => CreateMessage(),
-                      );
-                    },
-                    child: Icon(Icons.send_rounded),
-                  ),
+              const Chats(),
+              Positioned(
+                bottom: 24,
+                right: 24,
+                child: FloatingActionButton(
+                  heroTag: 'new_message',
+                  elevation: 4,
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      showDragHandle: true,
+                      isScrollControlled: true,
+                      useSafeArea: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
+                      ),
+                      builder: (context) => const CreateMessage(),
+                    );
+                  },
+                  child: const Icon(Icons.edit_rounded, size: 28),
                 ),
               ),
             ],

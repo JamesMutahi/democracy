@@ -28,79 +28,120 @@ class ParticipantTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isMe = user.id == me.id;
+
     return GestureDetector(
-      onTap: user.id == me.id
+      onTap: isMe
           ? null
-          : () {
-              showParticipantProfile(
-                context: context,
-                broadcast: broadcast,
-                user: user,
+          : () => showParticipantProfile(
+              context: context,
+              broadcast: broadcast,
+              user: user,
+            ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          BlocBuilder<SpeakingIndicatorBloc, SpeakingState>(
+            buildWhen: (previous, current) =>
+                previous.isSpeaking(user.id) != current.isSpeaking(user.id),
+            builder: (context, state) {
+              final isSpeaking = state.isSpeaking(user.id);
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isSpeaking
+                            ? colorScheme.primary
+                            : Colors.transparent,
+                        width: isSpeaking ? 3 : 0,
+                      ),
+                      boxShadow: isSpeaking
+                          ? [
+                              BoxShadow(
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.4,
+                                ),
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: ProfileImage(
+                      userId: user.id,
+                      username: user.username,
+                      imageUrl: user.image,
+                      radius: 36, // Optimized for grid
+                    ),
+                  ),
+                  // Role / Mute Badge
+                  if (isHost || isCoHost || isSpeaker)
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: isHost
+                              ? colorScheme.errorContainer
+                              : (isCoHost
+                                    ? colorScheme.tertiaryContainer
+                                    : colorScheme.primaryContainer),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: colorScheme.surface,
+                            width: 2,
+                          ),
+                        ),
+                        child: Icon(
+                          isMuted
+                              ? Icons.mic_off_rounded
+                              : (isHost
+                                    ? Icons.star_rounded
+                                    : Icons.mic_rounded),
+                          color: isHost
+                              ? colorScheme.onErrorContainer
+                              : (isCoHost
+                                    ? colorScheme.onTertiaryContainer
+                                    : colorScheme.onPrimaryContainer),
+                          size: 14,
+                        ),
+                      ),
+                    ),
+                ],
               );
             },
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            BlocBuilder<SpeakingIndicatorBloc, SpeakingState>(
-              buildWhen: (previous, current) {
-                return previous.isSpeaking(user.id) !=
-                    current.isSpeaking(user.id);
-              },
-              builder: (context, state) {
-                final isSpeaking = state.isSpeaking(user.id);
-
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: isSpeaking ? Colors.green : Colors.transparent,
-                      width: 3,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: ProfileImage(
-                    userId: user.id,
-                    username: user.username,
-                    imageUrl: user.image,
-                    radius: 40,
-                  ),
-                );
-              },
+          ),
+          const SizedBox(height: 8),
+          Text(
+            isMe ? 'You' : user.name,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: isMe ? colorScheme.primary : colorScheme.onSurface,
             ),
-            SizedBox(height: 5),
-            Text(user.name, style: TextStyle(fontWeight: FontWeight.w500)),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+          if (!isMe)
             Text(
-              '@${user.username}',
-              style: TextStyle(color: Theme.of(context).hintColor),
+              isHost
+                  ? 'Host'
+                  : isCoHost
+                  ? 'Co-host'
+                  : isSpeaker
+                  ? 'Speaker'
+                  : 'Listener',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (isHost || isCoHost || isSpeaker)
-                  Container(
-                    margin: EdgeInsets.only(right: 2),
-                    child: Icon(
-                      isMuted ? Icons.mic_off_rounded : Icons.mic_rounded,
-                      color: isMuted ? Colors.red : Colors.blue,
-                      size: 17,
-                    ),
-                  ),
-                Text(
-                  isHost
-                      ? "Host"
-                      : isCoHost
-                      ? "Co-host"
-                      : isSpeaker
-                      ? "Speaker"
-                      : "Listener",
-                  style: TextStyle(color: Theme.of(context).disabledColor),
-                ),
-              ],
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

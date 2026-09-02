@@ -252,27 +252,35 @@ class _PostContainer extends StatelessWidget {
                             if (post.repostOf != null && !isDependency)
                               PostDependency(post: post),
                             if (post.ballot != null)
-                              BallotTile(
-                                ballot: post.ballot!,
-                                isDependency: true,
+                              DependencyContainer(
+                                child: BallotTile(
+                                  ballot: post.ballot!,
+                                  isDependency: true,
+                                ),
                               ),
 
                             if (post.survey != null)
-                              SurveyTile(
-                                survey: post.survey!,
-                                isDependency: true,
+                              DependencyContainer(
+                                child: SurveyTile(
+                                  survey: post.survey!,
+                                  isDependency: true,
+                                ),
                               ),
 
                             if (post.petition != null)
-                              PetitionTile(
-                                petition: post.petition!,
-                                isDependency: true,
+                              DependencyContainer(
+                                child: PetitionTile(
+                                  petition: post.petition!,
+                                  isDependency: true,
+                                ),
                               ),
 
                             if (post.broadcast != null)
-                              BroadcastTile(
-                                broadcast: post.broadcast!,
-                                isDependency: true,
+                              DependencyContainer(
+                                child: BroadcastTile(
+                                  broadcast: post.broadcast!,
+                                  isDependency: true,
+                                ),
                               ),
 
                             if (post.section != null)
@@ -356,14 +364,9 @@ class DependencyContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Card.outlined(
       margin: EdgeInsets.only(top: 10),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).disabledColor.withAlpha(30),
-        ),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
+      color: Theme.of(context).disabledColor.withAlpha(30),
       child: child,
     );
   }

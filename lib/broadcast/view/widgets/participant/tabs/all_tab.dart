@@ -43,9 +43,7 @@ class _AllTabState extends State<AllTab> with AutomaticKeepAliveClientMixin {
           if (_refreshController.footerStatus == LoadStatus.loading) {
             _refreshController.loadComplete();
           }
-        }
-
-        if (state.status == ParticipantsStatus.failure) {
+        } else if (state.status == ParticipantsStatus.failure) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
             _refreshController.refreshFailed();
           }
@@ -53,6 +51,7 @@ class _AllTabState extends State<AllTab> with AutomaticKeepAliveClientMixin {
             _refreshController.loadFailed();
           }
         }
+
         return UsersListView(
           users: users,
           loading:

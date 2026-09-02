@@ -243,7 +243,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
                 actions: [
                   Padding(
                     padding: const EdgeInsets.only(right: 15),
-                    child: OutlinedButton(
+                    child: FilledButton(
                       onPressed: _canPost
                           ? () => showDialog(
                               context: context,
@@ -251,6 +251,15 @@ class _PostCreatePageState extends State<PostCreatePage> {
                                   PostCreateDialog(onYesPressed: _createPost),
                             )
                           : null,
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
                       child: Text(widget.replyTo != null ? 'Reply' : 'Post'),
                     ),
                   ),
@@ -319,7 +328,9 @@ class _PostCreatePageState extends State<PostCreatePage> {
                   PostTextField(
                     controller: _controller,
                     focusNode: _focusNode,
-                    hintText: widget.replyTo != null ? 'Reply' : "What's new?",
+                    hintText: widget.replyTo != null
+                        ? 'Post your reply'
+                        : "What's happening?",
                     onChanged: _updatePostButtonState,
                     onContentInsertion: (imageFile) {
                       setState(() {

@@ -30,18 +30,17 @@ class BallotDetail extends StatelessWidget {
             ..add(BallotEvent.load(ballotId: ballotId)),
       child: Scaffold(
         appBar: AppBar(
-          leading: AutoLeadingButton(),
-          title: Text('Ballot'),
+          title: const Text('Ballot'),
+          centerTitle: true,
           actions: [
             BlocBuilder<BallotBloc, BallotState>(
               buildWhen: (previous, current) => current.ballotId == ballotId,
               builder: (context, state) {
-                return state.ballot != null
-                    ? Container(
-                        margin: EdgeInsets.only(right: 15),
-                        child: BallotPopUp(ballot: state.ballot!),
-                      )
-                    : SizedBox.shrink();
+                if (state.ballot == null) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: BallotPopUp(ballot: state.ballot!),
+                );
               },
             ),
           ],
@@ -52,15 +51,17 @@ class BallotDetail extends StatelessWidget {
             if (state.status == BallotStatus.initial ||
                 (state.status == BallotStatus.loading &&
                     state.ballot == null)) {
-              return BottomLoader();
+              return const Center(child: BottomLoader());
             }
             if (state.status == BallotStatus.failure && state.ballot == null) {
-              return FailureRetryButton(
-                onPressed: () {
-                  context.read<BallotBloc>().add(
-                    BallotEvent.load(ballotId: ballotId),
-                  );
-                },
+              return Center(
+                child: FailureRetryButton(
+                  onPressed: () {
+                    context.read<BallotBloc>().add(
+                      BallotEvent.load(ballotId: ballotId),
+                    );
+                  },
+                ),
               );
             }
             return _BallotDetail(ballot: state.ballot!);
@@ -81,13 +82,12 @@ class _BallotDetail extends StatefulWidget {
 }
 
 class _BallotDetailState extends State<_BallotDetail> {
-  bool changingVote = false;
+  bool _changingVote = false;
   late final TextEditingController _textEditingController;
 
   @override
   void initState() {
     super.initState();
-    // Initialize controller
     _textEditingController = TextEditingController(
       text: widget.ballot.reason ?? '',
     );
@@ -96,10 +96,8 @@ class _BallotDetailState extends State<_BallotDetail> {
   @override
   void didUpdateWidget(covariant _BallotDetail oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Sync controller text if the ballot reason changes externally
     if (oldWidget.ballot.reason != widget.ballot.reason) {
       _textEditingController.text = widget.ballot.reason ?? '';
-      // Optional: Move cursor to the end of the text
       _textEditingController.selection = TextSelection.fromPosition(
         TextPosition(offset: _textEditingController.text.length),
       );
@@ -114,7 +112,10 @@ class _BallotDetailState extends State<_BallotDetail> {
 
   @override
   Widget build(BuildContext context) {
-    bool userHasVoted = widget.ballot.votedOption != null;
+    final colorScheme = Theme.of(context).colorScheme;
+    final userHasVoted = widget.ballot.votedOption != null;
+    final isVotingActive = widget.ballot.isActive && !widget.ballot.hasEnded;
+
     return MultiBlocListener(
       listeners: [
         BlocListener<WebsocketBloc, WebsocketState>(
@@ -128,10 +129,9 @@ class _BallotDetailState extends State<_BallotDetail> {
         ),
         BlocListener<BallotDetailBloc, BallotDetailState>(
           listener: (context, state) {
-            Ballot ballot = widget.ballot;
             switch (state) {
               case BallotUpdated():
-                if (ballot.id == state.ballotId) {
+                if (widget.ballot.id == state.ballotId) {
                   context.read<BallotBloc>().add(
                     BallotEvent.ballotDetailUpdated(
                       title: state.title,
@@ -150,7 +150,7 @@ class _BallotDetailState extends State<_BallotDetail> {
                   );
                 }
               case BallotVoted():
-                if (ballot.id == state.ballotId) {
+                if (widget.ballot.id == state.ballotId) {
                   context.read<BallotBloc>().add(
                     BallotEvent.votedOptionUpdated(
                       votedOptionId: state.optionId,
@@ -161,30 +161,33 @@ class _BallotDetailState extends State<_BallotDetail> {
                   }
                 }
               case BallotReasonSubmitted():
-                if (ballot.id == state.ballotId) {
-                  if (state.reason != ballot.reason) {
-                    if (state.reason == null) {
-                      _textEditingController.clear();
-                    }
-                    context.read<BallotBloc>().add(
-                      BallotEvent.reasonUpdated(reason: state.reason),
+                if (widget.ballot.id == state.ballotId &&
+                    state.reason != widget.ballot.reason) {
+                  if (state.reason == null) _textEditingController.clear();
+                  context.read<BallotBloc>().add(
+                    BallotEvent.reasonUpdated(reason: state.reason),
+                  );
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      getSnackBar(
+                        context: context,
+                        message: 'Reason submitted',
+                        status: SnackBarStatus.success,
+                      ),
                     );
-                    final snackBar = getSnackBar(
-                      context: context,
-                      message: 'Submitted',
-                      status: SnackBarStatus.success,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 }
               case BallotDetailFailure():
-                final snackBar = getSnackBar(
-                  context: context,
-                  message: state.error,
-                  status: SnackBarStatus.failure,
-                );
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    getSnackBar(
+                      context: context,
+                      message: state.error,
+                      status: SnackBarStatus.failure,
+                    ),
+                  );
+                }
             }
           },
         ),
@@ -197,162 +200,184 @@ class _BallotDetailState extends State<_BallotDetail> {
           );
         },
         child: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (widget.ballot.county != null)
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    child: GeoChipRow(
-                      county: widget.ballot.county,
-                      constituency: widget.ballot.constituency,
-                      ward: widget.ballot.ward,
-                    ),
-                  ),
-                Text(
-                  widget.ballot.title,
-                  style: Theme.of(context).textTheme.titleLarge,
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 1. Header Section
+              if (widget.ballot.county != null) ...[
+                GeoChipRow(
+                  county: widget.ballot.county,
+                  constituency: widget.ballot.constituency,
+                  ward: widget.ballot.ward,
                 ),
-                SizedBox(height: 5),
-                Text(widget.ballot.description),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TimeLeft(
+                const SizedBox(height: 12),
+              ],
+              Text(
+                widget.ballot.title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                widget.ballot.description,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Meta Info Row
+              Row(
+                children: [
+                  Expanded(
+                    child: TimeLeft(
                       startTime: widget.ballot.startTime,
                       endTime: widget.ballot.endTime,
                     ),
-                    Text(
-                      '${widget.ballot.totalVotes} ${widget.ballot.totalVotes == 1 ? 'vote' : 'votes'}',
-                      style: TextStyle(color: Theme.of(context).disabledColor),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
                     ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Container(
-                  padding: EdgeInsets.only(
-                    top: 10,
-                    left: 10,
-                    right: 10,
-                    bottom: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.tertiaryContainer,
-                    borderRadius: BorderRadius.all(const Radius.circular(8)),
-                  ),
-                  child: Column(
-                    children: [
-                      ...widget.ballot.options.map((option) {
-                        return AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child:
-                              (!widget.ballot.isActive ||
-                                  widget.ballot.hasEnded ||
-                                  (userHasVoted && !changingVote))
-                              ? BallotPercentIndicator(
-                                  key: ValueKey('percent_${option.id}'),
-                                  ballot: widget.ballot,
-                                  option: option,
-                                  animateToInitialPercent: true,
-                                )
-                              : OptionTile(
-                                  key: ValueKey('option_${option.id}'),
-                                  option: option,
-                                  onTap: () {
-                                    if (widget.ballot.isActive) {
-                                      context.read<BallotDetailBloc>().add(
-                                        BallotDetailEvent.vote(option: option),
-                                      );
-                                      setState(() {
-                                        changingVote = false;
-                                      });
-                                    } else {
-                                      final snackBar = getSnackBar(
-                                        context: context,
-                                        message: 'Closed',
-                                        status: SnackBarStatus.info,
-                                      );
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).clearSnackBars();
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(snackBar);
-                                    }
-                                  },
-                                ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10),
-                Visibility(
-                  visible:
-                      userHasVoted &&
-                      widget.ballot.isActive &&
-                      !widget.ballot.hasEnded &&
-                      !changingVote,
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        setState(() => changingVote = true);
-                      },
-                      child: Text('Change'),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ),
-                ),
-                Visibility(
-                  visible: !changingVote && !widget.ballot.hasEnded,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20),
-                      ReasonWidget(
-                        ballot: widget.ballot,
-                        controller: _textEditingController,
-                      ),
-                    ],
-                  ),
-                ),
-                Visibility(
-                  visible: widget.ballot.hasEnded,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (widget.ballot.reason != null)
-                        SizedBox(
-                          width: double.infinity,
-                          child: Card.filled(
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Your reason',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(widget.ballot.reason!),
-                                ],
-                              ),
-                            ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.how_to_vote_outlined,
+                          size: 16,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${widget.ballot.totalVotes} ${widget.ballot.totalVotes == 1 ? 'vote' : 'votes'}',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
-                      BallotSummaryWidget(summary: widget.ballot.summary!),
-                    ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 24),
+
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.5),
                   ),
                 ),
+                child: Column(
+                  children: widget.ballot.options.map((option) {
+                    final isSelected = widget.ballot.votedOption == option.id;
+                    return AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child:
+                          (!isVotingActive || (userHasVoted && !_changingVote))
+                          ? BallotPercentIndicator(
+                              key: ValueKey('percent_${option.id}'),
+                              ballot: widget.ballot,
+                              option: option,
+                              animateToInitialPercent: true,
+                            )
+                          : OptionTile(
+                              key: ValueKey('option_${option.id}'),
+                              option: option,
+                              isSelected: isSelected,
+                              onTap: () {
+                                if (isVotingActive) {
+                                  context.read<BallotDetailBloc>().add(
+                                    BallotDetailEvent.vote(option: option),
+                                  );
+                                  setState(() => _changingVote = false);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    getSnackBar(
+                                      context: context,
+                                      message: 'Voting is closed',
+                                      status: SnackBarStatus.info,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                    );
+                  }).toList(),
+                ),
+              ),
+
+              if (userHasVoted && isVotingActive && !_changingVote)
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: OutlinedButton.icon(
+                      onPressed: () => setState(() => _changingVote = true),
+                      icon: const Icon(Icons.edit_rounded, size: 18),
+                      label: const Text('Change Vote'),
+                    ),
+                  ),
+                ),
+
+              const SizedBox(height: 24),
+
+              if (!_changingVote && !widget.ballot.hasEnded)
+                ReasonWidget(
+                  ballot: widget.ballot,
+                  controller: _textEditingController,
+                ),
+
+              if (widget.ballot.hasEnded) ...[
+                const SizedBox(height: 8),
+                if (widget.ballot.reason != null)
+                  Card.filled(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.lightbulb,
+                                color: colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Your Reason',
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            widget.ballot.reason!,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: colorScheme.onSurfaceVariant),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                BallotSummaryWidget(summary: widget.ballot.summary!),
               ],
-            ),
+            ],
           ),
         ),
       ),
@@ -361,27 +386,60 @@ class _BallotDetailState extends State<_BallotDetail> {
 }
 
 class OptionTile extends StatelessWidget {
-  const OptionTile({super.key, required this.option, required this.onTap});
+  const OptionTile({
+    super.key,
+    required this.option,
+    required this.onTap,
+    required this.isSelected,
+  });
 
   final Option option;
   final VoidCallback? onTap;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
-    double optionHeight = 40;
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          height: optionHeight,
-          padding: EdgeInsets.all(9),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            borderRadius: BorderRadius.all(const Radius.circular(8)),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? colorScheme.primaryContainer
+              : colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? colorScheme.primary
+                : colorScheme.outlineVariant,
+            width: isSelected ? 1.5 : 1,
           ),
-          child: Center(child: Text(option.text)),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                option.text,
+                style: TextStyle(
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  color: isSelected
+                      ? colorScheme.onPrimaryContainer
+                      : colorScheme.onSurface,
+                ),
+              ),
+            ),
+            Icon(
+              isSelected
+                  ? Icons.radio_button_checked_rounded
+                  : Icons.radio_button_unchecked_rounded,
+              color: isSelected ? colorScheme.primary : colorScheme.outline,
+              size: 24,
+            ),
+          ],
         ),
       ),
     );
@@ -404,85 +462,77 @@ class ReasonWidget extends StatefulWidget {
 
 class _ReasonWidgetState extends State<ReasonWidget> {
   bool get _canSubmit {
-    final text = widget.controller.text;
+    final text = widget.controller.text.trim();
     final reason = widget.ballot.reason;
-    // Disable if empty and no reason exists, or if text matches existing reason
-    return !((text.isEmpty && reason == null) || text == reason);
+    return text.isNotEmpty && text != reason;
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return BlocListener<BallotDetailBloc, BallotDetailState>(
       listener: (context, state) {
-        if (state is BallotReasonSubmitted) {
-          if (widget.ballot.id == state.ballotId) {
-            // Trigger a rebuild to reevaluate _canSubmit
-            setState(() {});
-          }
+        if (state is BallotReasonSubmitted &&
+            widget.ballot.id == state.ballotId) {
+          setState(() {}); // Trigger rebuild to reevaluate _canSubmit
         }
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Divider(),
-          const SizedBox(height: 10),
-          const Text(
-            'Your reason for the decision is greatly appreciated '
-            'and will help in better understanding what people want.',
-          ),
-          const SizedBox(height: 10),
-          SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            reverse: true,
-            child: TextFormField(
-              controller: widget.controller,
-              onChanged: (value) {
-                // Just trigger a rebuild to reevaluate _canSubmit
-                setState(() {});
-              },
-              readOnly:
-                  !widget.ballot.isActive ||
-                  !widget.ballot.hasStarted ||
-                  widget.ballot.hasEnded,
-              minLines: 1,
-              maxLines: 10,
-              maxLength: widget.ballot.isActive ? 300 : null,
-              keyboardType: TextInputType.multiline,
-              onTapOutside: (event) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              },
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Theme.of(context).scaffoldBackgroundColor,
-                hintText: widget.ballot.isActive ? 'Enter reason' : '',
-                hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                prefixIconConstraints: const BoxConstraints(
-                  minWidth: 0,
-                  minHeight: 0,
-                ),
-                hoverColor: Colors.transparent,
-                border: InputBorder.none,
-                focusedBorder: UnderlineInputBorder(
-                  borderRadius: BorderRadius.circular(0),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderRadius: BorderRadius.circular(0),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.outline,
+          const Divider(height: 32),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.lightbulb_outline,
+                size: 20,
+                color: colorScheme.primary,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Your reason for this decision is greatly appreciated and helps us understand what people want.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: widget.controller,
+            onChanged: (_) => setState(() {}),
+            readOnly:
+                !widget.ballot.isActive ||
+                !widget.ballot.hasStarted ||
+                widget.ballot.hasEnded,
+            minLines: 3,
+            maxLines: 6,
+            maxLength: widget.ballot.isActive ? 300 : null,
+            keyboardType: TextInputType.multiline,
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
+            decoration: InputDecoration(
+              hintText: 'Enter your reason (optional)',
+              filled: true,
+              fillColor: colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: colorScheme.primary, width: 2),
+              ),
             ),
           ),
-          SizedBox(height: 10),
-          Visibility(
-            visible: widget.ballot.isActive,
-            child: Align(
-              alignment: Alignment.topRight,
-              child: OutlinedButton(
+          const SizedBox(height: 16),
+          if (widget.ballot.isActive)
+            Align(
+              alignment: Alignment.centerRight,
+              child: FilledButton.icon(
                 onPressed: _canSubmit
                     ? () {
                         showDialog(
@@ -492,18 +542,19 @@ class _ReasonWidgetState extends State<ReasonWidget> {
                               context.read<BallotDetailBloc>().add(
                                 BallotDetailEvent.submitReason(
                                   ballot: widget.ballot,
-                                  text: widget.controller.text,
+                                  text: widget.controller.text.trim(),
                                 ),
                               );
+                              if (context.mounted) context.router.popTop();
                             },
                           ),
                         );
                       }
                     : null,
-                child: Text('Submit'),
+                icon: const Icon(Icons.send_rounded, size: 18),
+                label: const Text('Submit Reason'),
               ),
             ),
-          ),
         ],
       ),
     );

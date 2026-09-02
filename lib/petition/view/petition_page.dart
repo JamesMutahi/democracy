@@ -163,82 +163,115 @@ class _FiltersModalState extends State<_FiltersModal> {
       onApply: _applyFilters,
       onClear: _clearFilters,
       widgets: [
-        FilterHeader(text: 'Sort by'),
-        FormBuilderRadioGroup<String>(
-          name: 'sort by',
-          initialValue: sortBy,
-          orientation: OptionsOrientation.vertical,
-          decoration: InputDecoration(border: InputBorder.none),
-          options: [
-            FormBuilderFieldOption<String>(
-              value: 'popular',
-              child: Text('Most supporters (default)'),
-            ),
-            FormBuilderFieldOption<String>(
-              value: 'recent',
-              child: Text('Newest first'),
-            ),
-            FormBuilderFieldOption<String>(
-              value: 'oldest',
-              child: Text('Oldest first'),
-            ),
-          ],
-          onChanged: (value) {
-            setState(() {
-              sortBy = value!;
-            });
-          },
+        _buildSection(
+          title: 'Sort by',
+          child: FormBuilderRadioGroup<String>(
+            name: 'sort by',
+            initialValue: sortBy,
+            orientation: OptionsOrientation.vertical,
+            decoration: const InputDecoration(border: InputBorder.none),
+            options: const [
+              FormBuilderFieldOption<String>(
+                value: 'popular',
+                child: Text('Most supporters (default)'),
+              ),
+              FormBuilderFieldOption<String>(
+                value: 'recent',
+                child: Text('Newest first'),
+              ),
+              FormBuilderFieldOption<String>(
+                value: 'oldest',
+                child: Text('Oldest first'),
+              ),
+            ],
+            onChanged: (value) {
+              if (value != null) setState(() => sortBy = value);
+            },
+          ),
         ),
 
-        FilterHeader(text: 'Status'),
-        FormBuilderRadioGroup<bool?>(
-          name: 'active',
-          initialValue: isOpen,
-          orientation: OptionsOrientation.vertical,
-          decoration: InputDecoration(border: InputBorder.none),
-          options: [
-            FormBuilderFieldOption<bool?>(
-              value: null,
-              child: Text('Show all (default)'),
-            ),
-            FormBuilderFieldOption<bool?>(value: true, child: Text('Open')),
-            FormBuilderFieldOption<bool?>(value: false, child: Text('Closed')),
-          ],
-          onChanged: (value) {
-            setState(() {
-              isOpen = value;
-            });
-          },
+        _buildSection(
+          title: 'Status',
+          child: FormBuilderRadioGroup<bool?>(
+            name: 'open',
+            initialValue: isOpen,
+            orientation: OptionsOrientation.vertical,
+            decoration: const InputDecoration(border: InputBorder.none),
+            options: const [
+              FormBuilderFieldOption<bool?>(
+                value: null,
+                child: Text('Show all (default)'),
+              ),
+              FormBuilderFieldOption<bool?>(value: true, child: Text('Open')),
+              FormBuilderFieldOption<bool?>(
+                value: false,
+                child: Text('Closed'),
+              ),
+            ],
+            onChanged: (value) => setState(() => isOpen = value),
+          ),
         ),
-        FilterHeader(text: 'Filter by region'),
-        FormBuilderRadioGroup<bool>(
-          name: 'region',
-          initialValue: filterByRegion,
-          orientation: OptionsOrientation.vertical,
-          decoration: InputDecoration(border: InputBorder.none),
-          options: [
-            FormBuilderFieldOption<bool>(
-              value: true,
-              child: Text('Yes (default)'),
-            ),
-            FormBuilderFieldOption<bool>(value: false, child: Text('No')),
-          ],
-          onChanged: (value) {
-            setState(() {
-              filterByRegion = value!;
-            });
-          },
+        _buildSection(
+          title: 'Filter by region',
+          child: FormBuilderRadioGroup<bool>(
+            name: 'region',
+            initialValue: filterByRegion,
+            orientation: OptionsOrientation.vertical,
+            decoration: const InputDecoration(border: InputBorder.none),
+            options: const [
+              FormBuilderFieldOption<bool>(
+                value: true,
+                child: Text('Yes (default)'),
+              ),
+              FormBuilderFieldOption<bool>(value: false, child: Text('No')),
+            ],
+            onChanged: (value) {
+              if (value != null) setState(() => filterByRegion = value);
+            },
+          ),
         ),
-        DateRangeFilter(
-          initialValue: startDate == null || endDate == null
-              ? null
-              : DateTimeRange(start: startDate!, end: endDate!),
-          onChanged: (value) {
-            setState(() {
-              startDate = value?.start;
-              endDate = value?.end;
-            });
-          },
+        _buildSection(
+          title: 'Date Range',
+          child: DateRangeFilter(
+            initialValue: (startDate != null && endDate != null)
+                ? DateTimeRange(start: startDate!, end: endDate!)
+                : null,
+            onChanged: (value) {
+              setState(() {
+                startDate = value?.start;
+                endDate = value?.end;
+              });
+            },
+          ),
+        ),
+        const SizedBox(height: 32),
+      ],
+    );
+  }
+
+  Widget _buildSection({required String title, required Widget child}) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 24.0, bottom: 12.0),
+          child: Text(
+            title.toUpperCase(),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: colorScheme.onSurfaceVariant,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: child,
         ),
       ],
     );

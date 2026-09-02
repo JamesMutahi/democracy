@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
-import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -10,17 +9,14 @@ import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
-import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/utils/last_message.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
-import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Chats extends StatefulWidget {
@@ -35,55 +31,51 @@ class _ChatsState extends State<Chats> {
 
   @override
   void initState() {
-    context.read<ChatsBloc>().add(ChatsEvent.get());
+    context.read<ChatsBloc>().add(const ChatsEvent.get());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return MultiBlocListener(
       listeners: [
         BlocListener<ChatDetailBloc, ChatDetailState>(
           listener: (context, state) {
-            final chatsBloc = context.read<ChatsBloc>();
-
-            if (state is ChatCreated) {
-              chatsBloc.add(ChatsEvent.update());
-            } else if (state is ChatLoaded) {
-              chatsBloc.add(ChatsEvent.update());
-            } else if (state is ChatUpdated) {
-              chatsBloc.add(ChatsEvent.update());
-            } else if (state is ChatDeleted) {
-              chatsBloc.add(ChatsEvent.update());
+            if (state is ChatCreated ||
+                state is ChatLoaded ||
+                state is ChatUpdated ||
+                state is ChatDeleted) {
+              context.read<ChatsBloc>().add(const ChatsEvent.update());
             } else if (state is ChatDetailFailure) {
-              final snackBar = getSnackBar(
-                context: context,
-                message: state.error,
-                status: SnackBarStatus.failure,
+              ScaffoldMessenger.of(context).showSnackBar(
+                getSnackBar(
+                  context: context,
+                  message: state.error,
+                  status: SnackBarStatus.failure,
+                ),
               );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
         ),
         BlocListener<DirectMessageBloc, DirectMessageState>(
           listener: (context, state) {
             if (state.status == DirectMessageStatus.success) {
-              final chatsBloc = context.read<ChatsBloc>();
-              chatsBloc.add(ChatsEvent.update());
+              context.read<ChatsBloc>().add(const ChatsEvent.update());
             }
           },
         ),
         BlocListener<NotificationDetailBloc, NotificationDetailState>(
           listener: (context, state) {
-            if (state is NotificationCreated) {
-              if (state.notification.chat != null) {
-                final openChatId = context
-                    .read<NotificationsBloc>()
-                    .state
-                    .openChatId;
-                if (openChatId != state.notification.chat!.id) {
-                  context.read<ChatsBloc>().add(ChatsEvent.update());
-                }
+            if (state is NotificationCreated &&
+                state.notification.chat != null) {
+              final openChatId = context
+                  .read<NotificationsBloc>()
+                  .state
+                  .openChatId;
+              if (openChatId != state.notification.chat!.id) {
+                context.read<ChatsBloc>().add(const ChatsEvent.update());
               }
             }
           },
@@ -97,7 +89,7 @@ class _ChatsState extends State<Chats> {
 
               if (chatsState.status == ChatsStatus.initial ||
                   (chatsState.status == ChatsStatus.loading && chats.isEmpty)) {
-                return const BottomLoader();
+                return const Center(child: BottomLoader());
               }
 
               if (chatsState.status == ChatsStatus.success) {
@@ -118,28 +110,68 @@ class _ChatsState extends State<Chats> {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadFailed();
                 }
-                if (chatsState.chats.isEmpty) {
-                  return FailureRetryButton(
-                    onPressed: () => context.read<ChatsBloc>().add(
-                      ChatsEvent.get(searchTerm: filterState.searchTerm),
+                if (chats.isEmpty) {
+                  return Center(
+                    child: FailureRetryButton(
+                      onPressed: () => context.read<ChatsBloc>().add(
+                        ChatsEvent.get(searchTerm: filterState.searchTerm),
+                      ),
                     ),
                   );
                 }
               }
 
-              final authBloc = context.read<AuthBloc>();
-              final me = authBloc.state.user!;
+              if (chats.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.mark_chat_read_outlined,
+                          size: 64,
+                          color: colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          filterState.searchTerm.isNotEmpty
+                              ? 'No matching chats'
+                              : 'No messages yet',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          filterState.searchTerm.isNotEmpty
+                              ? 'Try a different search term'
+                              : 'Start a conversation to see it here',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: colorScheme.onSurfaceVariant),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              final me = context.read<AuthBloc>().state.user!;
 
               return SmartRefresher(
                 enablePullDown: true,
                 enablePullUp: chatsState.hasNext,
-                header: ClassicHeader(),
+                header: const ClassicHeader(),
+                footer: const ClassicFooter(),
                 controller: _refreshController,
-                onRefresh: () {
-                  context.read<ChatsBloc>().add(
-                    ChatsEvent.get(searchTerm: filterState.searchTerm),
-                  );
-                },
+                onRefresh: () => context.read<ChatsBloc>().add(
+                  ChatsEvent.get(searchTerm: filterState.searchTerm),
+                ),
                 onLoading: () {
                   if (chats.isNotEmpty) {
                     context.read<ChatsBloc>().add(
@@ -150,28 +182,33 @@ class _ChatsState extends State<Chats> {
                     );
                   }
                 },
-                footer: ClassicFooter(),
-                child: chats.isEmpty
-                    ? const NoResults(text: 'No chats')
-                    : ListView.builder(
-                        itemCount: chats.length,
-                        itemBuilder: (context, index) {
-                          final chat = chats[index];
-                          final otherUser = chat.users.length > 1
-                              ? chat.users.firstWhere(
-                                  (u) => u.id != me.id,
-                                  orElse: () => me,
-                                )
-                              : me;
+                child: ListView.separated(
+                  padding: const EdgeInsets.only(
+                    top: 8,
+                    bottom: 80,
+                  ), // Bottom padding for FAB
+                  itemCount: chats.length,
+                  separatorBuilder: (_, _) => Divider(
+                    height: 1,
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                  ),
+                  itemBuilder: (context, index) {
+                    final chat = chats[index];
+                    final otherUser = chat.users.length > 1
+                        ? chat.users.firstWhere(
+                            (u) => u.id != me.id,
+                            orElse: () => me,
+                          )
+                        : me;
 
-                          return ChatTile(
-                            key: ValueKey(chat.id),
-                            chat: chat,
-                            currentUser: me,
-                            otherUser: otherUser,
-                          );
-                        },
-                      ),
+                    return ChatTile(
+                      key: ValueKey(chat.id),
+                      chat: chat,
+                      currentUser: me,
+                      otherUser: otherUser,
+                    );
+                  },
+                ),
               );
             },
           );
@@ -180,6 +217,10 @@ class _ChatsState extends State<Chats> {
     );
   }
 }
+
+// -----------------------------------------------------------------------------
+// Chat Tile
+// -----------------------------------------------------------------------------
 
 class ChatTile extends StatelessWidget {
   const ChatTile({
@@ -196,109 +237,152 @@ class ChatTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lastMessage = chat.lastMessage;
-    if (lastMessage == null) {
-      return const SizedBox.shrink(); // Hide chats without last message
-    }
+    if (lastMessage == null) return const SizedBox.shrink();
 
+    final colorScheme = Theme.of(context).colorScheme;
+    final hasUnread = chat.unreadMessages > 0;
     final isFromMe = lastMessage.author.id == currentUser.id;
     final lastMessagePrefix = isFromMe ? 'You: ' : '';
+    final subtitleText = getLastMessageText(
+      lastMessage,
+      lastMessagePrefix,
+    ); // Assuming this helper exists
 
-    final subtitleText = getLastMessageText(lastMessage, lastMessagePrefix);
-
-    return ListTile(
-      leading: ProfileImage(
-        userId: otherUser.id,
-        username: otherUser.username,
-        imageUrl: otherUser.image,
-        navigateToProfile: true,
-      ),
-      title: ProfileName(name: otherUser.name, username: otherUser.username,),
-      subtitle: Row(
-        children: [
-          if (isFromMe && lastMessage.isRead) const _ReadIcon(),
-          Expanded(child: _LastMessageText(text: subtitleText)),
-        ],
-      ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _ChatTime(lastMessage),
-          if (chat.unreadMessages > 0)
-            Badge(
-              label: Text(
-                chat.unreadMessages.toString(),
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-              backgroundColor: Colors.green,
+    return InkWell(
+      onTap: () => context.router.push(ChatDetail(chatId: chat.id)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Avatar
+            ProfileImage(
+              userId: otherUser.id,
+              username: otherUser.username,
+              imageUrl: otherUser.image,
+              radius: 28,
             ),
-        ],
+            const SizedBox(width: 12),
+
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Name & Time Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          otherUser.name,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                fontWeight: hasUnread
+                                    ? FontWeight.bold
+                                    : FontWeight.w600,
+                              ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        _formatChatTime(lastMessage.createdAt),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: hasUnread
+                              ? colorScheme.primary
+                              : colorScheme.onSurfaceVariant,
+                          fontWeight: hasUnread
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+
+                  // Message & Unread Badge Row
+                  Row(
+                    children: [
+                      if (isFromMe) ...[
+                        Icon(
+                          lastMessage.isRead
+                              ? Icons.done_all_rounded
+                              : Icons.done_rounded,
+                          size: 16,
+                          color: lastMessage.isRead
+                              ? colorScheme.primary
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 4),
+                      ],
+                      Expanded(
+                        child: Text(
+                          subtitleText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: hasUnread
+                                    ? colorScheme.onSurface
+                                    : colorScheme.onSurfaceVariant,
+                                fontWeight: hasUnread
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
+                        ),
+                      ),
+                      if (hasUnread) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            chat.unreadMessages > 99
+                                ? '99+'
+                                : chat.unreadMessages.toString(),
+                            style: TextStyle(
+                              color: colorScheme.onPrimary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-      onTap: () {
-        context.router.push(ChatDetail(chatId: chat.id));
-      },
-      onLongPress: () {
-        // TODO: Implement long press actions (delete, mute, block, etc.)
-      },
     );
   }
-}
 
-class _LastMessageText extends StatelessWidget {
-  const _LastMessageText({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: Theme.of(context).textTheme.bodyMedium,
+  String _formatChatTime(DateTime createdAt) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final messageDate = DateTime(
+      createdAt.year,
+      createdAt.month,
+      createdAt.day,
     );
-  }
-}
+    final yesterday = today.subtract(const Duration(days: 1));
 
-class _ReadIcon extends StatelessWidget {
-  const _ReadIcon();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 4),
-      child: Icon(
-        Symbols.done_all,
-        size: Theme.of(context).textTheme.bodyMedium?.fontSize ?? 16,
-        color: Colors.lightBlueAccent,
-      ),
-    );
-  }
-}
-
-class _ChatTime extends StatelessWidget {
-  const _ChatTime(this.message);
-
-  final Message message;
-
-  @override
-  Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd/MM/yyyy');
-    final dateStr = dateFormat.format(message.createdAt);
-
-    String displayText = dateStr;
-
-    if (dateFormat.format(DateTime.now()) == dateStr) {
-      displayText = 'Today';
-    } else if (dateFormat.format(
-          DateTime.now().subtract(const Duration(days: 1)),
-        ) ==
-        dateStr) {
-      displayText = 'Yesterday';
+    if (messageDate == today) {
+      return DateFormat('h:mm a').format(createdAt); // e.g., "2:30 PM"
+    } else if (messageDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      return DateFormat('dd/MM/yyyy').format(createdAt);
     }
-
-    return Text(
-      displayText,
-      style: TextStyle(color: Theme.of(context).hintColor, fontSize: 12),
-    );
   }
 }

@@ -11,6 +11,7 @@ import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
+import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_process/widgets/index.dart';
@@ -33,10 +34,9 @@ class SurveyProcess extends StatelessWidget {
         appBar: AppBar(
           title: BlocBuilder<SurveyBloc, SurveyState>(
             buildWhen: (previous, current) => current.surveyId == surveyId,
-            builder: (context, state) {
-              return Text(state.survey?.title ?? '');
-            },
+            builder: (context, state) => Text(state.survey?.title ?? 'Survey'),
           ),
+          centerTitle: true,
         ),
         body: BlocBuilder<SurveyBloc, SurveyState>(
           buildWhen: (previous, current) => current.surveyId == surveyId,
@@ -44,15 +44,15 @@ class SurveyProcess extends StatelessWidget {
             if (state.status == SurveyStatus.initial ||
                 (state.status == SurveyStatus.loading &&
                     state.survey == null)) {
-              return BottomLoader();
+              return const Center(child: BottomLoader());
             }
             if (state.status == SurveyStatus.failure && state.survey == null) {
-              return FailureRetryButton(
-                onPressed: () {
-                  context.read<SurveyBloc>().add(
+              return Center(
+                child: FailureRetryButton(
+                  onPressed: () => context.read<SurveyBloc>().add(
                     SurveyEvent.load(surveyId: surveyId),
-                  );
-                },
+                  ),
+                ),
               );
             }
             return _SurveyProcess(survey: state.survey!);
@@ -60,11 +60,9 @@ class SurveyProcess extends StatelessWidget {
         ),
         bottomNavigationBar: BlocBuilder<SurveyBloc, SurveyState>(
           buildWhen: (previous, current) => current.surveyId == surveyId,
-          builder: (context, state) {
-            return state.survey != null
-                ? BottomNavBar(survey: state.survey!)
-                : SizedBox.shrink();
-          },
+          builder: (context, state) => state.survey != null
+              ? BottomNavBar(survey: state.survey!)
+              : const SizedBox.shrink(),
         ),
       ),
     );
@@ -73,7 +71,6 @@ class SurveyProcess extends StatelessWidget {
 
 class _SurveyProcess extends StatefulWidget {
   const _SurveyProcess({required this.survey});
-
   final Survey survey;
 
   @override
@@ -96,12 +93,10 @@ class _SurveyProcessState extends State<_SurveyProcess> {
       listeners: [
         BlocListener<SurveyDetailBloc, SurveyDetailState>(
           listener: (context, state) {
-            if (state is SurveyUpdated) {
-              if (widget.survey.id == state.survey.id) {
-                context.read<SurveyBloc>().add(
-                  SurveyEvent.updated(survey: state.survey),
-                );
-              }
+            if (state is SurveyUpdated && widget.survey.id == state.survey.id) {
+              context.read<SurveyBloc>().add(
+                SurveyEvent.updated(survey: state.survey),
+              );
             }
           },
         ),
@@ -121,20 +116,22 @@ class _SurveyProcessState extends State<_SurveyProcess> {
           listener: (context, state) {
             if (state.status == AnswerStatus.submitted) {
               context.router.popTop();
-              final snackBar = getSnackBar(
-                context: context,
-                message: 'Submitted',
-                status: SnackBarStatus.success,
+              ScaffoldMessenger.of(context).showSnackBar(
+                getSnackBar(
+                  context: context,
+                  message: 'Submitted successfully',
+                  status: SnackBarStatus.success,
+                ),
               );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
             if (state.status == AnswerStatus.submissionFailure) {
-              final snackBar = getSnackBar(
-                context: context,
-                message: state.submissionError,
-                status: SnackBarStatus.failure,
+              ScaffoldMessenger.of(context).showSnackBar(
+                getSnackBar(
+                  context: context,
+                  message: state.submissionError,
+                  status: SnackBarStatus.failure,
+                ),
               );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
         ),
@@ -142,120 +139,148 @@ class _SurveyProcessState extends State<_SurveyProcess> {
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
-          if (didPop) {
-            return;
-          }
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return CustomDialog(
-                title: 'Leave survey?',
-                content: 'Progress is not saved',
-                elevatedButtonText: 'Yes',
-                onElevatedButtonPressed: () {
-                  context.router.popTop();
-                  context.router.popTop();
-                },
-                textButtonText: 'No',
-                onTextButtonPressed: () {
-                  context.router.popTop();
-                },
-              );
-            },
-          );
+          if (didPop) return;
+          _showLeaveDialog(context);
         },
         child: BlocBuilder<PageBloc, PageState>(
           builder: (context, state) {
             switch (state) {
               case PageLoaded():
-                List<Question> questions = state.page.questions;
-                return (questions.isNotEmpty)
+                final questions = state.page.questions;
+                return questions.isNotEmpty
                     ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        padding: const EdgeInsets.only(
-                          left: 20.0,
-                          right: 20.0,
-                          top: 20.0,
-                          bottom: 160,
-                        ),
-                        itemBuilder: (BuildContext context, int index) {
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+                        itemBuilder: (context, index) {
                           return QuestionTile(
                             key: ValueKey(questions[index].id),
-                            questions: state.page.questions,
+                            questions: questions,
                             question: questions[index],
                           );
                         },
                         itemCount: questions.length,
                       )
-                    : NoResults(
-                        text: "Oops...questions for this page are missing",
+                    : const Center(
+                        child: NoResults(
+                          text: "Oops... questions for this page are missing",
+                        ),
                       );
               case PageComplete():
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('Survey complete', style: TextStyle(fontSize: 20)),
-                      SizedBox(height: 10),
-                      TimeLeft(
-                        key: ValueKey('survey ${widget.survey.id}'),
-                        startTime: widget.survey.startTime,
-                        endTime: widget.survey.endTime,
-                      ),
-                      SizedBox(height: 10),
-                      BlocBuilder<AnswerBloc, AnswerState>(
-                        builder: (context, answerState) {
-                          return ElevatedButton(
-                            onPressed: () {
-                              if (widget.survey.isActive) {
-                                context.read<AnswerBloc>().add(
-                                  AnswerEvent.submit(
-                                    survey: answerState.survey!,
-                                    startTime: answerState.startTime!,
-                                    endTime: answerState.endTime!,
-                                    textAnswers: answerState.textAnswers!,
-                                    choiceAnswers: answerState.choiceAnswers!,
-                                  ),
-                                );
-                              } else {
-                                final snackBar = getSnackBar(
-                                  context: context,
-                                  message: 'Closed',
-                                  status: SnackBarStatus.info,
-                                );
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(
-                                  context,
-                                ).showSnackBar(snackBar);
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: widget.survey.isActive
-                                  ? Theme.of(
-                                      context,
-                                    ).colorScheme.tertiaryContainer
-                                  : Theme.of(context).disabledColor,
-                              shape: BeveledRectangleBorder(
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                            child: Text('SUBMIT'),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                );
+                return _CompletionView(survey: widget.survey);
               default:
-                return const BottomLoader();
+                return const Center(child: BottomLoader());
             }
           },
         ),
       ),
     );
   }
+
+  void _showLeaveDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => CustomDialog(
+        title: 'Leave survey?',
+        content: 'Your progress will not be saved.',
+        textButtonText: 'Leave',
+        onTextButtonPressed: () {
+          context.router.popTop();
+          context.router.popTop();
+        },
+        elevatedButtonText: 'Stay',
+        onElevatedButtonPressed: () => context.router.popTop(),
+      ),
+    );
+  }
 }
+
+// -----------------------------------------------------------------------------
+// Completion View
+// -----------------------------------------------------------------------------
+
+class _CompletionView extends StatelessWidget {
+  const _CompletionView({required this.survey});
+  final Survey survey;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.celebration_rounded,
+                size: 64,
+                color: colorScheme.onPrimaryContainer,
+              ),
+            ),
+            const SizedBox(height: 32),
+            Text(
+              'You\'re all set!',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Review your answers and submit your response.',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            TimeLeft(
+              key: ValueKey('survey_${survey.id}'),
+              startTime: survey.startTime,
+              endTime: survey.endTime,
+            ),
+            const SizedBox(height: 40),
+            BlocBuilder<AnswerBloc, AnswerState>(
+              builder: (context, answerState) {
+                return SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: FilledButton.icon(
+                    onPressed: survey.isActive
+                        ? () {
+                            context.read<AnswerBloc>().add(
+                              AnswerEvent.submit(
+                                survey: answerState.survey!,
+                                startTime: answerState.startTime!,
+                                endTime: answerState.endTime!,
+                                textAnswers: answerState.textAnswers!,
+                                choiceAnswers: answerState.choiceAnswers!,
+                              ),
+                            );
+                          }
+                        : null,
+                    icon: const Icon(Icons.send_rounded),
+                    label: Text(
+                      survey.isActive ? 'Submit Response' : 'Survey Closed',
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Question Tile & Wrapper
+// -----------------------------------------------------------------------------
 
 class QuestionTile extends StatelessWidget {
   const QuestionTile({
@@ -263,7 +288,6 @@ class QuestionTile extends StatelessWidget {
     required this.questions,
     required this.question,
   });
-
   final List<Question> questions;
   final Question question;
 
@@ -277,70 +301,83 @@ class QuestionTile extends StatelessWidget {
         bool choiceAnswerExists = state.choiceAnswers!.any(
           (e) => e.question.id == question.id,
         );
+
         bool hideDependencyQuestion = question.dependency != null;
         if (state.choiceAnswers!.any(
           (e) => e.choice.id == question.dependency,
         )) {
           hideDependencyQuestion = false;
         }
+
         if (hideDependencyQuestion) {
-          state.textAnswers!.removeWhere(
-            (textAnswer) => textAnswer.question.id == question.id,
-          );
-          state.choiceAnswers!.removeWhere(
-            (choiceAnswer) => choiceAnswer.question.id == question.id,
-          );
+          state.textAnswers!.removeWhere((a) => a.question.id == question.id);
+          state.choiceAnswers!.removeWhere((a) => a.question.id == question.id);
+          return const SizedBox.shrink();
         }
-        return hideDependencyQuestion
-            ? SizedBox.shrink()
-            : Container(
-                margin: EdgeInsets.only(bottom: 20),
-                child: switch (question.type) {
-                  QuestionType.number => NumberWidget(
-                    key: ValueKey(question),
-                    question: question,
-                    textAnswer: (textAnswerExists)
-                        ? state.textAnswers?.firstWhere(
-                            (textAnswer) =>
-                                textAnswer.question.id == question.id,
-                          )
-                        : null,
-                  ),
-                  QuestionType.text => TextWidget(
-                    key: ValueKey(question),
-                    question: question,
-                    textAnswer: (textAnswerExists)
-                        ? state.textAnswers?.firstWhere(
-                            (textAnswer) =>
-                                textAnswer.question.id == question.id,
-                          )
-                        : null,
-                  ),
-                  QuestionType.singleChoice => SingleChoiceWidget(
-                    key: ValueKey(question),
-                    question: question,
-                    choiceAnswer: (choiceAnswerExists)
-                        ? state.choiceAnswers!.firstWhere(
-                            (choiceAnswer) =>
-                                choiceAnswer.question.id == question.id,
-                          )
-                        : null,
-                  ),
-                  QuestionType.multipleChoice => MultipleChoiceWidget(
-                    key: ValueKey(question),
-                    question: question,
-                    choiceAnswers: (choiceAnswerExists)
-                        ? state.choiceAnswers!
-                              .where(
-                                (choiceAnswer) =>
-                                    choiceAnswer.question.id == question.id,
-                              )
-                              .toList()
-                        : [],
-                  ),
-                },
-              );
+
+        final textAnswer = (textAnswerExists)
+            ? state.textAnswers?.firstWhere(
+                (textAnswer) => textAnswer.question.id == question.id,
+              )
+            : null;
+        final choiceAnswer = (choiceAnswerExists)
+            ? state.choiceAnswers!.firstWhere(
+                (choiceAnswer) => choiceAnswer.question.id == question.id,
+              )
+            : null;
+        final choiceAnswers = (choiceAnswerExists)
+            ? state.choiceAnswers!
+                  .where(
+                    (choiceAnswer) => choiceAnswer.question.id == question.id,
+                  )
+                  .toList()
+            : <ChoiceAnswer>[];
+
+        Widget child;
+        switch (question.type) {
+          case QuestionType.number:
+            child = NumberWidget(question: question, textAnswer: textAnswer);
+          case QuestionType.text:
+            child = TextWidget(question: question, textAnswer: textAnswer);
+          case QuestionType.singleChoice:
+            child = SingleChoiceWidget(
+              question: question,
+              choiceAnswer: choiceAnswer,
+            );
+          case QuestionType.multipleChoice:
+            child = MultipleChoiceWidget(
+              question: question,
+              choiceAnswers: choiceAnswers,
+            );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 20.0),
+          child: _QuestionCard(child: child),
+        );
       },
+    );
+  }
+}
+
+class _QuestionCard extends StatelessWidget {
+  const _QuestionCard({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+      ),
+      child: child,
     );
   }
 }

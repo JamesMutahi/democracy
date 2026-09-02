@@ -1,7 +1,5 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 class FiltersModal extends StatelessWidget {
   const FiltersModal({
@@ -21,70 +19,84 @@ class FiltersModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        elevation: 1,
+        elevation: 0,
         automaticallyImplyLeading: false,
-        // centerTitle: true,
         title: const Text('Sort & Filter'),
+        centerTitle: true,
         actions: [
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Symbols.close_rounded),
+            icon: const Icon(Icons.close_rounded),
           ),
         ],
-        actionsPadding: EdgeInsets.only(right: 10),
-      ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Colors.black12),
-          ), // Uniform radius
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: colorScheme.outlineVariant),
         ),
-        child: ListView(children: widgets),
       ),
-      bottomNavigationBar: BottomAppBar(
-        height: 65,
-        color: Theme.of(context).cardColor,
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+        children: widgets,
+      ),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        ),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          top: false,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _FilterButton(
-                text: 'Clear',
-                isDisabled: clearButtonIsDisabled,
-                onPressed: onClear,
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: clearButtonIsDisabled ? null : onClear,
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Clear'),
+                ),
               ),
-              _FilterButton(
-                text: 'Apply',
-                isDisabled: applyButtonIsDisabled,
-                onPressed: () {
-                  context.router.popTop();
-                  onApply();
-                },
+              const SizedBox(width: 16),
+              Expanded(
+                flex: 2, // Make Apply button wider to emphasize primary action
+                child: FilledButton(
+                  onPressed: applyButtonIsDisabled
+                      ? null
+                      : () {
+                          Navigator.pop(context);
+                          onApply();
+                        },
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Apply Filters'),
+                ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class FilterHeader extends StatelessWidget {
-  const FilterHeader({super.key, required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: Theme.of(context).colorScheme.outline,
       ),
     );
   }
@@ -97,65 +109,30 @@ class DateRangeFilter extends StatelessWidget {
     required this.onChanged,
   });
 
-  final DateTimeRange<DateTime>? initialValue;
-  final void Function(DateTimeRange<DateTime>?) onChanged;
+  final DateTimeRange? initialValue;
+  final void Function(DateTimeRange?) onChanged;
 
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        FormBuilderDateRangePicker(
-          name: 'Date range',
-          initialValue: initialValue,
-          onChanged: onChanged,
-          decoration: const InputDecoration(labelText: 'Select Date Range'),
-          firstDate: now,
-          lastDate: DateTime(
-            now.year + 1,
-            now.month,
-            now.day,
-            now.hour,
-            now.minute,
-            now.second,
-            now.millisecond,
-            now.microsecond,
-          ),
-          pickerBuilder: (context, child) {
-            return Dialog(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: 500,
-                  maxHeight: 600,
-                ),
-                child: child,
-              ),
-            );
-          },
+    final colorScheme = Theme.of(context).colorScheme;
+    final now = DateTime.now();
+
+    return FormBuilderDateRangePicker(
+      name: 'Date range',
+      initialValue: initialValue,
+      onChanged: onChanged,
+      firstDate: now,
+      lastDate: DateTime(now.year + 5), // More reasonable future limit
+      decoration: InputDecoration(
+        labelText: 'Select Date Range',
+        filled: true,
+        fillColor: colorScheme.surfaceContainerHighest,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
         ),
-      ],
-    );
-  }
-}
-
-class _FilterButton extends StatelessWidget {
-  const _FilterButton({
-    required this.text,
-    required this.isDisabled,
-    required this.onPressed,
-  });
-
-  final String text;
-  final bool isDisabled;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: isDisabled ? null : onPressed,
-      child: Text(text),
+        prefixIcon: const Icon(Icons.calendar_today_rounded),
+      ),
     );
   }
 }

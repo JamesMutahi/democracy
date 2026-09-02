@@ -6,7 +6,6 @@ import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 @RoutePage()
@@ -18,17 +17,22 @@ class CreateMessage extends StatefulWidget {
 }
 
 class _CreateMessageState extends State<CreateMessage> {
-  TextEditingController controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   final RefreshController _refreshController = RefreshController();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
+    _focusNode.dispose();
+    _refreshController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return BlocProvider(
       create: (context) =>
           UsersBloc(webSocketService: context.read<WebSocketService>())
@@ -42,59 +46,34 @@ class _CreateMessageState extends State<CreateMessage> {
         },
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            automaticallyImplyLeading: false,
-            title: Text('Send Direct Message'),
+            title: const Text('New Message'),
+            leading: IconButton(
+              icon: const Icon(Icons.close_rounded),
+              onPressed: () => context.router.popTop(),
+              tooltip: 'Close',
+            ),
+            backgroundColor: colorScheme.surface,
+            elevation: 0,
+            scrolledUnderElevation: 1,
           ),
           body: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).colorScheme.outline,
-                      width: 1.0,
-                    ),
-                    top: BorderSide(
-                      color: Theme.of(context).colorScheme.outline,
-                      width: 1.0,
-                    ),
-                  ),
-                ),
-                child: TextFormField(
-                  controller: controller,
-                  onChanged: (value) {
-                    context.read<UsersBloc>().add(
-                      UsersEvent.get(searchTerm: value),
-                    );
-                  },
-                  onTapOutside: (event) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Theme.of(context).scaffoldBackgroundColor,
-                    hintText: 'Search for people',
-                    hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                    prefixIcon: Icon(Symbols.search_rounded),
-                    prefixIconConstraints: const BoxConstraints(
-                      minWidth: 0,
-                      minHeight: 0,
-                    ),
-                    hoverColor: Colors.transparent,
-                    border: InputBorder.none,
-                  ),
-                ),
+              // 1. Modern Search Bar
+              _buildSearchBar(colorScheme),
+
+              // Subtle Divider
+              Divider(
+                height: 1,
+                color: colorScheme.outlineVariant.withValues(alpha: 0.5),
               ),
+
+              // 2. User List
               Expanded(
                 child: BlocBuilder<UsersBloc, UsersState>(
                   builder: (context, state) {
                     final users = state.users.toList();
 
+                    // Handle RefreshController states
                     if (state.status == UsersStatus.success) {
                       if (_refreshController.headerStatus ==
                           RefreshStatus.refreshing) {
@@ -104,9 +83,7 @@ class _CreateMessageState extends State<CreateMessage> {
                           LoadStatus.loading) {
                         _refreshController.loadComplete();
                       }
-                    }
-
-                    if (state.status == UsersStatus.failure) {
+                    } else if (state.status == UsersStatus.failure) {
                       if (_refreshController.headerStatus ==
                           RefreshStatus.refreshing) {
                         _refreshController.refreshFailed();
@@ -116,6 +93,12 @@ class _CreateMessageState extends State<CreateMessage> {
                         _refreshController.loadFailed();
                       }
                     }
+
+                    // Show empty state if search yields no results
+                    if (state.status == UsersStatus.success && users.isEmpty) {
+                      return _buildEmptyState();
+                    }
+
                     return UsersListView(
                       users: users,
                       loading:
@@ -132,14 +115,18 @@ class _CreateMessageState extends State<CreateMessage> {
                       onLoading: () {
                         context.read<UsersBloc>().add(
                           UsersEvent.get(
-                            searchTerm: controller.text,
-                            lastUser: users.last,
+                            searchTerm: _controller.text,
+                            lastUser: users.isNotEmpty ? users.last : null,
                           ),
                         );
                       },
                       onFailure: () {
+                        // 🚨 FIX: Safe access to users.last to prevent crash on empty list
                         context.read<UsersBloc>().add(
-                          UsersEvent.get(lastUser: users.last),
+                          UsersEvent.get(
+                            searchTerm: _controller.text,
+                            lastUser: users.isNotEmpty ? users.last : null,
+                          ),
                         );
                       },
                     );
@@ -148,6 +135,92 @@ class _CreateMessageState extends State<CreateMessage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar(ColorScheme colorScheme) {
+    return Container(
+      color: colorScheme.surface,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      child: ValueListenableBuilder<TextEditingValue>(
+        valueListenable: _controller,
+        builder: (context, value, child) {
+          return TextField(
+            controller: _controller,
+            focusNode: _focusNode,
+            autofocus: true, // 🚨 Keyboard opens immediately
+            onChanged: (value) {
+              context.read<UsersBloc>().add(UsersEvent.get(searchTerm: value));
+            },
+            onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+            decoration: InputDecoration(
+              hintText: 'Search people...',
+              hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              suffixIcon: value.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear_rounded, size: 20),
+                      onPressed: () {
+                        _controller.clear();
+                        context.read<UsersBloc>().add(
+                          UsersEvent.get(searchTerm: ''),
+                        );
+                      },
+                    )
+                  : null,
+              filled: true,
+              fillColor: colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 0,
+                horizontal: 16,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    final isSearching = _controller.text.isNotEmpty;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isSearching ? Icons.person_off_rounded : Icons.forum_outlined,
+              size: 64,
+              color: Theme.of(context).colorScheme.outline,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              isSearching ? 'No users found' : 'Start a conversation',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              isSearching
+                  ? 'Try a different name or username'
+                  : 'Search for friends to send a message',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

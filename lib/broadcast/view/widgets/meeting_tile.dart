@@ -60,7 +60,9 @@ class MeetingTile extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
-                          isEnded ? Symbols.videocam_off : Symbols.videocam,
+                          isEnded
+                              ? Symbols.mic_off_rounded
+                              : Symbols.mic_rounded,
                           color: isEnded
                               ? colorScheme.onErrorContainer
                               : colorScheme.onPrimaryContainer,
@@ -266,15 +268,11 @@ class MeetingBottomSheet extends StatelessWidget {
         if (state is BroadcastLoaded) {
           if (state.broadcast.id == broadcast.id) {
             context.router.popTop();
-            if (state.broadcast.hasEnded) {
-              if (state.broadcast.recordingUrl != null) {
-                startPip(url: state.broadcast.recordingUrl!);
-              }
-            } else {
-              context.router.push(
-                MeetingDetail(broadcastId: state.broadcast.id),
-              );
-            }
+            state.broadcast.hasEnded
+                ? startPip(url: state.broadcast.recordingUrl!)
+                : context.router.push(
+                    MeetingDetail(broadcastId: state.broadcast.id),
+                  );
           }
         }
         if (state is BroadcastDetailFailure) {
@@ -342,18 +340,17 @@ class MeetingBottomSheet extends StatelessWidget {
               width: double.infinity,
               child: FilledButton.icon(
                 onPressed: () {
-                  context.router.popTop();
                   if (broadcast.hasEnded) {
+                    context.router.popTop();
                     if (broadcast.recordingUrl != null) {
                       startPip(url: broadcast.recordingUrl!);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        getSnackBar(
-                          context: context,
-                          message: "Recording not found",
-                          status: SnackBarStatus.failure,
-                        ),
+                      final snackBar = getSnackBar(
+                        context: context,
+                        message: "Recording not found",
+                        status: SnackBarStatus.failure,
                       );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     }
                   } else {
                     context.read<BroadcastDetailBloc>().add(

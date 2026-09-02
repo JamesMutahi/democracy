@@ -32,15 +32,19 @@ class ShareBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final String name = _getShareableName();
     final int id = _getShareableId();
 
     return CustomBottomSheet(
       title: 'Share $name',
       children: [
-        CustomBottomSheetContainer(
-          text: 'Send via Direct Message',
-          iconData: Symbols.email_rounded,
+        _ShareOption(
+          icon: Symbols.mail_rounded,
+          iconColor: colorScheme.primary,
+          iconBackgroundColor: colorScheme.primaryContainer,
+          label: 'Send via Direct Message',
+          subtitle: 'Share privately with someone',
           onTap: () {
             context.router.popTop();
             showModalBottomSheet(
@@ -48,8 +52,9 @@ class ShareBottomSheet extends StatelessWidget {
               showDragHandle: true,
               isScrollControlled: true,
               useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              shape: const BeveledRectangleBorder(),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
               builder: (context) => DirectMessage(
                 post: post,
                 ballot: ballot,
@@ -61,64 +66,57 @@ class ShareBottomSheet extends StatelessWidget {
             );
           },
         ),
-        SizedBox(height: 5),
-        Row(
-          children: [
-            InkWell(
-              highlightColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              onTap: () async {
-                context.router.popTop();
-                String path = '$name/$id/';
-                if (section != null) {
-                  path = 'constitution?id=$id';
-                }
-                copyLink(navigatorKey: context.router.navigatorKey, path: path);
-              },
-              child: Column(
-                children: [
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Icon(Icons.link_rounded),
-                    ),
-                  ),
-                  Text('Copy link'),
-                ],
+
+        const SizedBox(height: 16),
+        Divider(
+          height: 1,
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+        const SizedBox(height: 16),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: GridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: 4,
+            mainAxisSpacing: 15,
+            crossAxisSpacing: 15,
+            children: [
+              _ShareGridItem(
+                icon: Symbols.link_rounded,
+                label: 'Copy Link',
+                onTap: () {
+                  context.router.popTop();
+                  String path = '$name/$id/';
+                  if (section != null) {
+                    path = 'constitution?id=$id';
+                  }
+                  copyLink(
+                    navigatorKey: context.router.navigatorKey,
+                    path: path,
+                  );
+                },
               ),
-            ),
-            SizedBox(width: 20),
-            InkWell(
-              highlightColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              onTap: () async {
-                context.router.popTop();
-                context.router.push(
-                  PostCreateRoute(
-                    repostOf: post,
-                    ballot: ballot,
-                    survey: survey,
-                    petition: petition,
-                    broadcast: broadcast,
-                    section: section,
-                  ),
-                );
-              },
-              child: Column(
-                children: [
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Icon(Icons.post_add),
+              _ShareGridItem(
+                icon: Icons.post_add_rounded,
+                label: 'Create Post',
+                onTap: () {
+                  context.router.popTop();
+                  context.router.push(
+                    PostCreateRoute(
+                      repostOf: post,
+                      ballot: ballot,
+                      survey: survey,
+                      petition: petition,
+                      broadcast: broadcast,
+                      section: section,
                     ),
-                  ),
-                  Text('Post'),
-                ],
+                  );
+                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -149,5 +147,125 @@ class ShareBottomSheet extends StatelessWidget {
     if (petition != null) return petition!.id;
     if (section != null) return section!.id;
     throw StateError('ShareBottomSheet: No shareable item provided');
+  }
+}
+
+class _ShareOption extends StatelessWidget {
+  const _ShareOption({
+    required this.icon,
+    required this.iconColor,
+    required this.iconBackgroundColor,
+    required this.label,
+    this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final Color iconBackgroundColor;
+  final String label;
+  final String? subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: iconBackgroundColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: iconColor, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle!,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Icon(
+              Symbols.chevron_right_rounded,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ShareGridItem extends StatelessWidget {
+  const _ShareGridItem({
+    required this.icon,
+
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(icon, size: 28),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

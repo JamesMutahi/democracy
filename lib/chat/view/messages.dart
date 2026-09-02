@@ -23,7 +23,6 @@ import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -55,6 +54,8 @@ class _MessagesState extends State<Messages> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return MultiBlocListener(
       listeners: [
         BlocListener<MessagesBloc, MessagesState>(
@@ -115,14 +116,16 @@ class _MessagesState extends State<Messages> {
           if (state.status == MessagesStatus.initial ||
               (state.status == MessagesStatus.loading &&
                   state.messages.isEmpty)) {
-            return const BottomLoader();
+            return const Center(child: BottomLoader());
           }
 
           if (state.status == MessagesStatus.failure &&
               state.messages.isEmpty) {
-            return FailureRetryButton(
-              onPressed: () => context.read<MessagesBloc>().add(
-                MessagesEvent.get(chat: widget.chat),
+            return Center(
+              child: FailureRetryButton(
+                onPressed: () => context.read<MessagesBloc>().add(
+                  MessagesEvent.get(chat: widget.chat),
+                ),
               ),
             );
           }
@@ -143,15 +146,16 @@ class _MessagesState extends State<Messages> {
 
           final List<ChatDisplayItem> displayItems = [];
           groupByDate.forEach((date, list) {
-            for (final message in list) {
-              displayItems.add(ChatDisplayItem.message(message));
-            }
-
+            // Add date header *before* the messages for that date (since list is reversed)
             String displayDate = date;
             if (date == todayStr) {
               displayDate = 'Today';
             } else if (date == yesterdayStr) {
               displayDate = 'Yesterday';
+            }
+
+            for (final message in list) {
+              displayItems.add(ChatDisplayItem.message(message));
             }
             displayItems.add(ChatDisplayItem.date(displayDate));
           });
@@ -177,34 +181,31 @@ class _MessagesState extends State<Messages> {
             footer: const ClassicFooter(),
             child: ListView.builder(
               reverse: true,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 16.0,
+              ),
               itemCount: displayItems.length,
               itemBuilder: (context, index) {
                 final item = displayItems[index];
                 if (item.isDateHeader) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16.0,
-                      horizontal: 8.0,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
+                          horizontal: 16.0,
                           vertical: 6.0,
                         ),
                         decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(12.0),
+                          color: colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
                         child: Text(
                           item.dateText ?? '',
                           style: Theme.of(context).textTheme.labelMedium
                               ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
+                                color: colorScheme.onSurfaceVariant,
                                 fontWeight: FontWeight.w600,
                               ),
                         ),
@@ -227,24 +228,46 @@ class _MessagesState extends State<Messages> {
   }
 
   Widget _buildMessageContent(Message message, User me, BuildContext context) {
-    final bool alignedRight = me.id == message.author.id;
+    final bool isMe = me.id == message.author.id;
+    final colorScheme = Theme.of(context).colorScheme;
 
     if (message.isDeleted) {
-      return AlignmentContainer(
-        message: message,
-        alignedRight: alignedRight,
-        verticalPadding: 7,
-        horizontalPadding: 14,
-        child: Text(
-          'Message was deleted',
-          style: TextStyle(color: Theme.of(context).disabledColor),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Align(
+          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.cancel_outlined,
+                  size: 16,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'This message was deleted',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       );
     }
 
-    final List<Widget> contentWidgets = [];
+    final List<Widget> bubbleContent = [];
 
-    // Text & Link Preview
+    // 1. Text Content
     final String text = extractLink(
       text: message.text,
       post: message.post,
@@ -255,115 +278,286 @@ class _MessagesState extends State<Messages> {
       section: message.section,
     );
 
-    // Helper to add attachments with proper spacing
-    void addAttachment(Widget child, String typeKey) {
-      if (text.isNotEmpty) {
-        contentWidgets.add(const SizedBox(height: 10.0));
-      }
-      contentWidgets.add(
-        AlignmentContainer(
-          key: ValueKey('${message.id}_$typeKey'),
-          message: message,
-          alignedRight: alignedRight,
-          child: child,
+    if (text.isNotEmpty) {
+      bubbleContent.add(MessageCard(text: text));
+    }
+
+    // 2. Link Preview
+    if (message.text.isNotEmpty) {
+      bubbleContent.add(
+        CachedLinkPreview(
+          text: message.text,
+          cacheKey: 'message: ${message.id}',
         ),
       );
     }
 
+    // 3. Attachments (Grouped inside the same bubble)
+    void addAttachment(Widget child) {
+      if (bubbleContent.isNotEmpty) {
+        bubbleContent.add(const SizedBox(height: 8));
+      }
+      bubbleContent.add(child);
+    }
+
     if (message.assets.isNotEmpty) {
-      addAttachment(AssetViewer(assets: message.assets), 'assets');
+      addAttachment(AssetViewer(assets: message.assets));
     }
     if (message.location != null) {
-      addAttachment(MapWidget(mapCenter: message.location!), 'location');
+      addAttachment(MapWidget(mapCenter: message.location!));
     }
     if (message.post != null) {
       addAttachment(
         PostWidgetSelector(post: message.post!, isDependency: true),
-        'post',
       );
     }
     if (message.ballot != null) {
-      addAttachment(
-        BallotTile(ballot: message.ballot!, isDependency: true),
-        'ballot',
-      );
+      addAttachment(BallotTile(ballot: message.ballot!, isDependency: true));
     }
     if (message.survey != null) {
-      addAttachment(
-        SurveyTile(survey: message.survey!, isDependency: true),
-        'survey',
-      );
+      addAttachment(SurveyTile(survey: message.survey!, isDependency: true));
     }
     if (message.petition != null) {
       addAttachment(
         PetitionTile(petition: message.petition!, isDependency: true),
-        'petition',
       );
     }
     if (message.broadcast != null) {
       addAttachment(
         BroadcastTile(broadcast: message.broadcast!, isDependency: true),
-        'broadcast',
       );
     }
     if (message.section != null) {
-      addAttachment(
-        SectionTile(section: message.section!, isDependency: true),
-        'section',
-      );
+      addAttachment(SectionTile(section: message.section!, isDependency: true));
     }
 
-    if (text.isNotEmpty) {
-      contentWidgets.add(
-        AlignmentContainer(
-          key: ValueKey('${message.id}_text'),
-          message: message,
-          alignedRight: alignedRight,
-          verticalPadding: 7,
-          horizontalPadding: 14,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              MessageCard(text: text),
-              CachedLinkPreview(
-                text: message.text,
-                cacheKey: 'message: ${message.id}',
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    // Time
-    contentWidgets.add(
-      MessageTime(message: message, alignedRight: alignedRight),
-    );
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: alignedRight
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
-      children: contentWidgets,
+    return _MessageBubble(
+      message: message,
+      isMe: isMe,
+      child: Column(
+        crossAxisAlignment: isMe
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: bubbleContent,
+      ),
     );
   }
 }
 
-// --- Helper Model for ListView.builder Performance ---
+// -----------------------------------------------------------------------------
+// Unified Message Bubble
+// -----------------------------------------------------------------------------
+
+class _MessageBubble extends StatefulWidget {
+  const _MessageBubble({
+    required this.message,
+    required this.isMe,
+    required this.child,
+  });
+
+  final Message message;
+  final bool isMe;
+  final Widget child;
+
+  @override
+  State<_MessageBubble> createState() => _MessageBubbleState();
+}
+
+class _MessageBubbleState extends State<_MessageBubble> {
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final responsive = ResponsiveBreakpoints.of(context);
+    final double maxWidth = responsive.screenWidth < 600
+        ? MediaQuery.of(context).size.width * 0.75
+        : 450.0;
+
+    return BlocBuilder<MessageActionsCubit, MessageActionsState>(
+      builder: (context, state) {
+        final isHighlighted =
+            state.status == MessageActionsStatus.actionButtonsOpened &&
+            state.messages.contains(widget.message);
+
+        return GestureDetector(
+          onTap: widget.message.isDeleted
+              ? null
+              : () {
+                  context.read<MessageActionsCubit>().messageHighlighted(
+                    message: widget.message,
+                  );
+                },
+          onLongPress: widget.message.isDeleted
+              ? null
+              : () {
+                  context.read<MessageActionsCubit>().messageHighlighted(
+                    message: widget.message,
+                  );
+                },
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 2.0),
+            padding: const EdgeInsets.all(
+              4.0,
+            ), // Padding for the highlight border
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: isHighlighted
+                  ? colorScheme.primary.withValues(alpha: 0.1)
+                  : Colors.transparent,
+              border: isHighlighted
+                  ? Border.all(color: colorScheme.primary, width: 1.5)
+                  : null,
+            ),
+            child: Align(
+              alignment: widget.isMe
+                  ? Alignment.centerRight
+                  : Alignment.centerLeft,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: maxWidth),
+                child: Column(
+                  crossAxisAlignment: widget.isMe
+                      ? CrossAxisAlignment.end
+                      : CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Main Bubble Content
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: widget.isMe
+                            ? colorScheme.primaryContainer
+                            : colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(16),
+                          topRight: const Radius.circular(16),
+                          bottomLeft: Radius.circular(widget.isMe ? 16 : 4),
+                          bottomRight: Radius.circular(widget.isMe ? 4 : 16),
+                        ),
+                      ),
+                      child: widget.child,
+                    ),
+                    const SizedBox(height: 4),
+                    // Footer (Time, Read Receipt, Sync Status)
+                    _MessageFooter(message: widget.message, isMe: widget.isMe),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Message Footer
+// -----------------------------------------------------------------------------
+
+class _MessageFooter extends StatelessWidget {
+  const _MessageFooter({required this.message, required this.isMe});
+
+  final Message message;
+  final bool isMe;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final timeFormat = DateFormat('h:mm a'); // e.g., 2:30 PM
+
+    return Padding(
+      padding: EdgeInsets.only(left: isMe ? 0 : 12.0, right: isMe ? 12.0 : 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (message.isEdited)
+            Text(
+              'Edited · ',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+
+          if (message.syncStatus == SyncStatus.pending)
+            SizedBox(
+              width: 12,
+              height: 12,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  colorScheme.onSurfaceVariant,
+                ),
+              ),
+            )
+          else if (message.syncStatus == SyncStatus.failed)
+            GestureDetector(
+              onTap: () =>
+                  context.read<SyncBloc>().add(const SyncEvent.start()),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.error_outline_rounded,
+                    size: 14,
+                    color: colorScheme.error,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Tap to retry',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: colorScheme.error,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            Row(
+              children: [
+                Text(
+                  timeFormat.format(message.createdAt),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                if (isMe) ...[
+                  const SizedBox(width: 4),
+                  Icon(
+                    message.isRead
+                        ? Icons.done_all_rounded
+                        : Icons.done_rounded,
+                    size: 14,
+                    color: message.isRead
+                        ? colorScheme.primary
+                        : colorScheme.onSurfaceVariant,
+                  ),
+                ],
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Helper Models & Widgets
+// -----------------------------------------------------------------------------
+
 class ChatDisplayItem {
   final bool isDateHeader;
   final String? dateText;
   final Message? message;
 
   ChatDisplayItem.date(this.dateText) : isDateHeader = true, message = null;
-
   ChatDisplayItem.message(this.message) : isDateHeader = false, dateText = null;
 }
 
 class MessageCard extends StatefulWidget {
   const MessageCard({super.key, required this.text});
-
   final String text;
 
   @override
@@ -371,210 +565,24 @@ class MessageCard extends StatefulWidget {
 }
 
 class _MessageCardState extends State<MessageCard> {
-  String suffix = '...Show more';
-  bool readMore = false;
+  bool _readMore = false;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomText(
           text: widget.text,
           style: Theme.of(context).textTheme.bodyMedium!,
-          suffix: suffix,
-          showAllText: readMore,
+          suffix: _readMore ? ' Show less' : '... Show more',
+          showAllText: _readMore,
           onSuffixPressed: () {
-            setState(() {
-              if (readMore) {
-                suffix = '...Show more';
-                readMore = false;
-              } else {
-                suffix = '\nShow less';
-                readMore = true;
-              }
-            });
+            setState(() => _readMore = !_readMore);
           },
         ),
       ],
-    );
-  }
-}
-
-class MessageTime extends StatelessWidget {
-  const MessageTime({
-    super.key,
-    required this.message,
-    required this.alignedRight,
-  });
-
-  final Message message;
-  final bool alignedRight;
-
-  @override
-  Widget build(BuildContext context) {
-    final timeFormat = DateFormat('hh:mm a');
-    return Align(
-      alignment: alignedRight ? Alignment.topRight : Alignment.topLeft,
-      child: Container(
-        margin: EdgeInsets.only(
-          left: alignedRight ? 0 : 10,
-          right: alignedRight ? 10 : 0,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (message.isEdited)
-              Text(
-                'Edited ',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).disabledColor,
-                ),
-              ),
-            if (message.syncStatus == SyncStatus.pending)
-              SpinKitThreeInOut(
-                color: Theme.of(context).disabledColor,
-                size: Theme.of(context).textTheme.labelSmall!.fontSize!,
-              )
-            else if (message.syncStatus == SyncStatus.failed)
-              Text(
-                'Not Delivered',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.error,
-                ),
-              )
-            else
-              Text(
-                timeFormat.format(message.createdAt).toLowerCase(),
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).disabledColor,
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class AlignmentContainer extends StatefulWidget {
-  const AlignmentContainer({
-    super.key,
-    required this.alignedRight,
-    required this.child,
-    required this.message,
-    this.verticalPadding = 5,
-    this.horizontalPadding = 5,
-  });
-
-  final bool alignedRight;
-  final Message message;
-  final Widget child;
-  final double verticalPadding;
-  final double horizontalPadding;
-
-  @override
-  State<AlignmentContainer> createState() => _AlignmentContainerState();
-}
-
-class _AlignmentContainerState extends State<AlignmentContainer> {
-  Color highlightColor = Colors.transparent;
-  bool canTap = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final responsive = ResponsiveBreakpoints.of(context);
-    final double messageWidth = responsive.screenWidth < 600
-        ? MediaQuery.of(context).size.width / 1.5
-        : 400.0;
-
-    return BlocListener<MessageActionsCubit, MessageActionsState>(
-      listenWhen: (previous, current) => previous.status != current.status,
-      listener: (context, state) {
-        if (state.status == MessageActionsStatus.actionButtonsOpened) {
-          final isHighlighted = state.messages.contains(widget.message);
-          if (isHighlighted && highlightColor == Colors.transparent) {
-            setState(() => highlightColor = Theme.of(context).highlightColor);
-          } else if (!isHighlighted && highlightColor != Colors.transparent) {
-            setState(() => highlightColor = Colors.transparent);
-          }
-          canTap = true;
-        } else if (state.status == MessageActionsStatus.actionButtonsClosed) {
-          if (highlightColor != Colors.transparent) {
-            setState(() => highlightColor = Colors.transparent);
-          }
-          canTap = false;
-        }
-      },
-      child: GestureDetector(
-        onTap: widget.message.isDeleted || !canTap
-            ? null
-            : () => context.read<MessageActionsCubit>().messageHighlighted(
-                message: widget.message,
-              ),
-        onLongPress: widget.message.isDeleted
-            ? null
-            : () => context.read<MessageActionsCubit>().messageHighlighted(
-                message: widget.message,
-              ),
-        child: Container(
-          margin: const EdgeInsets.only(top: 10.0),
-          color: highlightColor,
-          child: Align(
-            alignment: widget.alignedRight
-                ? Alignment.topRight
-                : Alignment.topLeft,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: messageWidth),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: widget.verticalPadding,
-                        horizontal: widget.horizontalPadding,
-                      ),
-                      margin: EdgeInsets.only(
-                        left: widget.alignedRight ? 0 : 10.0,
-                        right: widget.alignedRight ? 10.0 : 0,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(15),
-                          topRight: const Radius.circular(15),
-                          bottomLeft: Radius.circular(
-                            widget.alignedRight ? 15 : 0,
-                          ),
-                          bottomRight: Radius.circular(
-                            widget.alignedRight ? 0 : 15,
-                          ),
-                        ),
-                        color: widget.alignedRight
-                            ? Theme.of(context).colorScheme.primaryContainer
-                            : Theme.of(context).colorScheme.secondaryContainer,
-                      ),
-                      child: widget.child,
-                    ),
-                  ),
-                  if (widget.message.syncStatus == SyncStatus.failed)
-                    GestureDetector(
-                      onTap: () =>
-                          context.read<SyncBloc>().add(SyncEvent.start()),
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 5.0),
-                        child: Icon(
-                          Icons.error_rounded,
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

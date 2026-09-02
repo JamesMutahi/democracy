@@ -12,71 +12,74 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      color: Theme.of(context).canvasColor,
-      child:
-          BlocBuilder<SurveyBottomNavigationBloc, SurveyBottomNavigationState>(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        boxShadow: [
+          BoxShadow(color: Colors.black..withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5)),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: BlocBuilder<SurveyBottomNavigationBloc, SurveyBottomNavigationState>(
             builder: (context, state) {
-              switch (state.status) {
-                case SurveyBottomNavigationStatus.completed:
-                  return CompletionRow(state: state);
-                default:
-                  return NavigationRow(state: state, survey: survey);
+              if (state.status == SurveyBottomNavigationStatus.completed) {
+                return _CompletionRow(state: state);
               }
+              return _NavigationRow(state: state, survey: survey);
             },
           ),
+        ),
+      ),
     );
   }
 }
 
-class NavigationRow extends StatelessWidget {
-  const NavigationRow({super.key, required this.state, required this.survey});
-
+class _NavigationRow extends StatelessWidget {
+  const _NavigationRow({required this.state, required this.survey});
   final SurveyBottomNavigationState state;
   final Survey survey;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        NavigationButton(
-          onPressed:
-              (state.isFirst)
-                  ? null
-                  : () {
-                    context.read<SurveyBottomNavigationBloc>().add(
-                      SurveyBottomNavigationEvent.loadPrevPage(survey: survey),
-                    );
-                  },
-          text: 'PREV',
-          disabled: state.isFirst,
+        Expanded(
+          child: OutlinedButton(
+            onPressed: state.isFirst ? null : () => context.read<SurveyBottomNavigationBloc>().add(SurveyBottomNavigationEvent.loadPrevPage(survey: survey)),
+            style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+            child: const Text('Back'),
+          ),
         ),
-        Text(
-          'Page ${state.page + 1} of ${state.lastPage + 1}',
-          style: TextStyle(color: Theme.of(context).disabledColor),
+        const SizedBox(width: 16),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            '${state.page + 1} / ${state.lastPage + 1}',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
         ),
-        BlocListener<AnswerBloc, AnswerState>(
-          listener: (context, answerState) {
-            if (answerState.status == AnswerStatus.validated) {
-              context.read<SurveyBottomNavigationBloc>().add(
-                SurveyBottomNavigationEvent.loadNextPage(survey: survey),
-              );
-            }
-          },
-          child: NavigationButton(
-            onPressed: () {
-              context.read<AnswerBloc>().add(
-                AnswerEvent.validate(
-                  questions:
-                      survey.pages
-                          .firstWhere((page) => page.number == state.page)
-                          .questions
-                          .toList(),
-                ),
-              );
+        const SizedBox(width: 16),
+        Expanded(
+          child: BlocListener<AnswerBloc, AnswerState>(
+            listener: (context, answerState) {
+              if (answerState.status == AnswerStatus.validated) {
+                context.read<SurveyBottomNavigationBloc>().add(SurveyBottomNavigationEvent.loadNextPage(survey: survey));
+              }
             },
-            text: 'NEXT',
+            child: FilledButton(
+              onPressed: () {
+                final questions = survey.pages.firstWhere((page) => page.number == state.page).questions.toList();
+                context.read<AnswerBloc>().add(AnswerEvent.validate(questions: questions));
+              },
+              style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+              child: const Text('Next'),
+            ),
           ),
         ),
       ],
@@ -84,53 +87,20 @@ class NavigationRow extends StatelessWidget {
   }
 }
 
-class CompletionRow extends StatelessWidget {
-  const CompletionRow({super.key, required this.state});
-
+class _CompletionRow extends StatelessWidget {
+  const _CompletionRow({required this.state});
   final SurveyBottomNavigationState state;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        NavigationButton(
-          onPressed: () {
-            context.read<SurveyBottomNavigationBloc>().add(
-              SurveyBottomNavigationEvent.returnToSurvey(),
-            );
-          },
-          text: 'PREV',
-        ),
-      ],
-    );
-  }
-}
-
-class NavigationButton extends StatelessWidget {
-  const NavigationButton({
-    super.key,
-    required this.onPressed,
-    required this.text,
-    this.disabled = false,
-  });
-
-  final VoidCallback? onPressed;
-  final String text;
-  final bool disabled;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor:
-            disabled
-                ? Theme.of(context).disabledColor
-                : Theme.of(context).colorScheme.tertiaryContainer,
-        shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(2)),
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () => context.read<SurveyBottomNavigationBloc>().add(SurveyBottomNavigationEvent.returnToSurvey()),
+        icon: const Icon(Icons.arrow_back_rounded),
+        label: const Text('Review Answers'),
+        style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
       ),
-      child: Text(text),
     );
   }
 }

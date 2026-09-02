@@ -71,7 +71,7 @@ class _ListenersTabState extends State<ListenersTab>
             );
           },
           onUserTap: (user) {
-             showParticipantProfile(
+            showParticipantProfile(
               context: context,
               broadcast: widget.broadcast,
               user: user,
@@ -84,7 +84,10 @@ class _ListenersTabState extends State<ListenersTab>
           },
           onLoading: () {
             context.read<ListenersBloc>().add(
-              ListenersEvent.get(broadcast: widget.broadcast, lastUser: users.last),
+              ListenersEvent.get(
+                broadcast: widget.broadcast,
+                lastUser: users.last,
+              ),
             );
           },
           onFailure: () {

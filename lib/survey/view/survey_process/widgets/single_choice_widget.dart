@@ -2,9 +2,9 @@ import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/models/choice.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/question.dart';
+import 'package:democracy/survey/view/survey_process/widgets/question_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class SingleChoiceWidget extends StatefulWidget {
   const SingleChoiceWidget({
@@ -12,7 +12,6 @@ class SingleChoiceWidget extends StatefulWidget {
     required this.question,
     required this.choiceAnswer,
   });
-
   final Question question;
   final ChoiceAnswer? choiceAnswer;
 
@@ -25,71 +24,99 @@ class _SingleChoiceWidgetState extends State<SingleChoiceWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<Choice> choices = widget.question.choices.toList();
-    choices.sort((a, b) => a.number.compareTo(b.number));
+    final choices = List<Choice>.from(widget.question.choices)
+      ..sort((a, b) => a.number.compareTo(b.number));
+    final colorScheme = Theme.of(context).colorScheme;
+
     return BlocListener<AnswerBloc, AnswerState>(
       listener: (context, state) {
-        if (state.status == AnswerStatus.validationFailure) {
-          if (state.required!.any((e) => e.id == widget.question.id)) {
-            setState(() {
-              errorText = 'This field is required';
-            });
-          }
+        if (state.status == AnswerStatus.validationFailure &&
+            state.required!.any((e) => e.id == widget.question.id)) {
+          setState(() => errorText = 'Please select an option');
+        } else {
+          setState(() => errorText = null);
         }
       },
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Flexible(child: Text(widget.question.text)),
-              SizedBox(width: 5),
-              (widget.question.isRequired)
-                  ? Text(
-                    '*',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+          QuestionHeader(question: widget.question),
+          if (widget.question.hint != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              widget.question.hint!,
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: colorScheme.outline),
+            ),
+          ],
+          const SizedBox(height: 16),
+          ...choices.map((choice) {
+            final isSelected = widget.choiceAnswer?.choice.id == choice.id;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  context.read<AnswerBloc>().add(
+                    AnswerEvent.singleChoiceAnswerAdded(
+                      question: widget.question,
+                      choice: choice,
                     ),
-                  )
-                  : SizedBox.shrink(),
-            ],
-          ),
-          SizedBox(height: 10),
-          FormBuilderDropdown<Choice>(
-            name: widget.question.text,
-            initialValue: widget.choiceAnswer?.choice,
-            key: ValueKey(widget.question),
-            decoration: InputDecoration(
-              hintText:
-                  (widget.question.hint == null)
-                      ? 'Select option'
-                      : widget.question.hint,
-              errorText: errorText,
-              errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.error,
+                  );
+                  if (errorText != null) setState(() => errorText = null);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? colorScheme.primaryContainer
+                        : colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected
+                          ? colorScheme.primary
+                          : colorScheme.outlineVariant,
+                      width: isSelected ? 2 : 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          choice.text,
+                          style: TextStyle(
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                            color: isSelected
+                                ? colorScheme.onPrimaryContainer
+                                : colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        isSelected
+                            ? Icons.radio_button_checked_rounded
+                            : Icons.radio_button_unchecked_rounded,
+                        color: isSelected
+                            ? colorScheme.primary
+                            : colorScheme.outline,
+                      ),
+                    ],
+                  ),
                 ),
               ),
+            );
+          }),
+          if (errorText != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, left: 12.0),
+              child: Text(
+                errorText!,
+                style: TextStyle(color: colorScheme.error, fontSize: 12),
+              ),
             ),
-            items:
-                choices
-                    .map(
-                      (e) => DropdownMenuItem<Choice>(
-                        value: e,
-                        child: Text(e.text),
-                      ),
-                    )
-                    .toList(),
-            onChanged: (choice) {
-              context.read<AnswerBloc>().add(
-                AnswerEvent.singleChoiceAnswerAdded(
-                  question: widget.question,
-                  choice: choice!,
-                ),
-              );
-            },
-          ),
         ],
       ),
     );
