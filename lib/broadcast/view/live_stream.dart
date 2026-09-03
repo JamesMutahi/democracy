@@ -192,7 +192,6 @@ class _LiveStreamState extends State<_LiveStream> {
     showDialog(
       context: context,
       builder: (context) => _isHost
-          /* TODO: End broadcast via bloc + leave */
           ? EndLivestreamDialog(
               onYesPressed: () {
                 context.read<BroadcastDetailBloc>().add(

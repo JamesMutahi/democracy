@@ -24,7 +24,6 @@ import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/trending_posts/trending_posts_bloc.dart';
-import 'package:democracy/user/bloc/follow_recommendations/follow_recommendations_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,11 +71,6 @@ class _MainPageState extends State<MainPage> {
         ),
         BlocProvider(
           create: (context) => TrendingPostsBloc(
-            webSocketService: context.read<WebSocketService>(),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => FollowRecommendationsBloc(
             webSocketService: context.read<WebSocketService>(),
           ),
         ),

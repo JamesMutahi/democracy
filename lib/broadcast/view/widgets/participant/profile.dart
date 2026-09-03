@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebSocketService;
+import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -59,26 +60,34 @@ class ParticipantProfile extends StatefulWidget {
 
 class _ParticipantProfileState extends State<ParticipantProfile> {
   @override
-  void initState() {
-    super.initState();
-    context.read<ProfileBloc>().add(
-      ProfileEvent.load(username: widget.user.username),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     final me = context.read<AuthBloc>().state.user!;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return BlocListener<UserDetailBloc, UserDetailState>(
-      listener: (context, state) {
-        if (state is UserUpdated) {
-          context.read<ProfileBloc>().add(
-            ProfileEvent.updated(user: state.user),
-          );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<UserDetailBloc, UserDetailState>(
+          listener: (context, state) {
+            if (state is UserUpdated) {
+              if (state.user.id == widget.user.id) {
+                context.read<ProfileBloc>().add(
+                  ProfileEvent.updated(user: state.user),
+                );
+              }
+            }
+          },
+        ),
+        BlocListener<ChatDetailBloc, ChatDetailState>(
+          listener: (context, state) {
+            if (state is ChatCreated) {
+              AppLogger.info(state.chat.users.first.username);
+              if (state.userId == widget.user.id) {
+                context.router.push(ChatDetail(chatId: state.chat.id));
+              }
+            }
+          },
+        ),
+      ],
       child: BlocBuilder<BroadcastBloc, BroadcastState>(
         buildWhen: (previous, current) =>
             current.broadcastId == widget.broadcast.id,
@@ -163,7 +172,6 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
 
                   // Meeting Controls Section
                   if (canManageSpeakers || canManageCoHosts || isSpeaker) ...[
-                    _SectionHeader(title: 'Meeting Controls'),
                     if (canManageSpeakers &&
                         !isHost &&
                         !isSpeaker &&
@@ -295,7 +303,6 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
                       context.read<ChatDetailBloc>().add(
                         ChatDetailEvent.create(user: widget.user),
                       );
-                      context.router.popTop();
                     },
                   ),
                   BlocBuilder<ProfileBloc, ProfileState>(
@@ -347,34 +354,17 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
     );
   }
 
-  void _showDialog(BuildContext context, Widget dialog) {
-    showDialog(
+  Future<void> _showDialog(BuildContext context, Widget dialog) async {
+    final bool? confirmed = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (_) => dialog,
     );
-    context.router.popTop(); // Close bottom sheet
-  }
-}
 
-// Helper Widgets for Profile
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-      child: Text(
-        title.toUpperCase(),
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.2,
-        ),
-      ),
-    );
+    // If the user confirmed the action, close
+    if (confirmed == true && context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 }
 

@@ -320,7 +320,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                               Icon(Icons.people_outline, size: 16),
                               const SizedBox(width: 4),
                               Text(
-                                '${widget.broadcast.participantsCount} participants',
+                                '${widget.broadcast.participantsCount} participant${widget.broadcast.participantsCount == 1 ? '' : 's'}',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],

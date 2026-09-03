@@ -49,6 +49,7 @@ import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/user/bloc/blocked/blocked_bloc.dart';
+import 'package:democracy/user/bloc/follow_recommendations/follow_recommendations_bloc.dart';
 import 'package:democracy/user/bloc/muted/muted_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -359,6 +360,11 @@ void main() {
                     create: (context) => NotificationsBloc(
                       webSocketService: context.read<WebSocketService>(),
                       databaseRepository: context.read<DatabaseRepository>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => FollowRecommendationsBloc(
+                      webSocketService: context.read<WebSocketService>(),
                     ),
                   ),
                   BlocProvider(

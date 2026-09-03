@@ -62,7 +62,7 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
       SpeakerRequest request = SpeakerRequest.fromJson(event.payload['data']);
       emit(SpeakerRequestCreated(request: request));
     } else {
-      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
+      emit(SpeakerDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 
@@ -75,7 +75,7 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
       SpeakerRequest request = SpeakerRequest.fromJson(event.payload['data']);
       emit(SpeakerRequestLoaded(request: request));
     } else {
-      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
+      emit(SpeakerDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 
@@ -90,7 +90,7 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
       );
       emit(SpeakerRequestUpdated(request: request));
     } else {
-      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
+      emit(SpeakerDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 
@@ -102,7 +102,7 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     if (event.payload['response_status'] == 200) {
       emit(SpeakerRequestDeleted(requestId: event.payload['pk']));
     } else {
-      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
+      emit(SpeakerDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 
@@ -135,7 +135,7 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     if (event.payload['response_status'] == 200) {
       emit(RequestedToSpeak());
     } else {
-      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
+      emit(SpeakerDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 
@@ -191,7 +191,7 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     if (event.payload['response_status'] == 200) {
       emit(MuteStatusChanged(isMuted: event.payload['data']['is_muted']));
     } else {
-      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
+      emit(SpeakerDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 

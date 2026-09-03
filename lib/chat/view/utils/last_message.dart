@@ -1,5 +1,6 @@
 import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/app/shared/utils/link_extractor.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/chat/models/message.dart';
 
 String getLastMessageText(Message message, String prefix) {
@@ -20,6 +21,12 @@ String getLastMessageText(Message message, String prefix) {
   if (message.post != null) return '${prefix}Shared a post';
   if (message.ballot != null) return '${prefix}Shared a ballot';
   if (message.survey != null) return '${prefix}Shared a survey';
+  if (message.broadcast?.type == BroadcastType.meeting) {
+    return '${prefix}Shared a meeting';
+  }
+  if (message.broadcast?.type == BroadcastType.livestream) {
+    return '${prefix}Shared a livestream';
+  }
   if (message.petition != null) return '${prefix}Shared a petition';
   if (message.section != null) return '${prefix}Shared the constitution';
   if (message.assets.isNotEmpty) {
