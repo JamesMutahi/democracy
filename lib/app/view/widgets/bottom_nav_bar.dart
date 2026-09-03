@@ -44,7 +44,12 @@ class BottomNavBar extends StatelessWidget {
                     isScrollControlled: true,
                     builder: (context) => CustomBottomSheet(
                       title: 'Create',
-                      children: const [CreationButtons()],
+                      children: [
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 15),
+                          child: CreationButtons(),
+                        ),
+                      ],
                     ),
                   );
                 },

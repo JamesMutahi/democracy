@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 200,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: colorScheme.tertiaryContainer.withValues(alpha: 0.4),
+                    color: colorScheme.primaryContainer.withValues(alpha: 0.4),
                   ),
                 ),
               ),
@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       const SizedBox(height: 40),
                       const AppLogo(),
-
+                      const SizedBox(height: 15),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -143,10 +143,6 @@ class _LoginPageState extends State<LoginPage> {
                                           width: 24,
                                           child: CircularProgressIndicator(
                                             strokeWidth: 2.5,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                  colorScheme.onPrimary,
-                                                ),
                                           ),
                                         )
                                       : const Row(

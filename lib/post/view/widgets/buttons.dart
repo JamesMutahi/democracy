@@ -260,39 +260,53 @@ class RepostButton extends StatelessWidget {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      shape: const BeveledRectangleBorder(),
       useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (context) => CustomBottomSheet(
         title: 'Repost',
         children: [
-          IgnorePointer(
-            child: PostWidgetSelector(post: post, isDependency: true),
+          // Post Preview Card
+          Container(
+            margin: const EdgeInsets.only(bottom: 15, left: 15, right: 15),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IgnorePointer(
+              child: PostWidgetSelector(post: post, isDependency: true),
+            ),
           ),
-          CustomBottomSheetContainer(
-            text: 'Quote',
+
+          BottomSheetActionTile(
+            text: 'Quote Post',
             iconData: Icons.format_quote_rounded,
             onTap: () {
-              context.router.popTop();
+              Navigator.pop(context);
               context.router.push(PostCreateRoute(repostOf: post));
             },
           ),
+
           if (post.isReposted)
-            CustomBottomSheetContainer(
-              text: 'Undo repost',
+            BottomSheetActionTile(
+              text: 'Undo Repost',
               iconData: Icons.repeat_rounded,
+              isDestructive: true, // 🚨 Styles it with error colors
               onTap: () {
-                context.router.popTop();
+                Navigator.pop(context);
                 context.read<PostDetailBloc>().add(
                   PostDetailEvent.deleteRepost(post: post),
                 );
               },
             )
           else
-            CustomBottomSheetContainer(
+            BottomSheetActionTile(
               text: 'Repost',
               iconData: Icons.repeat_rounded,
               onTap: () {
-                context.router.popTop();
+                Navigator.pop(context);
                 context.read<PostCreateBloc>().add(
                   PostCreateEvent.create(
                     body: '',

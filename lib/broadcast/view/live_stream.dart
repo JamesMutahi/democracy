@@ -78,7 +78,6 @@ class _LiveStreamState extends State<_LiveStream> {
   // Track remote users (especially the host for audience)
   int? _hostUid; // or main broadcaster UID
   List<int> _remoteUids = []; // For multi-broadcaster if needed
-  int? _count;
 
   @override
   void initState() {
@@ -148,9 +147,6 @@ class _LiveStreamState extends State<_LiveStream> {
                     if (_hostUid == uid) _hostUid = null;
                   });
                 },
-            onRtcStats: (connection, stats) {
-              setState(() => _count = stats.userCount);
-            },
           ),
         );
 

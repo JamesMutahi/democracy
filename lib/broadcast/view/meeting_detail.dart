@@ -603,13 +603,20 @@ class _MeetingDetailState extends State<_MeetingDetail> {
               }
             },
             onAudioVolumeIndication:
-                (
-                  RtcConnection connection,
-                  List<AudioVolumeInfo> speakers,
-                  int speakerNumber,
-                  int totalVolume,
-                ) {
-                  if (mounted) {
+                (connection, speakers, speakerNumber, totalVolume) {
+                  if (!mounted) return;
+
+                  final previousState = context
+                      .read<SpeakingIndicatorBloc>()
+                      .state;
+                  final newSpeakingUids = speakers
+                      .where((s) => s.uid != null && (s.volume ?? 0) > 30)
+                      .map((s) => s.uid!)
+                      .toSet();
+
+                  final previousSpeakingUids = previousState.speakingUserIds;
+
+                  if (!_setEquals(newSpeakingUids, previousSpeakingUids)) {
                     context.read<SpeakingIndicatorBloc>().add(
                       UpdateSpeakingUsers(speakers: speakers),
                     );
@@ -825,4 +832,12 @@ class _ParticipantsBottomSheet extends StatelessWidget {
       ),
     );
   }
+}
+
+bool _setEquals(Set<int> a, Set<int> b) {
+  if (a.length != b.length) return false;
+  for (final item in a) {
+    if (!b.contains(item)) return false;
+  }
+  return true;
 }

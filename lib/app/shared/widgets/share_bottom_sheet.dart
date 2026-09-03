@@ -82,6 +82,7 @@ class ShareBottomSheet extends StatelessWidget {
             crossAxisCount: 4,
             mainAxisSpacing: 15,
             crossAxisSpacing: 15,
+            childAspectRatio: 0.9,
             children: [
               _ShareGridItem(
                 icon: Symbols.link_rounded,
@@ -169,51 +170,54 @@ class _ShareOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: iconBackgroundColor,
-                borderRadius: BorderRadius.circular(12),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: iconBackgroundColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: iconColor, size: 24),
               ),
-              child: Icon(icon, color: iconColor, size: 24),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    label,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 2),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     Text(
-                      subtitle!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      label,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle!,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-            Icon(
-              Symbols.chevron_right_rounded,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              size: 20,
-            ),
-          ],
+              Icon(
+                Symbols.chevron_right_rounded,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                size: 20,
+              ),
+            ],
+          ),
         ),
       ),
     );

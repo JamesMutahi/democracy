@@ -1,16 +1,58 @@
+import 'dart:async';
+
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:bloc/bloc.dart';
-import 'package:democracy/app/shared/utils/transformers.dart';
 import 'package:equatable/equatable.dart';
 
 part 'speaking_indicator_event.dart';
 part 'speaking_indicator_state.dart';
 
+/// Emits the first event immediately, then drops all subsequent events
+/// for the specified [duration].
+EventTransformer<Event> throttle<Event>(Duration duration) {
+  return (events, mapper) {
+    return events
+        .transform(_ThrottleStreamTransformer(duration))
+        .asyncExpand(mapper);
+  };
+}
+
+class _ThrottleStreamTransformer<T> extends StreamTransformerBase<T, T> {
+  _ThrottleStreamTransformer(this.duration);
+
+  final Duration duration;
+
+  @override
+  Stream<T> bind(Stream<T> stream) {
+    return Stream<T>.multi((controller) {
+      bool isThrottled = false;
+      StreamSubscription<T>? subscription;
+
+      subscription = stream.listen(
+        (event) {
+          if (!isThrottled) {
+            controller.add(event);
+            isThrottled = true;
+            Future.delayed(duration, () {
+              isThrottled = false;
+            });
+          }
+          // If throttled, silently drop the event
+        },
+        onError: controller.addError,
+        onDone: controller.close,
+      );
+
+      controller.onCancel = () => subscription?.cancel();
+    });
+  }
+}
+
 class SpeakingIndicatorBloc extends Bloc<SpeakingEvent, SpeakingState> {
   SpeakingIndicatorBloc() : super(const SpeakingState()) {
     on<UpdateSpeakingUsers>(
       (event, emit) => _onUpdateSpeakingUsers(event, emit),
-      transformer: debounce(),
+      transformer: throttle(const Duration(milliseconds: 250)),
     );
   }
 
