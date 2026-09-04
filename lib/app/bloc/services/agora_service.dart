@@ -51,6 +51,11 @@ class AgoraService {
           ? ClientRoleType.clientRoleBroadcaster
           : ClientRoleType.clientRoleAudience,
     );
+    await engine.enableAudio();
+
+    if (isBroadcaster) {
+      await engine.muteLocalAudioStream(true);
+    }
 
     onEngineReady(engine);
 
@@ -92,6 +97,7 @@ class AgoraService {
           : ClientRoleType.clientRoleAudience,
     );
     await engine.enableVideo();
+    await engine.enableAudio();
 
     onEngineReady(engine);
 
@@ -115,6 +121,7 @@ class AgoraService {
     );
     await engine.setClientRole(role: ClientRoleType.clientRoleAudience);
     await engine.enableVideo();
+    await engine.enableAudio();
 
     onEngineReady(engine);
 

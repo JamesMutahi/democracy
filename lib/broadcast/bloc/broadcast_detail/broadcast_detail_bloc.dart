@@ -150,9 +150,6 @@ class BroadcastDetailBloc
           clientRoleType: isHost
               ? ClientRoleType.clientRoleBroadcaster
               : ClientRoleType.clientRoleAudience,
-          publishMicrophoneTrack: false,
-          publishCameraTrack:
-              isHost && event.broadcast.type == BroadcastType.livestream,
         ),
       );
       emit(BroadcastJoined(broadcast: event.broadcast));

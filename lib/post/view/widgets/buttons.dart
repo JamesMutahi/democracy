@@ -10,6 +10,7 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/utils/create_post.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
@@ -285,7 +286,7 @@ class RepostButton extends StatelessWidget {
             iconData: Icons.format_quote_rounded,
             onTap: () {
               Navigator.pop(context);
-              context.router.push(PostCreateRoute(repostOf: post));
+              createPost(context: context, repostOf: post);
             },
           ),
 
@@ -293,7 +294,7 @@ class RepostButton extends StatelessWidget {
             BottomSheetActionTile(
               text: 'Undo Repost',
               iconData: Icons.repeat_rounded,
-              isDestructive: true, // 🚨 Styles it with error colors
+              isDestructive: true,
               onTap: () {
                 Navigator.pop(context);
                 context.read<PostDetailBloc>().add(
@@ -339,7 +340,7 @@ class ReplyButton extends StatelessWidget {
     return _PostTileButton(
       onTap: isBlocked
           ? () => _showBlockedSnackBar(context)
-          : () => context.router.push(PostCreateRoute(replyTo: post)),
+          : () => createPost(context: context, replyTo: post),
       number: post.replies,
       icon: Transform.flip(
         flipX: true,

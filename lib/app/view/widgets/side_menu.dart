@@ -55,8 +55,8 @@ class SideMenu extends StatelessWidget {
                                 Container(
                                   margin: EdgeInsets.only(
                                     left: responsive.smallerThan(expandSideMenu)
-                                        ? 6
-                                        : 10,
+                                        ? 0
+                                        : 3,
                                     top: 5,
                                   ),
                                   child: InkWell(

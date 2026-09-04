@@ -427,12 +427,15 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                         ),
                         onPressed: isBroadcaster
                             ? () async {
-                                context.read<SpeakerDetailBloc>().add(
-                                  SpeakerDetailEvent.toggleMute(
-                                    broadcast: widget.broadcast,
-                                    isMuted: !_isMuted,
-                                  ),
-                                );
+                                await _requestMicPermissionWithRationale();
+                                if (mounted) {
+                                  context.read<SpeakerDetailBloc>().add(
+                                    SpeakerDetailEvent.toggleMute(
+                                      broadcast: widget.broadcast,
+                                      isMuted: !_isMuted,
+                                    ),
+                                  );
+                                }
                               }
                             : _hasRequestedToSpeak
                             ? null
@@ -565,7 +568,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
   }
 
   Future<void> _initAgora() async {
-    await [Permission.microphone].request();
+    if (_isBroadcaster) await _requestMicPermissionWithRationale();
 
     await agoraService.joinMeeting(
       isBroadcaster: _isBroadcaster,
@@ -633,6 +636,60 @@ class _MeetingDetailState extends State<_MeetingDetail> {
           ),
         );
       },
+    );
+  }
+
+  /// Requests microphone permission with user-friendly rationale dialogs.
+  /// Returns `true` if permission is granted, `false` otherwise.
+  Future<bool> _requestMicPermissionWithRationale() async {
+    var status = await Permission.microphone.status;
+
+    // Already granted
+    if (status.isGranted) return true;
+
+    // Permanently denied (User previously selected "Don't ask again")
+    if (status.isPermanentlyDenied) {
+      _showMicSettingsDialog();
+      return false;
+    }
+
+    // Trigger the actual OS permission prompt
+    status = await Permission.microphone.request();
+
+    if (status.isGranted) return true;
+
+    // If they denied the OS prompt, check if it's permanently denied now
+    if (status.isPermanentlyDenied) {
+      _showMicSettingsDialog();
+    }
+
+    return false;
+  }
+
+  /// If permission was permanently denied -> App Settings
+  void _showMicSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Permission Required'),
+        content: const Text(
+          'Microphone access is required to speak in this meeting. '
+          'Please enable it in your device settings.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              openAppSettings();
+            },
+            child: const Text('Open Settings'),
+          ),
+        ],
+      ),
     );
   }
 

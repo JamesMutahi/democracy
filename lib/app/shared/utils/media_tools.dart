@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -39,6 +40,25 @@ void openGallery({
   }
   onMedia(media);
   PhotoManager.clearFileCache();
+}
+
+Future<File?> getImageFile() async {
+  File? file;
+
+  FilePickerResult? result = await FilePicker.pickFiles(type: FileType.image);
+
+  if (result != null) {
+    File cachedFile = File(result.files.single.path!);
+
+    Directory directory = await getTemporaryDirectory();
+
+    String fileName = p.basename(cachedFile.path);
+
+    String targetPath = p.join(directory.path, fileName);
+
+    file = await cachedFile.copy(targetPath);
+  }
+  return file;
 }
 
 class MediaDialog extends StatelessWidget {

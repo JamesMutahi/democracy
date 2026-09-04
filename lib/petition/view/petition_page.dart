@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
-import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
+import 'package:democracy/petition/view/utils/create_petition.dart';
 import 'package:democracy/petition/view/widgets/petitions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -106,7 +106,7 @@ class _PetitionPageState extends State<PetitionPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            context.router.push(PetitionCreate());
+            createPetition(context: context);
           },
           child: Icon(Symbols.create_rounded),
         ),

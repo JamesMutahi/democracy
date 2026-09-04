@@ -22,7 +22,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-@RoutePage()
 class DirectMessage extends StatefulWidget {
   const DirectMessage({
     super.key,
@@ -46,7 +45,6 @@ class DirectMessage extends StatefulWidget {
 }
 
 class _DirectMessageState extends State<DirectMessage> {
-  // 🚨 FIX: Separated controllers to prevent the search pagination bug
   final _searchController = TextEditingController();
   final _messageController = TextEditingController();
   final _searchFocusNode = FocusNode();

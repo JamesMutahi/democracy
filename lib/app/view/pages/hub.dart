@@ -19,7 +19,6 @@ class HubPage extends StatefulWidget {
 
 class _HubState extends State<HubPage> {
   final TextEditingController _controller = TextEditingController();
-  double padding = 15;
 
   @override
   void dispose() {
@@ -70,13 +69,11 @@ class _HubState extends State<HubPage> {
                 },
                 body: LayoutBuilder(
                   builder: (context, constraints) {
-                    final crossAxisCount = responsive.smallerThan(TABLET)
-                        ? 2
-                        : 3;
+                    double padding = responsive.smallerThan(TABLET) ? 15 : 40;
 
                     return GridView.count(
                       padding: EdgeInsets.all(padding),
-                      crossAxisCount: crossAxisCount,
+                      crossAxisCount: 2,
                       mainAxisSpacing: padding,
                       crossAxisSpacing: padding,
                       children: [
@@ -192,6 +189,10 @@ class _HubCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+
+    double imageSize = responsive.smallerThan(TABLET) ? 32 : 50;
+
     return Material(
       color: color,
       borderRadius: BorderRadius.circular(20),
@@ -210,7 +211,11 @@ class _HubCard extends StatelessWidget {
                   color: iconColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: SvgPicture.asset(asset, width: 32, height: 32),
+                child: SvgPicture.asset(
+                  asset,
+                  width: imageSize,
+                  height: imageSize,
+                ),
               ),
               const Spacer(),
               Column(

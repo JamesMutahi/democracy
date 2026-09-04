@@ -423,36 +423,36 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
             child: Opacity(
               opacity: percent,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   isCurrentUser
-                      ? OutlinedButton(
-                          onPressed: () {
-                            context.router.push(EditProfile());
-                          },
-                          child: Text('Edit profile'),
+                      ? OutlinedButton.icon(
+                          onPressed: () =>
+                              context.router.push(const EditProfile()),
+                          icon: const Icon(Symbols.edit_rounded, size: 18),
+                          label: const Text('Edit Profile'),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Theme.of(
+                              context,
+                            ).scaffoldBackgroundColor,
+                          ),
                         )
                       : Row(
                           children: [
-                            user.isBlocked
-                                ? BlockedButton(user: user)
-                                : Row(
-                                    children: [
-                                      if (user.isMuted)
-                                        Row(
-                                          children: [
-                                            MutedButton(user: user),
-                                            SizedBox(width: 7),
-                                          ],
-                                        ),
-                                      MessageButton(user: user),
-                                      SizedBox(width: 7),
-                                      if (user.isFollowed)
-                                        NotificationButton(user: user),
-                                      SizedBox(width: 7),
-                                      FollowButton(user: user),
-                                    ],
-                                  ),
+                            if (user.isBlocked)
+                              BlockedButton(user: user)
+                            else ...[
+                              if (user.isMuted) ...[
+                                MutedButton(user: user),
+                                const SizedBox(width: 8),
+                              ],
+                              MessageButton(user: user),
+                              const SizedBox(width: 8),
+                              if (user.isFollowed) ...[
+                                NotificationButton(user: user),
+                                const SizedBox(width: 8),
+                              ],
+                              FollowButton(user: user),
+                            ],
                           ],
                         ),
                 ],

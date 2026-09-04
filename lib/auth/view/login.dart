@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       const SizedBox(height: 40),
                       const AppLogo(),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 30),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
 
-                      const SizedBox(height: 50),
+                      const SizedBox(height: 30),
 
                       BlocBuilder<LoginCubit, LoginState>(
                         builder: (context, state) {
