@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -57,6 +56,12 @@ class _DirectMessageState extends State<DirectMessage> {
   LatLng? _location;
 
   @override
+  void initState() {
+    super.initState();
+    context.read<UsersBloc>().add(UsersEvent.get());
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     _messageController.dispose();
@@ -70,271 +75,255 @@ class _DirectMessageState extends State<DirectMessage> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return BlocProvider(
-      create: (context) =>
-          UsersBloc(webSocketService: context.read<WebSocketService>())
-            ..add(UsersEvent.get()),
-      child: BlocListener<DirectMessageBloc, DirectMessageState>(
-        listener: (context, state) {
-          if (state.status == DirectMessageStatus.success) {
-            context.router.popTop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              getSnackBar(
-                context: context,
-                message: 'Direct message sent',
-                status: SnackBarStatus.success,
-              ),
-            );
-          } else if (state.status == DirectMessageStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              getSnackBar(
-                context: context,
-                message: state.error,
-                status: SnackBarStatus.failure,
-              ),
-            );
-          }
-        },
-        child: LoaderOverlay(
-          overlayWidgetBuilder: (_) {
-            return BlocBuilder<DirectMessageBloc, DirectMessageState>(
-              builder: (context, state) {
-                return state.status == DirectMessageStatus.failure
-                    ? LoaderOverlayFailure(
-                        onRetry: () => context.read<DirectMessageBloc>().add(
-                          DirectMessageEvent.retry(),
-                        ),
-                      )
-                    : LoaderOverlayLoading(progress: state.progress);
-              },
-            );
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text('New Message'),
-              leading: IconButton(
-                icon: const Icon(Icons.close_rounded),
-                onPressed: () => context.router.popTop(),
-              ),
-              centerTitle: true,
-              elevation: 0,
-              scrolledUnderElevation: 0,
+    return BlocListener<DirectMessageBloc, DirectMessageState>(
+      listener: (context, state) {
+        if (state.status == DirectMessageStatus.success) {
+          context.router.popTop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            getSnackBar(
+              context: context,
+              message: 'Direct message sent',
+              status: SnackBarStatus.success,
             ),
-            body: Column(
-              children: [
-                // 1. Recipients & Search Area
-                Container(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    border: Border(
-                      bottom: BorderSide(
-                        color: colorScheme.outlineVariant.withValues(
-                          alpha: 0.5,
+          );
+        } else if (state.status == DirectMessageStatus.failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            getSnackBar(
+              context: context,
+              message: state.error,
+              status: SnackBarStatus.failure,
+            ),
+          );
+        }
+      },
+      child: LoaderOverlay(
+        overlayWidgetBuilder: (_) {
+          return BlocBuilder<DirectMessageBloc, DirectMessageState>(
+            builder: (context, state) {
+              return state.status == DirectMessageStatus.failure
+                  ? LoaderOverlayFailure(
+                      onRetry: () => context.read<DirectMessageBloc>().add(
+                        DirectMessageEvent.retry(),
+                      ),
+                    )
+                  : LoaderOverlayLoading(progress: state.progress);
+            },
+          );
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('New Message'),
+            leading: IconButton(
+              icon: const Icon(Icons.close_rounded),
+              onPressed: () => context.router.popTop(),
+            ),
+            centerTitle: true,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+          ),
+          body: Column(
+            children: [
+              // 1. Recipients & Search Area
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                decoration: BoxDecoration(
+                  color: colorScheme.surface,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_selectedUsers.isNotEmpty) ...[
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children: _selectedUsers
+                            .map(
+                              (user) => _RecipientChip(
+                                user: user,
+                                onDeleted: () =>
+                                    setState(() => _selectedUsers.remove(user)),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                    TextField(
+                      controller: _searchController,
+                      focusNode: _searchFocusNode,
+                      autofocus: true,
+                      onChanged: (value) {
+                        context.read<UsersBloc>().add(
+                          UsersEvent.get(searchTerm: value),
+                        );
+                      },
+                      onTapOutside: (_) =>
+                          FocusManager.instance.primaryFocus?.unfocus(),
+                      decoration: InputDecoration(
+                        hintText: _selectedUsers.isEmpty
+                            ? 'Search people...'
+                            : 'Add more people...',
+                        hintStyle: TextStyle(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                        filled: true,
+                        fillColor: colorScheme.surfaceContainerHighest,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0,
+                          horizontal: 16,
                         ),
                       ),
                     ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (_selectedUsers.isNotEmpty) ...[
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 4,
-                          children: _selectedUsers
-                              .map(
-                                (user) => _RecipientChip(
-                                  user: user,
-                                  onDeleted: () => setState(
-                                    () => _selectedUsers.remove(user),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                      TextField(
-                        controller: _searchController,
-                        focusNode: _searchFocusNode,
-                        autofocus: true, // 🚨 Keyboard opens immediately
-                        onChanged: (value) {
-                          context.read<UsersBloc>().add(
-                            UsersEvent.get(searchTerm: value),
-                          );
-                        },
-                        onTapOutside: (_) =>
-                            FocusManager.instance.primaryFocus?.unfocus(),
-                        decoration: InputDecoration(
-                          hintText: _selectedUsers.isEmpty
-                              ? 'Search people...'
-                              : 'Add more people...',
-                          hintStyle: TextStyle(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search_rounded,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                          filled: true,
-                          fillColor: colorScheme.surfaceContainerHighest,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0,
-                            horizontal: 16,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
+              ),
 
-                // 2. User List
-                Expanded(
-                  child: BlocBuilder<UsersBloc, UsersState>(
-                    builder: (context, state) {
-                      final users = state.users.toList();
+              // 2. User List
+              Expanded(
+                child: BlocBuilder<UsersBloc, UsersState>(
+                  builder: (context, state) {
+                    final users = state.users.toList();
 
-                      if (state.status == UsersStatus.success) {
-                        if (_refreshController.headerStatus ==
-                            RefreshStatus.refreshing) {
-                          _refreshController.refreshCompleted();
-                        }
-                        if (_refreshController.footerStatus ==
-                            LoadStatus.loading) {
-                          _refreshController.loadComplete();
-                        }
-                      } else if (state.status == UsersStatus.failure) {
-                        if (_refreshController.headerStatus ==
-                            RefreshStatus.refreshing) {
-                          _refreshController.refreshFailed();
-                        }
-                        if (_refreshController.footerStatus ==
-                            LoadStatus.loading) {
-                          _refreshController.loadFailed();
-                        }
+                    if (state.status == UsersStatus.success) {
+                      if (_refreshController.headerStatus ==
+                          RefreshStatus.refreshing) {
+                        _refreshController.refreshCompleted();
                       }
+                      if (_refreshController.footerStatus ==
+                          LoadStatus.loading) {
+                        _refreshController.loadComplete();
+                      }
+                    } else if (state.status == UsersStatus.failure) {
+                      if (_refreshController.headerStatus ==
+                          RefreshStatus.refreshing) {
+                        _refreshController.refreshFailed();
+                      }
+                      if (_refreshController.footerStatus ==
+                          LoadStatus.loading) {
+                        _refreshController.loadFailed();
+                      }
+                    }
 
-                      return UsersListView(
-                        users: users,
-                        selectedUsers: _selectedUsers,
-                        loading:
-                            state.status == UsersStatus.initial ||
-                            state.status == UsersStatus.loading,
-                        failure: users.isNotEmpty
-                            ? false
-                            : state.status == UsersStatus.failure,
-                        refreshController: _refreshController,
-                        enablePullUp: state.hasNext,
-                        onUserTap: (user) {
-                          setState(() {
-                            if (_selectedUsers.contains(user)) {
-                              _selectedUsers.remove(user);
-                            } else {
-                              _selectedUsers.add(user);
-                            }
-                          });
-                        },
-                        onLoading: () {
-                          // 🚨 FIX: Safe access to users.last
-                          if (users.isNotEmpty) {
-                            context.read<UsersBloc>().add(
-                              UsersEvent.get(
-                                searchTerm: _searchController.text,
-                                lastUser: users.last,
-                              ),
-                            );
+                    return UsersListView(
+                      users: users,
+                      selectedUsers: _selectedUsers,
+                      loading:
+                          state.status == UsersStatus.initial ||
+                          state.status == UsersStatus.loading,
+                      failure: users.isNotEmpty
+                          ? false
+                          : state.status == UsersStatus.failure,
+                      refreshController: _refreshController,
+                      enablePullUp: state.hasNext,
+                      onUserTap: (user) {
+                        setState(() {
+                          if (_selectedUsers.contains(user)) {
+                            _selectedUsers.remove(user);
+                          } else {
+                            _selectedUsers.add(user);
                           }
-                        },
-                        onFailure: () {
-                          // 🚨 FIX: Safe access to users.last
-                          if (users.isNotEmpty) {
-                            context.read<UsersBloc>().add(
-                              UsersEvent.get(
-                                searchTerm: _searchController.text,
-                                lastUser: users.last,
-                              ),
-                            );
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-            bottomNavigationBar: BottomTextFormField(
-              focusNode: _messageFocusNode,
-              showCursor: true,
-              readOnly: false,
-              controller:
-                  _messageController, // 🚨 FIX: Uses dedicated message controller
-              onTap: () {},
-              onChanged: (value) {},
-              hintText: 'Add a comment',
-              prefixIcon: null,
-              onMedia: (media) => setState(() => _media = media),
-              media: _media,
-              onAddMedia: (media) => setState(() => _media.addAll(media)),
-              onRemoveMedia: (index) => setState(() => _media.removeAt(index)),
-              onDocument: (file) => setState(() => _document = file),
-              document: _document,
-              onContentInsertion: (imageFile) =>
-                  setState(() => _media.add(imageFile)),
-              allowedMimeTypes: const <String>['image/png', 'image/gif'],
-              onLocation: (point) => _location = point,
-              location: _location,
-              onRemoveLocation: () => setState(() => _location = null),
-              onSectionSelection: (section) {},
-              section: null,
-              onRemoveSection: () {},
-              onImageEditingComplete: (file) =>
-                  setState(() => _media.add(file)),
-              onVideoEditingComplete: (path) =>
-                  setState(() => _media.add(File(path))),
-              onSend: _selectedUsers.isEmpty
-                  ? null
-                  : () {
-                      context.loaderOverlay.show();
-                      context.read<DirectMessageBloc>().add(
-                        DirectMessageEvent.send(
-                          users: _selectedUsers,
-                          text: _messageController.text,
-                          post: widget.post,
-                          ballot: widget.ballot,
-                          survey: widget.survey,
-                          petition: widget.petition,
-                          broadcast: widget.broadcast,
-                          section: widget.section,
-                          filePaths: [
-                            ..._media.map((m) => m.path),
-                            if (_document != null) _document!.path,
-                          ],
-                          location: _location,
-                        ),
-                      );
-                      Future.delayed(const Duration(seconds: 10), () {
-                        if (context.mounted) {
-                          context.loaderOverlay.hide();
+                        });
+                      },
+                      onLoading: () {
+                        if (users.isNotEmpty) {
+                          context.read<UsersBloc>().add(
+                            UsersEvent.get(
+                              searchTerm: _searchController.text,
+                              lastUser: users.last,
+                            ),
+                          );
                         }
-                      });
-                    },
-            ),
+                      },
+                      onFailure: () {
+                        if (users.isNotEmpty) {
+                          context.read<UsersBloc>().add(
+                            UsersEvent.get(
+                              searchTerm: _searchController.text,
+                              lastUser: users.last,
+                            ),
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          bottomNavigationBar: BottomTextFormField(
+            focusNode: _messageFocusNode,
+            showCursor: true,
+            readOnly: false,
+            controller: _messageController,
+            onTap: () {},
+            onChanged: (value) {},
+            hintText: 'Add a comment',
+            prefixIcon: null,
+            onMedia: (media) => setState(() => _media = media),
+            media: _media,
+            onAddMedia: (media) => setState(() => _media.addAll(media)),
+            onRemoveMedia: (index) => setState(() => _media.removeAt(index)),
+            onDocument: (file) => setState(() => _document = file),
+            document: _document,
+            onContentInsertion: (imageFile) =>
+                setState(() => _media.add(imageFile)),
+            allowedMimeTypes: const <String>['image/png', 'image/gif'],
+            onLocation: (point) => _location = point,
+            location: _location,
+            onRemoveLocation: () => setState(() => _location = null),
+            onSectionSelection: (section) {},
+            section: null,
+            onRemoveSection: () {},
+            onImageEditingComplete: (file) => setState(() => _media.add(file)),
+            onVideoEditingComplete: (path) =>
+                setState(() => _media.add(File(path))),
+            onSend: _selectedUsers.isEmpty
+                ? null
+                : () {
+                    context.loaderOverlay.show();
+                    context.read<DirectMessageBloc>().add(
+                      DirectMessageEvent.send(
+                        users: _selectedUsers,
+                        text: _messageController.text,
+                        post: widget.post,
+                        ballot: widget.ballot,
+                        survey: widget.survey,
+                        petition: widget.petition,
+                        broadcast: widget.broadcast,
+                        section: widget.section,
+                        filePaths: [
+                          ..._media.map((m) => m.path),
+                          if (_document != null) _document!.path,
+                        ],
+                        location: _location,
+                      ),
+                    );
+                    Future.delayed(const Duration(seconds: 10), () {
+                      if (context.mounted) {
+                        context.loaderOverlay.hide();
+                      }
+                    });
+                  },
           ),
         ),
       ),
     );
   }
 }
-
-// -----------------------------------------------------------------------------
-// Modern Recipient Chip
-// -----------------------------------------------------------------------------
 
 class _RecipientChip extends StatelessWidget {
   const _RecipientChip({required this.user, required this.onDeleted});

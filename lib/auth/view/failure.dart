@@ -7,27 +7,81 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class FailurePage extends StatelessWidget {
-  const FailurePage({super.key, required this.error});
-
-  final String error;
+  const FailurePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      body: Center(
-        child: IntrinsicWidth(
+      backgroundColor: colorScheme.surface,
+      body: SafeArea(
+        child: Center(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              AppLogo(),
-              Text(error, textAlign: TextAlign.center),
-              const SizedBox(height: 10),
-              FailureRetryButton(
-                onPressed: () {
-                  context.read<AuthBloc>().add(AuthEvent.authenticate());
+              const Spacer(flex: 2),
+
+              const AppLogo(),
+
+              const SizedBox(height: 48),
+
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  return Text(
+                    state.error,
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  );
                 },
               ),
+
+              const SizedBox(height: 30),
+
+              SizedBox(
+                width: double.infinity,
+                child: FailureRetryButton(
+                  onPressed: () {
+                    context.read<AuthBloc>().add(AuthEvent.authenticate());
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              TextButton(
+                onPressed: () {
+                  // TODO: Add contact support or logout logic
+                },
+                child: Text(
+                  'Contact Support',
+                  style: TextStyle(color: colorScheme.primary),
+                ),
+              ),
+
+              const Spacer(flex: 2),
+
+              Padding(
+                padding: const EdgeInsets.only(bottom: 24.0),
+                child: BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return Text(
+                      state.version,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                        letterSpacing: 0.5,
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 40),
             ],
           ),
         ),

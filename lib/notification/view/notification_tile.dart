@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/broadcast/view/widgets/meeting_tile.dart'
     show MeetingBottomSheet;
 import 'package:democracy/chat/view/utils/last_message.dart';
@@ -11,7 +12,7 @@ import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:flutter_svg/svg.dart';
 
 class NotificationTile extends StatelessWidget {
   const NotificationTile({super.key, required this.notification});
@@ -28,11 +29,14 @@ class NotificationTile extends StatelessWidget {
       leading: CircleAvatar(
         radius: 24,
         backgroundColor: colorScheme.surfaceContainerHighest,
-        child: Icon(
-          content.icon,
-          color: content.iconColor ?? colorScheme.primary,
-          fill: content.iconFilled ? 1 : 0,
-          size: 24,
+        child: SvgPicture.asset(
+          content.asset,
+          width: 24,
+          height: 24,
+          colorFilter: ColorFilter.mode(
+            colorScheme.onPrimaryContainer,
+            BlendMode.srcIn,
+          ),
         ),
       ),
       title: content.title,
@@ -72,7 +76,7 @@ class NotificationTile extends StatelessWidget {
 
     if (notification.isLike) {
       return _NotificationContent(
-        icon: Symbols.favorite,
+        asset: 'assets/icons/heart.svg',
         iconColor: Colors.red,
         iconFilled: true,
         title: Column(
@@ -94,7 +98,7 @@ class NotificationTile extends StatelessWidget {
 
     if (notification.isFollow) {
       return _NotificationContent(
-        icon: Symbols.person_add,
+        asset: 'assets/icons/person-add.svg',
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -121,7 +125,7 @@ class NotificationTile extends StatelessWidget {
 
     if (notification.isSupport) {
       return _NotificationContent(
-        icon: Symbols.volunteer_activism,
+        asset: 'assets/icons/high-five.svg',
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -148,7 +152,7 @@ class NotificationTile extends StatelessWidget {
 
     if (notification.post != null) {
       return _NotificationContent(
-        icon: Symbols.post_rounded,
+        asset: 'assets/icons/document-add.svg',
         title: Text(
           notification.text,
           style: titleStyle?.copyWith(fontWeight: FontWeight.w600),
@@ -161,7 +165,7 @@ class NotificationTile extends StatelessWidget {
 
     if (notification.ballot != null) {
       return _NotificationContent(
-        icon: Symbols.how_to_vote,
+        asset: 'assets/icons/vote.svg',
         title: Text(
           notification.text,
           style: titleStyle?.copyWith(fontWeight: FontWeight.w600),
@@ -180,7 +184,9 @@ class NotificationTile extends StatelessWidget {
 
     if (notification.broadcast != null) {
       return _NotificationContent(
-        icon: Symbols.meeting_room,
+        asset: notification.broadcast!.type == BroadcastType.livestream
+            ? 'assets/icons/video.svg'
+            : 'assets/icons/microphone.svg',
         title: Text(
           notification.text,
           style: titleStyle?.copyWith(fontWeight: FontWeight.w600),
@@ -205,7 +211,7 @@ class NotificationTile extends StatelessWidget {
 
     if (notification.survey != null) {
       return _NotificationContent(
-        icon: Symbols.assignment_rounded,
+        asset: 'assets/icons/clipboard.svg',
         title: Text(
           notification.text,
           style: titleStyle?.copyWith(fontWeight: FontWeight.w600),
@@ -238,7 +244,7 @@ class NotificationTile extends StatelessWidget {
 
     if (notification.petition != null) {
       return _NotificationContent(
-        icon: Symbols.description_rounded,
+        asset: 'assets/icons/digital-signature.svg',
         title: Text(
           notification.text,
           style: titleStyle?.copyWith(fontWeight: FontWeight.w600),
@@ -257,7 +263,7 @@ class NotificationTile extends StatelessWidget {
 
     if (notification.chat != null) {
       return _NotificationContent(
-        icon: Symbols.chat_rounded,
+        asset: 'assets/icons/chat.svg',
         title: Text(
           notification.text,
           style: titleStyle?.copyWith(fontWeight: FontWeight.w600),
@@ -275,7 +281,7 @@ class NotificationTile extends StatelessWidget {
 
     // Fallback
     return _NotificationContent(
-      icon: Symbols.info_i_rounded,
+      asset: 'assets/icons/search.svg',
       title: Text(notification.text, style: titleStyle),
       subtitle: const Text('Missing info'),
       onTap: () {},
@@ -284,7 +290,7 @@ class NotificationTile extends StatelessWidget {
 }
 
 class _NotificationContent {
-  final IconData icon;
+  final String asset;
   final Color? iconColor;
   final bool iconFilled;
   final Widget title;
@@ -292,7 +298,7 @@ class _NotificationContent {
   final VoidCallback onTap;
 
   const _NotificationContent({
-    required this.icon,
+    required this.asset,
     this.iconColor,
     this.iconFilled = false,
     required this.title,

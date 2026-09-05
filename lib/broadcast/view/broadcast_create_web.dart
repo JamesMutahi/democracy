@@ -121,25 +121,9 @@ class _BroadcastCreateWebDialogState extends State<BroadcastCreateWebDialog> {
                             : 'Create a Meeting',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      FilledButton.icon(
-                        onPressed: _isFormValid ? _handleCreate : null,
-                        icon: Icon(
-                          isLivestream
-                              ? Icons.videocam_rounded
-                              : Icons.calendar_today,
-                        ),
-                        label: Text(
-                          isLivestream ? 'Go Live Now' : 'Create Meeting',
-                        ),
-                        style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
+                      IconButton(
+                        icon: const Icon(Icons.close_rounded),
+                        onPressed: () => Navigator.pop(context),
                       ),
                     ],
                   ),
@@ -152,6 +136,41 @@ class _BroadcastCreateWebDialogState extends State<BroadcastCreateWebDialog> {
                     onValidityChanged: (isValid) {
                       setState(() => _isFormValid = isValid);
                     },
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    top: 16,
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, -5),
+                      ),
+                    ],
+                  ),
+                  child: FilledButton.icon(
+                    onPressed: _isFormValid ? _handleCreate : null,
+                    icon: Icon(
+                      isLivestream
+                          ? Icons.videocam_rounded
+                          : Icons.calendar_today,
+                    ),
+                    label: Text(
+                      isLivestream ? 'Go Live Now' : 'Create Meeting',
+                    ),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 56),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
                 ),
               ],

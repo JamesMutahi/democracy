@@ -16,18 +16,21 @@ class AppLogo extends StatelessWidget {
       children: [
         Logo(width: size, height: size),
 
-        RichText(
-          text: TextSpan(
-            style: displayStyle?.copyWith(
-              height: 1.1,
-              letterSpacing: -1.5,
-              fontWeight: FontWeight.w600,
+        Container(
+          margin: EdgeInsets.only(right: 40),
+          child: RichText(
+            text: TextSpan(
+              style: displayStyle?.copyWith(
+                height: 1.1,
+                letterSpacing: -1.5,
+                fontWeight: FontWeight.w600,
+              ),
+              children: [
+                const TextSpan(text: 'People\n'),
+                const TextSpan(text: 'of\n'),
+                const TextSpan(text: 'Kenya'),
+              ],
             ),
-            children: [
-              const TextSpan(text: 'People\n'),
-              const TextSpan(text: 'of\n'),
-              const TextSpan(text: 'Kenya'),
-            ],
           ),
         ),
       ],

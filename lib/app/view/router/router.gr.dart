@@ -633,49 +633,18 @@ class ExploreRoute extends _i48.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i17.FailurePage]
-class FailureRoute extends _i48.PageRouteInfo<FailureRouteArgs> {
-  FailureRoute({
-    _i49.Key? key,
-    required String error,
-    List<_i48.PageRouteInfo>? children,
-  }) : super(
-         FailureRoute.name,
-         args: FailureRouteArgs(key: key, error: error),
-         initialChildren: children,
-       );
+class FailureRoute extends _i48.PageRouteInfo<void> {
+  const FailureRoute({List<_i48.PageRouteInfo>? children})
+    : super(FailureRoute.name, initialChildren: children);
 
   static const String name = 'FailureRoute';
 
   static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<FailureRouteArgs>();
-      return _i17.FailurePage(key: args.key, error: args.error);
+      return const _i17.FailurePage();
     },
   );
-}
-
-class FailureRouteArgs {
-  const FailureRouteArgs({this.key, required this.error});
-
-  final _i49.Key? key;
-
-  final String error;
-
-  @override
-  String toString() {
-    return 'FailureRouteArgs{key: $key, error: $error}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! FailureRouteArgs) return false;
-    return key == other.key && error == other.error;
-  }
-
-  @override
-  int get hashCode => key.hashCode ^ error.hashCode;
 }
 
 /// generated route for

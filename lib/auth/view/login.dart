@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/app_logo.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,7 +69,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              // 2. Main Content
               Center(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -171,7 +171,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              // 5. Clean Footer
               Positioned(
                 bottom: 0,
                 left: 0,
@@ -204,10 +203,19 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        'v1.0.0', // Replace with actual version if available
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.outline,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 24.0),
+                        child: BlocBuilder<AuthBloc, AuthState>(
+                          builder: (context, state) {
+                            return Text(
+                              state.version,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                    letterSpacing: 0.5,
+                                  ),
+                            );
+                          },
                         ),
                       ),
                     ],

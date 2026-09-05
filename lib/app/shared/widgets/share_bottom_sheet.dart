@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/utils/copy.dart';
 import 'package:democracy/app/shared/pages/direct_message.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
@@ -9,7 +10,9 @@ import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ShareBottomSheet extends StatelessWidget {
@@ -55,13 +58,18 @@ class ShareBottomSheet extends StatelessWidget {
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
-              builder: (context) => DirectMessage(
-                post: post,
-                ballot: ballot,
-                survey: survey,
-                petition: petition,
-                broadcast: broadcast,
-                section: section,
+              builder: (context) => BlocProvider(
+                create: (context) => UsersBloc(
+                  webSocketService: context.read<WebSocketService>(),
+                ),
+                child: DirectMessage(
+                  post: post,
+                  ballot: ballot,
+                  survey: survey,
+                  petition: petition,
+                  broadcast: broadcast,
+                  section: section,
+                ),
               ),
             );
           },

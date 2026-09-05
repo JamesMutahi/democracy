@@ -122,8 +122,9 @@ class _PostCreateWebDialogState extends State<PostCreateWebDialog> {
             final bloc = ReplyToBloc(
               webSocketService: context.read<WebSocketService>(),
             );
-            if (widget.replyTo != null)
+            if (widget.replyTo != null) {
               bloc.add(ReplyToEvent.get(postId: widget.replyTo!.id));
+            }
             return bloc;
           },
         ),

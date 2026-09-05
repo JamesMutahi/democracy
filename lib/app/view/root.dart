@@ -32,7 +32,7 @@ class RootRoute extends StatelessWidget {
 
         // Failure → Show Error
         if (authState.status == AuthStatus.failure) {
-          return FailurePage(error: authState.error);
+          return FailurePage();
         }
 
         // Not authenticated → Login

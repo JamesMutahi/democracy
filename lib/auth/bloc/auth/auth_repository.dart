@@ -5,6 +5,15 @@ class AuthRepository {
 
   final AuthProvider authProvider;
 
+  Future<String> getVersion() async {
+    final info = await PackageInfo.fromPlatform();
+
+    String version = info.version;
+    String buildNumber = info.buildNumber;
+
+    return '$version + $buildNumber';
+  }
+
   Future<Map> login({
     required String username,
     required String password,

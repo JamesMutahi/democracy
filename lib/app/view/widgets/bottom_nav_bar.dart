@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/view/widgets/creation_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -41,15 +40,11 @@ class BottomNavBar extends StatelessWidget {
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
+                    showDragHandle: true,
                     isScrollControlled: true,
-                    builder: (context) => CustomBottomSheet(
-                      title: 'Create',
-                      children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 15),
-                          child: CreationButtons(),
-                        ),
-                      ],
+                    builder: (context) => Container(
+                      margin: EdgeInsets.symmetric(horizontal: 15),
+                      child: CreationButtons(),
                     ),
                   );
                 },

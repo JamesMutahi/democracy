@@ -7,6 +7,7 @@ import 'package:democracy/user/models/user.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';
@@ -27,8 +28,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_Authenticate>((event, emit) async {
       await _authenticate(emit);
     });
-    on<_TokenExpired>((event, emit) {
-      emit(AuthState());
+    on<_TokenExpired>((event, emit) async {
+      final version = await authRepository.getVersion();
+      emit(AuthState(version: version));
     });
     on<_UpdateUser>((event, emit) {
       emit(state.copyWith(user: event.user));
@@ -36,11 +38,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future _authenticate(Emitter<AuthState> emit) async {
-    emit(state.copyWith(status: AuthStatus.authenticating));
+    final version = await authRepository.getVersion();
+    emit(state.copyWith(status: AuthStatus.authenticating, version: version));
     try {
       String? token = await tokenStorage.getAccessToken();
       if (token == null || token.isEmpty) {
-        emit(const AuthState());
+        emit(AuthState(version: version));
       } else {
         User user = await authRepository.getUserFromAPI();
         emit(state.copyWith(status: AuthStatus.authenticated, user: user));

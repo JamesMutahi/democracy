@@ -94,13 +94,13 @@ class _TrendingState extends State<_Trending> {
     return SliverToBoxAdapter(
       child: BlocBuilder<TrendingTopicsBloc, TrendingTopicsState>(
         builder: (context, state) {
-          final topics = state.topics.take(3).toList();
+          final topics = state.topics.toList();
 
           return _SidePanelCard(
             title: 'Trending',
             children: [
               ...topics
-                  .take(4)
+                  .take(3)
                   .map(
                     (topic) => Container(
                       key: ValueKey(topic),
@@ -119,7 +119,7 @@ class _TrendingState extends State<_Trending> {
                       ),
                     ),
                   ),
-              if (state.topics.length > 4)
+              if (state.topics.length > 3)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton.icon(
