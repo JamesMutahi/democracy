@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
@@ -60,7 +61,8 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
 
   void _onUpdated(_Updated event, Emitter<UserDetailState> emit) async {
     emit(_Loading());
-    if (event.payload['response_status'] == 200) {
+    final payload = Map<String, dynamic>.from(event.payload as Map);
+    if (payload['response_status'] == 200) {
       User user = User.fromJson(event.payload['data']);
       emit(UserUpdated(user: user));
     } else {
@@ -95,6 +97,8 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
         bio: event.bio,
         imagePath: event.imagePath,
         coverPhotoPath: event.coverPhotoPath,
+        imageBytes: event.imageBytes, // For Web
+        coverPhotoBytes: event.coverPhotoBytes, // For Web
       );
       User user = event.user;
       user = user.copyWith(

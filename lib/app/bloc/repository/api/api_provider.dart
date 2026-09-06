@@ -351,7 +351,8 @@ class APIProvider {
 
   Future<Petition> createPetition({
     required String title,
-    required String imagePath,
+    required String? imagePath,
+    required Uint8List? imageBytes,
     required String description,
     County? county,
     Constituency? constituency,
@@ -360,7 +361,15 @@ class APIProvider {
     try {
       FormData data = FormData.fromMap({
         'title': title,
-        'image': await MultipartFile.fromFile(imagePath),
+        'image': imagePath == null
+            ? MultipartFile.fromBytes(
+                imageBytes!,
+                filename: 'petition_cover.jpg',
+              )
+            : await MultipartFile.fromFile(
+                imagePath,
+                filename: 'petition_cover.jpg',
+              ),
         'description': description,
         'county_id': county?.id,
         'constituency_id': constituency?.id,
@@ -384,14 +393,33 @@ class APIProvider {
     required String bio,
     required String? imagePath,
     required String? coverPhotoPath,
+    required Uint8List? imageBytes, // For Web
+    required Uint8List? coverPhotoBytes, // For Web
   }) async {
     try {
       FormData data = FormData.fromMap({
         'name': name,
         'bio': bio,
-        if (imagePath != null) 'image': await MultipartFile.fromFile(imagePath),
+        if (imagePath != null)
+          'image': await MultipartFile.fromFile(
+            imagePath,
+            filename: 'profile_image.jpg',
+          ),
         if (coverPhotoPath != null)
-          'cover_photo': await MultipartFile.fromFile(coverPhotoPath),
+          'cover_photo': await MultipartFile.fromFile(
+            coverPhotoPath,
+            filename: 'cover_photo.jpg',
+          ),
+        if (imageBytes != null)
+          'image': MultipartFile.fromBytes(
+            imageBytes,
+            filename: 'profile_image.jpg',
+          ),
+        if (coverPhotoBytes != null)
+          'cover_photo': MultipartFile.fromBytes(
+            coverPhotoBytes,
+            filename: 'cover_photo.jpg',
+          ),
       });
       Response response = await dio.patch('user/', data: data);
       if (response.statusCode == 200) {

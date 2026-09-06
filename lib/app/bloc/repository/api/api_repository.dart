@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/ballot/models/ballot.dart';
@@ -181,7 +182,8 @@ class APIRepository {
 
   Future<Petition> createPetition({
     required String title,
-    required String imagePath,
+    required String? imagePath,
+    required Uint8List? imageBytes,
     required String description,
     County? county,
     Constituency? constituency,
@@ -191,6 +193,7 @@ class APIRepository {
       title: title,
       description: description,
       imagePath: imagePath,
+      imageBytes: imageBytes,
       county: county,
       constituency: constituency,
       ward: ward,
@@ -203,6 +206,8 @@ class APIRepository {
     required String bio,
     required String? imagePath,
     required String? coverPhotoPath,
+    required Uint8List? imageBytes, // For Web
+    required Uint8List? coverPhotoBytes, // For Web
   }) async {
     return await apiProvider.patchUser(
       user: user,
@@ -210,6 +215,8 @@ class APIRepository {
       bio: bio,
       imagePath: imagePath,
       coverPhotoPath: coverPhotoPath,
+      imageBytes: imageBytes, // For Web
+      coverPhotoBytes: coverPhotoBytes, // For Web
     );
   }
 

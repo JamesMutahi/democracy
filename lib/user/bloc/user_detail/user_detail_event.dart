@@ -18,6 +18,8 @@ sealed class UserDetailEvent with _$UserDetailEvent {
     required String bio,
     required String? imagePath,
     required String? coverPhotoPath,
+    required Uint8List? imageBytes, // For Web
+    required Uint8List? coverPhotoBytes, // For Web
   }) = _Patch;
 
   const factory UserDetailEvent.follow({required User user}) = _Follow;

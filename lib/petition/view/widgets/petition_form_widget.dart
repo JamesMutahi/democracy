@@ -15,7 +15,8 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 class PetitionFormWidget extends StatefulWidget {
   final Function(
     Map<String, dynamic> formData,
-    File? image,
+    File? imageFile, // Used for Mobile/Desktop
+    Uint8List? imageBytes, // Used for Web
     County? county,
     Constituency? constituency,
     Ward? ward,
@@ -30,7 +31,9 @@ class PetitionFormWidget extends StatefulWidget {
 
 class _PetitionFormWidgetState extends State<PetitionFormWidget> {
   final _formKey = GlobalKey<FormBuilderState>();
-  File? _image;
+
+  File? _imageFile; // For Mobile/Desktop
+  Uint8List? _imageBytes; // For Web
 
   County? _selectedCounty;
   Constituency? _selectedConstituency;
@@ -57,7 +60,10 @@ class _PetitionFormWidgetState extends State<PetitionFormWidget> {
     final isTitleValid = title != null && title.trim().isNotEmpty;
     final isDescValid = desc != null && desc.trim().isNotEmpty;
 
-    _isFormValid.value = isTitleValid && isDescValid && _image != null;
+    // Check for image based on platform
+    final hasImage = kIsWeb ? _imageBytes != null : _imageFile != null;
+
+    _isFormValid.value = isTitleValid && isDescValid && hasImage;
 
     return _isFormValid.value;
   }
@@ -66,7 +72,8 @@ class _PetitionFormWidgetState extends State<PetitionFormWidget> {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       widget.onPublishRequested(
         _formKey.currentState!.value,
-        _image,
+        _imageFile,
+        _imageBytes,
         _selectedCounty,
         _selectedConstituency,
         _selectedWard,
@@ -314,6 +321,8 @@ class _PetitionFormWidgetState extends State<PetitionFormWidget> {
   }
 
   Widget _buildImagePicker(ColorScheme colorScheme) {
+    final hasImage = kIsWeb ? _imageBytes != null : _imageFile != null;
+
     return GestureDetector(
       onTap: _pickImage,
       child: Container(
@@ -327,7 +336,7 @@ class _PetitionFormWidgetState extends State<PetitionFormWidget> {
             width: 1.5,
           ),
         ),
-        child: _image == null
+        child: !hasImage
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -356,7 +365,9 @@ class _PetitionFormWidgetState extends State<PetitionFormWidget> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: Image.file(_image!, fit: BoxFit.cover),
+                    child: kIsWeb
+                        ? Image.memory(_imageBytes!, fit: BoxFit.cover)
+                        : Image.file(_imageFile!, fit: BoxFit.cover),
                   ),
                   Positioned(
                     top: 12,
@@ -366,8 +377,14 @@ class _PetitionFormWidgetState extends State<PetitionFormWidget> {
                       shape: const CircleBorder(),
                       child: InkWell(
                         onTap: () {
-                          setState(() => _image = null);
-                          _checkValidity();
+                          setState(() {
+                            if (kIsWeb) {
+                              _imageBytes = null;
+                            } else {
+                              _imageFile = null;
+                            }
+                            _checkValidity();
+                          });
                         },
                         customBorder: const CircleBorder(),
                         child: const Padding(
@@ -389,10 +406,9 @@ class _PetitionFormWidgetState extends State<PetitionFormWidget> {
 
   Future<void> _pickImage() async {
     if (kIsWeb) {
-      final newImage = await getImageFile();
-      if (newImage != null) {
-        setState(() => _image = newImage);
-      }
+      _imageBytes = await getImageFileBytes();
+      _checkValidity();
+      setState(() {});
     } else {
       showDialog(
         context: context,
@@ -405,7 +421,7 @@ class _PetitionFormWidgetState extends State<PetitionFormWidget> {
               textEditingController: null,
               onImageEditingComplete: (newImage) {
                 setState(() {
-                  _image = newImage;
+                  _imageFile = newImage;
                   _checkValidity();
                 });
               },
@@ -419,7 +435,7 @@ class _PetitionFormWidgetState extends State<PetitionFormWidget> {
               onMedia: (files) {
                 if (files.isNotEmpty) {
                   setState(() {
-                    _image = files.first;
+                    _imageFile = files.first;
                     _checkValidity();
                   });
                 }

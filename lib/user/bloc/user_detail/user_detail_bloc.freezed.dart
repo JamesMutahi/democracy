@@ -844,13 +844,13 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  subscribed,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( int userId)?  subscribe,TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  patch,TResult Function( User user)?  follow,TResult Function( User user)?  mute,TResult Function( User user)?  block,TResult Function( User user)?  addVisit,TResult Function( Map<String, dynamic> payload)?  visitAdded,TResult Function( User user)?  toggleNotifications,TResult Function( User user)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  subscribed,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( int userId)?  subscribe,TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath,  Uint8List? imageBytes,  Uint8List? coverPhotoBytes)?  patch,TResult Function( User user)?  follow,TResult Function( User user)?  mute,TResult Function( User user)?  block,TResult Function( User user)?  addVisit,TResult Function( Map<String, dynamic> payload)?  visitAdded,TResult Function( User user)?  toggleNotifications,TResult Function( User user)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Subscribed() when subscribed != null:
 return subscribed(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Subscribe() when subscribe != null:
 return subscribe(_that.userId);case _Patch() when patch != null:
-return patch(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
+return patch(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath,_that.imageBytes,_that.coverPhotoBytes);case _Follow() when follow != null:
 return follow(_that.user);case _Mute() when mute != null:
 return mute(_that.user);case _Block() when block != null:
 return block(_that.user);case _AddVisit() when addVisit != null:
@@ -875,13 +875,13 @@ return unsubscribe(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  subscribed,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( int userId)  subscribe,required TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)  patch,required TResult Function( User user)  follow,required TResult Function( User user)  mute,required TResult Function( User user)  block,required TResult Function( User user)  addVisit,required TResult Function( Map<String, dynamic> payload)  visitAdded,required TResult Function( User user)  toggleNotifications,required TResult Function( User user)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  subscribed,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( int userId)  subscribe,required TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath,  Uint8List? imageBytes,  Uint8List? coverPhotoBytes)  patch,required TResult Function( User user)  follow,required TResult Function( User user)  mute,required TResult Function( User user)  block,required TResult Function( User user)  addVisit,required TResult Function( Map<String, dynamic> payload)  visitAdded,required TResult Function( User user)  toggleNotifications,required TResult Function( User user)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Subscribed():
 return subscribed(_that.payload);case _Updated():
 return updated(_that.payload);case _Subscribe():
 return subscribe(_that.userId);case _Patch():
-return patch(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow():
+return patch(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath,_that.imageBytes,_that.coverPhotoBytes);case _Follow():
 return follow(_that.user);case _Mute():
 return mute(_that.user);case _Block():
 return block(_that.user);case _AddVisit():
@@ -902,13 +902,13 @@ return unsubscribe(_that.user);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  subscribed,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( int userId)?  subscribe,TResult? Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  patch,TResult? Function( User user)?  follow,TResult? Function( User user)?  mute,TResult? Function( User user)?  block,TResult? Function( User user)?  addVisit,TResult? Function( Map<String, dynamic> payload)?  visitAdded,TResult? Function( User user)?  toggleNotifications,TResult? Function( User user)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  subscribed,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( int userId)?  subscribe,TResult? Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath,  Uint8List? imageBytes,  Uint8List? coverPhotoBytes)?  patch,TResult? Function( User user)?  follow,TResult? Function( User user)?  mute,TResult? Function( User user)?  block,TResult? Function( User user)?  addVisit,TResult? Function( Map<String, dynamic> payload)?  visitAdded,TResult? Function( User user)?  toggleNotifications,TResult? Function( User user)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Subscribed() when subscribed != null:
 return subscribed(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Subscribe() when subscribe != null:
 return subscribe(_that.userId);case _Patch() when patch != null:
-return patch(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
+return patch(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath,_that.imageBytes,_that.coverPhotoBytes);case _Follow() when follow != null:
 return follow(_that.user);case _Mute() when mute != null:
 return mute(_that.user);case _Block() when block != null:
 return block(_that.user);case _AddVisit() when addVisit != null:
@@ -1137,7 +1137,7 @@ as int,
 
 
 class _Patch implements UserDetailEvent {
-  const _Patch({required this.user, required this.name, required this.bio, required this.imagePath, required this.coverPhotoPath});
+  const _Patch({required this.user, required this.name, required this.bio, required this.imagePath, required this.coverPhotoPath, required this.imageBytes, required this.coverPhotoBytes});
   
 
  final  User user;
@@ -1145,6 +1145,9 @@ class _Patch implements UserDetailEvent {
  final  String bio;
  final  String? imagePath;
  final  String? coverPhotoPath;
+ final  Uint8List? imageBytes;
+// For Web
+ final  Uint8List? coverPhotoBytes;
 
 /// Create a copy of UserDetailEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -1156,16 +1159,16 @@ _$PatchCopyWith<_Patch> get copyWith => __$PatchCopyWithImpl<_Patch>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Patch&&(identical(other.user, user) || other.user == user)&&(identical(other.name, name) || other.name == name)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.coverPhotoPath, coverPhotoPath) || other.coverPhotoPath == coverPhotoPath));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Patch&&(identical(other.user, user) || other.user == user)&&(identical(other.name, name) || other.name == name)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.coverPhotoPath, coverPhotoPath) || other.coverPhotoPath == coverPhotoPath)&&const DeepCollectionEquality().equals(other.imageBytes, imageBytes)&&const DeepCollectionEquality().equals(other.coverPhotoBytes, coverPhotoBytes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,name,bio,imagePath,coverPhotoPath);
+int get hashCode => Object.hash(runtimeType,user,name,bio,imagePath,coverPhotoPath,const DeepCollectionEquality().hash(imageBytes),const DeepCollectionEquality().hash(coverPhotoBytes));
 
 @override
 String toString() {
-  return 'UserDetailEvent.patch(user: $user, name: $name, bio: $bio, imagePath: $imagePath, coverPhotoPath: $coverPhotoPath)';
+  return 'UserDetailEvent.patch(user: $user, name: $name, bio: $bio, imagePath: $imagePath, coverPhotoPath: $coverPhotoPath, imageBytes: $imageBytes, coverPhotoBytes: $coverPhotoBytes)';
 }
 
 
@@ -1176,7 +1179,7 @@ abstract mixin class _$PatchCopyWith<$Res> implements $UserDetailEventCopyWith<$
   factory _$PatchCopyWith(_Patch value, $Res Function(_Patch) _then) = __$PatchCopyWithImpl;
 @useResult
 $Res call({
- User user, String name, String bio, String? imagePath, String? coverPhotoPath
+ User user, String name, String bio, String? imagePath, String? coverPhotoPath, Uint8List? imageBytes, Uint8List? coverPhotoBytes
 });
 
 
@@ -1193,14 +1196,16 @@ class __$PatchCopyWithImpl<$Res>
 
 /// Create a copy of UserDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? name = null,Object? bio = null,Object? imagePath = freezed,Object? coverPhotoPath = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? name = null,Object? bio = null,Object? imagePath = freezed,Object? coverPhotoPath = freezed,Object? imageBytes = freezed,Object? coverPhotoBytes = freezed,}) {
   return _then(_Patch(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,bio: null == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String,imagePath: freezed == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
 as String?,coverPhotoPath: freezed == coverPhotoPath ? _self.coverPhotoPath : coverPhotoPath // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,imageBytes: freezed == imageBytes ? _self.imageBytes : imageBytes // ignore: cast_nullable_to_non_nullable
+as Uint8List?,coverPhotoBytes: freezed == coverPhotoBytes ? _self.coverPhotoBytes : coverPhotoBytes // ignore: cast_nullable_to_non_nullable
+as Uint8List?,
   ));
 }
 

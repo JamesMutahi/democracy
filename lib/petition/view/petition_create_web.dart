@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -12,6 +10,8 @@ import 'package:democracy/petition/view/widgets/petition_form_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:flutter/foundation.dart';
+
 
 class PetitionCreateWebDialog extends StatelessWidget {
   const PetitionCreateWebDialog({super.key});
@@ -93,11 +93,18 @@ class PetitionCreateWebDialog extends StatelessWidget {
                 Flexible(
                   child: PetitionFormWidget(
                     onPublishRequested:
-                        (formData, image, county, constituency, ward) {
+                        (
+                          formData,
+                          imageFile,
+                          imageBytes,
+                          county,
+                          constituency,
+                          ward,
+                        ) {
                           _showPublishDialog(
                             context,
                             formData,
-                            image,
+                            imageBytes!,
                             county,
                             constituency,
                             ward,
@@ -116,7 +123,7 @@ class PetitionCreateWebDialog extends StatelessWidget {
   void _showPublishDialog(
     BuildContext context,
     Map<String, dynamic> formData,
-    File? image,
+    Uint8List imageBytes,
     County? county,
     Constituency? constituency,
     Ward? ward,
@@ -129,7 +136,7 @@ class PetitionCreateWebDialog extends StatelessWidget {
           context.read<PetitionDetailBloc>().add(
             PetitionDetailEvent.create(
               title: formData['title'],
-              imagePath: image!.path,
+              imageBytes: imageBytes,
               description: formData['description'],
               county: county,
               constituency: constituency,

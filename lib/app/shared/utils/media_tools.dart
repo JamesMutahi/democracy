@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:file_picker/file_picker.dart';
@@ -42,23 +43,16 @@ void openGallery({
   PhotoManager.clearFileCache();
 }
 
-Future<File?> getImageFile() async {
-  File? file;
-
-  FilePickerResult? result = await FilePicker.pickFiles(type: FileType.image);
-
-  if (result != null) {
-    File cachedFile = File(result.files.single.path!);
-
-    Directory directory = await getTemporaryDirectory();
-
-    String fileName = p.basename(cachedFile.path);
-
-    String targetPath = p.join(directory.path, fileName);
-
-    file = await cachedFile.copy(targetPath);
+Future<Uint8List?> getImageFileBytes() async {
+  FilePickerResult? result = await FilePicker.pickFiles(
+    type: FileType.image,
+    allowMultiple: false,
+    withData: true,
+  );
+  if (result != null && result.files.isNotEmpty) {
+    return result.files.single.bytes;
   }
-  return file;
+  return null;
 }
 
 class MediaDialog extends StatelessWidget {

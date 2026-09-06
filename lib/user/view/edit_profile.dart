@@ -29,24 +29,27 @@ class _EditProfileState extends State<EditProfile> {
   late String bio = user.bio;
   File? image;
   File? coverPhoto;
+  Uint8List? imageBytes; // For Web
+  Uint8List? coverPhotoBytes; // For Web
 
   // Computed property to check if any changes were made
   bool get _hasChanges =>
       image != null ||
-          coverPhoto != null ||
-          name != user.name ||
-          bio != user.bio;
+      coverPhoto != null ||
+      imageBytes != null ||
+      coverPhotoBytes != null ||
+      name != user.name ||
+      bio != user.bio;
 
-  // Reusable method for picking images (Fixes the web bug and removes duplication)
   Future<void> _pickImage({required bool isCoverPhoto}) async {
     if (kIsWeb) {
-      final newImage = await getImageFile();
-      if (newImage != null) {
+      Uint8List? bytes = await getImageFileBytes();
+      if (bytes != null) {
         setState(() {
           if (isCoverPhoto) {
-            coverPhoto = newImage;
+            coverPhotoBytes = bytes;
           } else {
-            image = newImage; // Fixed: was incorrectly setting coverPhoto
+            imageBytes = bytes;
           }
         });
       }
@@ -107,6 +110,8 @@ class _EditProfileState extends State<EditProfile> {
               bio: bio,
               imagePath: image?.path,
               coverPhotoPath: coverPhoto?.path,
+              imageBytes: imageBytes,
+              coverPhotoBytes: coverPhotoBytes,
             ),
           );
           Future.delayed(const Duration(seconds: 10), () {
@@ -127,7 +132,11 @@ class _EditProfileState extends State<EditProfile> {
           context.router.popTop();
           context.read<AuthBloc>().add(AuthEvent.updateUser(user: state.user));
           ScaffoldMessenger.of(context).showSnackBar(
-            getSnackBar(context: context, message: 'Profile updated', status: SnackBarStatus.success),
+            getSnackBar(
+              context: context,
+              message: 'Profile updated',
+              status: SnackBarStatus.success,
+            ),
           );
         }
       },
@@ -143,8 +152,13 @@ class _EditProfileState extends State<EditProfile> {
                 child: FilledButton(
                   onPressed: _hasChanges ? _handleSave : null,
                   style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                   child: const Text('Save'),
                 ),
@@ -154,11 +168,9 @@ class _EditProfileState extends State<EditProfile> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                // 1. Cover Photo & Profile Pic Stack
                 Stack(
-                  clipBehavior: Clip.none, // Allows profile pic to overlap content below
+                  clipBehavior: Clip.none,
                   children: [
-                    // Cover Photo
                     GestureDetector(
                       onTap: () => _pickImage(isCoverPhoto: true),
                       child: Container(
@@ -166,9 +178,14 @@ class _EditProfileState extends State<EditProfile> {
                         width: double.infinity,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: coverPhoto == null
-                                ? CachedNetworkImageProvider(user.coverPhoto, cacheKey: 'cover ${user.id}')
-                                : FileImage(coverPhoto!) as ImageProvider,
+                            image: coverPhoto == null && coverPhotoBytes == null
+                                ? CachedNetworkImageProvider(
+                                    user.coverPhoto,
+                                    cacheKey: 'cover ${user.id}',
+                                  )
+                                : kIsWeb
+                                ? MemoryImage(coverPhotoBytes!)
+                                : FileImage(coverPhoto!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -182,30 +199,43 @@ class _EditProfileState extends State<EditProfile> {
                         heroTag: 'cover_photo_edit',
                         onPressed: () => _pickImage(isCoverPhoto: true),
                         backgroundColor: Colors.black54,
-                        child: const Icon(Symbols.edit, color: Colors.white, size: 20),
+                        child: const Icon(
+                          Symbols.edit,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                     ),
-                    // Profile Picture (Overlapping)
+
                     Positioned(
-                      bottom: -50, // Overlaps the content below by 50px
+                      bottom: -50,
                       left: 16,
                       child: GestureDetector(
                         onTap: () => _pickImage(isCoverPhoto: false),
                         child: CircleAvatar(
                           radius: 54,
-                          backgroundColor: colorScheme.surface, // Creates a border effect
+                          backgroundColor: colorScheme.surface,
                           child: CircleAvatar(
                             radius: 50,
-                            backgroundImage: image == null
-                                ? CachedNetworkImageProvider(user.image, cacheKey: 'profile ${user.id}')
-                                : FileImage(image!) as ImageProvider,
+                            backgroundImage: image == null && imageBytes == null
+                                ? CachedNetworkImageProvider(
+                                    user.image,
+                                    cacheKey: 'profile ${user.id}',
+                                  )
+                                : kIsWeb
+                                ? MemoryImage(imageBytes!)
+                                : FileImage(image!),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.black.withValues(alpha: 0.4),
                                 borderRadius: BorderRadius.circular(100),
                               ),
                               child: const Center(
-                                child: Icon(Symbols.add_a_photo_rounded, color: Colors.white, size: 28),
+                                child: Icon(
+                                  Symbols.add_a_photo_rounded,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
                               ),
                             ),
                           ),
@@ -215,10 +245,8 @@ class _EditProfileState extends State<EditProfile> {
                   ],
                 ),
 
-                // Spacer to account for the profile pic overlap
                 const SizedBox(height: 66),
 
-                // 2. Form Fields
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
@@ -251,7 +279,6 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  // Modern Material 3 Text Field
   Widget _buildModernTextField({
     required String label,
     required String initialValue,
@@ -274,7 +301,10 @@ class _EditProfileState extends State<EditProfile> {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
       ),
     );
   }

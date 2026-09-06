@@ -22,7 +22,8 @@ sealed class PetitionDetailEvent with _$PetitionDetailEvent {
   }) = _Deleted;
   const factory PetitionDetailEvent.create({
     required String title,
-    required String imagePath,
+    String? imagePath,
+    Uint8List? imageBytes,
     required String description,
     required County? county,
     required Constituency? constituency,

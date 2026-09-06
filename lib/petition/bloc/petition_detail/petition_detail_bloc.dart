@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
@@ -131,6 +132,7 @@ class PetitionDetailBloc
         title: event.title,
         description: event.description,
         imagePath: event.imagePath,
+        imageBytes: event.imageBytes,
         county: event.county,
         constituency: event.constituency,
         ward: event.ward,

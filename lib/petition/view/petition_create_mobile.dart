@@ -77,11 +77,18 @@ class PetitionCreate extends StatelessWidget {
             ),
             body: PetitionFormWidget(
               onPublishRequested:
-                  (formData, image, county, constituency, ward) {
+                  (
+                    formData,
+                    imageFile,
+                    imageBytes,
+                    county,
+                    constituency,
+                    ward,
+                  ) {
                     _showPublishDialog(
                       context,
                       formData,
-                      image,
+                      imageFile,
                       county,
                       constituency,
                       ward,
