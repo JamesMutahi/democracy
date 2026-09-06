@@ -13,14 +13,16 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widget.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
-class PostCreatePage extends StatefulWidget {
-  const PostCreatePage({
+class PostCreate extends StatefulWidget {
+  const PostCreate({
     super.key,
     this.replyTo,
     this.repostOf,
@@ -40,11 +42,10 @@ class PostCreatePage extends StatefulWidget {
   final Section? section;
 
   @override
-  State<PostCreatePage> createState() => _PostCreatePageState();
+  State<PostCreate> createState() => _PostCreateState();
 }
 
-class _PostCreatePageState extends State<PostCreatePage> {
-  // ✅ Now valid because PostFormWidgetState is public
+class _PostCreateState extends State<PostCreate> {
   final GlobalKey<PostFormWidgetState> _formKey =
       GlobalKey<PostFormWidgetState>();
   bool _canPost = false;
@@ -103,6 +104,8 @@ class _PostCreatePageState extends State<PostCreatePage> {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -172,58 +175,143 @@ class _PostCreatePageState extends State<PostCreatePage> {
                 },
               );
             },
-            child: Scaffold(
-              appBar: AppBar(
-                leading: IconButton(
-                  icon: const Icon(Symbols.close),
-                  onPressed: () {
-                    if (!_canPost) {
-                      context.router.popTop();
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) =>
-                            _SaveDraftDialog(onYesPressed: _saveDraft),
-                      );
-                    }
-                  },
-                ),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 15),
-                    child: ValueListenableBuilder<bool>(
-                      valueListenable: ValueNotifier<bool>(
-                        _canPost,
-                      ), // Simplified for this example, or use a dedicated notifier
-                      builder: (context, canPost, child) {
-                        return FilledButton(
-                          onPressed: canPost
-                              ? () => showDialog(
-                                  context: context,
-                                  builder: (context) => _PostCreateDialog(
-                                    onYesPressed: _createPost,
-                                  ),
-                                )
-                              : null,
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          child: Text(
-                            widget.replyTo != null ? 'Reply' : 'Post',
-                          ),
-                        );
-                      },
+            child: kIsWeb && responsive.largerThan(MOBILE)
+                ? _buildWeb()
+                : _buildMobile(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobile() {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Symbols.close),
+          onPressed: () {
+            if (!_canPost) {
+              context.router.popTop();
+            } else {
+              showDialog(
+                context: context,
+                builder: (context) =>
+                    _SaveDraftDialog(onYesPressed: _saveDraft),
+              );
+            }
+          },
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: ValueListenableBuilder<bool>(
+              valueListenable: ValueNotifier<bool>(
+                _canPost,
+              ), // Simplified for this example, or use a dedicated notifier
+              builder: (context, canPost, child) {
+                return FilledButton(
+                  onPressed: canPost
+                      ? () => showDialog(
+                          context: context,
+                          builder: (context) =>
+                              _PostCreateDialog(onYesPressed: _createPost),
+                        )
+                      : null,
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
                     ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text(widget.replyTo != null ? 'Reply' : 'Post'),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      body: PostFormWidget(
+        key: _formKey,
+        replyTo: widget.replyTo,
+        repostOf: widget.repostOf,
+        ballot: widget.ballot,
+        survey: widget.survey,
+        petition: widget.petition,
+        broadcast: widget.broadcast,
+        section: widget.section,
+        onCanPostChanged: (canPost) {
+          setState(() => _canPost = canPost);
+        },
+      ),
+    );
+  }
+
+  Widget _buildWeb() {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600, maxHeight: 800),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.replyTo != null ? 'Reply' : 'Create Post',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Row(
+                    children: [
+                      FilledButton(
+                        onPressed: _canPost
+                            ? () => showDialog(
+                                context: context,
+                                builder: (context) => _PostCreateDialog(
+                                  onYesPressed: _createPost,
+                                ),
+                              )
+                            : null,
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: Text(widget.replyTo != null ? 'Reply' : 'Post'),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(Symbols.close),
+                        onPressed: () {
+                          if (!_canPost) {
+                            context.router.popTop();
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  _SaveDraftDialog(onYesPressed: _saveDraft),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
-              body: PostFormWidget(
+            ),
+            const Divider(height: 1),
+            Flexible(
+              child: PostFormWidget(
                 key: _formKey,
                 replyTo: widget.replyTo,
                 repostOf: widget.repostOf,
@@ -232,12 +320,11 @@ class _PostCreatePageState extends State<PostCreatePage> {
                 petition: widget.petition,
                 broadcast: widget.broadcast,
                 section: widget.section,
-                onCanPostChanged: (canPost) {
-                  setState(() => _canPost = canPost);
-                },
+                onCanPostChanged: (canPost) =>
+                    setState(() => _canPost = canPost),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

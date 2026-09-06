@@ -4,7 +4,6 @@ import 'package:democracy/app/bloc/fcm/fcm_bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
-import 'package:democracy/app/view/main_page.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/failure.dart';
@@ -47,7 +46,7 @@ class RootRoute extends StatelessWidget {
 
         // Fully authenticated + socket ready → Main App
         context.read<FcmBloc>().add(FcmEvent.started(isWeb: kIsWeb));
-        return _Listeners(child: ThemeMod(child: const MainPage()));
+        return _Listeners(child: ThemeMod(child: AutoRouter()));
       },
     );
   }

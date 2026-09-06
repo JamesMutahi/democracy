@@ -74,13 +74,13 @@ class HubFilterCubit extends Cubit<HubFilterState> {
     required DateTime? endDate,
   }) {
     int count = 0;
-    if (!filterByRegion) {
+    if (filterByRegion != defaultFilterByRegion) {
       count += 1;
     }
-    if (sortBy != initialSortBy) {
+    if (sortBy != defaultSortBy) {
       count += 1;
     }
-    if (startDate != null || endDate != null) {
+    if (startDate != defaultStartDate || endDate != defaultEndDate) {
       count += 1;
     }
     return count;

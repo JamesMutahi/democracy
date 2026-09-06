@@ -1,13 +1,18 @@
 part of 'hub_filter_cubit.dart';
 
-const String initialSortBy = 'recent';
+const defaultSearchTerm = '';
+const defaultIsOpen = null;
+const defaultFilterByRegion = true;
+const defaultSortBy = 'recent';
+const defaultStartDate = null;
+const defaultEndDate = null;
 
 final class HubFilterState extends Equatable {
   const HubFilterState({
     this.onHubPage = true,
-    this.searchTerm = '',
-    this.filterByRegion = true,
-    this.sortBy = initialSortBy,
+    this.searchTerm = defaultSearchTerm,
+    this.filterByRegion = defaultFilterByRegion,
+    this.sortBy = defaultSortBy,
     this.startDate,
     this.endDate,
     this.count = 0,

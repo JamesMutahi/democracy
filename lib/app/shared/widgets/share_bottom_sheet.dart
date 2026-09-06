@@ -113,7 +113,7 @@ class ShareBottomSheet extends StatelessWidget {
                 onTap: () {
                   context.router.popTop();
                   context.router.push(
-                    PostCreateRoute(
+                    PostCreate(
                       repostOf: post,
                       ballot: ballot,
                       survey: survey,

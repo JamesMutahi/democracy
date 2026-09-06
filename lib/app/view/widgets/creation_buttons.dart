@@ -1,9 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
-import 'package:democracy/petition/view/utils/create_petition.dart';
-import 'package:democracy/broadcast/view/utils/create_broadcast.dart';
-import 'package:democracy/post/view/utils/create_post.dart';
 import 'package:flutter/material.dart';
 
 class CreationButtons extends StatelessWidget {
@@ -17,7 +15,7 @@ class CreationButtons extends StatelessWidget {
         BottomSheetSvgTile(
           onTap: () {
             context.router.pop();
-            createPost(context: context);
+            context.router.push(PostCreate());
           },
           asset: 'assets/icons/document-add.svg',
           text: 'Create Post',
@@ -25,7 +23,11 @@ class CreationButtons extends StatelessWidget {
         BottomSheetSvgTile(
           onTap: () {
             context.router.pop();
-            createBroadcast(context: context, type: BroadcastType.meeting);
+            context.router.push(
+              BroadcastCreate(
+                type: BroadcastTypeConverter().toJson(BroadcastType.meeting),
+              ),
+            );
           },
           asset: 'assets/icons/microphone.svg',
           text: 'Start Meeting',
@@ -33,7 +35,11 @@ class CreationButtons extends StatelessWidget {
         BottomSheetSvgTile(
           onTap: () {
             context.router.pop();
-            createBroadcast(context: context, type: BroadcastType.livestream);
+            context.router.push(
+              BroadcastCreate(
+                type: BroadcastTypeConverter().toJson(BroadcastType.livestream),
+              ),
+            );
           },
           asset: 'assets/icons/video.svg',
           text: 'Go Live',
@@ -41,7 +47,7 @@ class CreationButtons extends StatelessWidget {
         BottomSheetSvgTile(
           onTap: () {
             context.router.pop();
-            createPetition(context: context);
+            context.router.push(PetitionCreate());
           },
           asset: 'assets/icons/digital-signature.svg',
           text: 'Create Petition',

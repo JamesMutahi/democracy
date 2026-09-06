@@ -5,6 +5,7 @@ import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/survey/bloc/survey_filter/survey_filter_cubit.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:democracy/survey/view/widgets/surveys.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -72,24 +73,33 @@ class _SurveyPageState extends State<SurveyPage> {
                         },
                         onFilterTap: () {
                           final filterCubit = context.read<SurveyFilterCubit>();
-                          showModalBottomSheet<void>(
-                            context: context,
-                            isScrollControlled: true,
-                            shape: const BeveledRectangleBorder(),
-                            useSafeArea: true,
-                            builder: (context) {
-                              return BlocProvider.value(
-                                value: filterCubit,
-                                child: _FiltersModal(
-                                  isOpen: state.isOpen,
-                                  filterByRegion: state.filterByRegion,
-                                  sortBy: state.sortBy,
-                                  startDate: state.startDate,
-                                  endDate: state.endDate,
-                                ),
-                              );
-                            },
+                          final filters = BlocProvider.value(
+                            value: filterCubit,
+                            child: _FiltersModal(
+                              isOpen: state.isOpen,
+                              filterByRegion: state.filterByRegion,
+                              sortBy: state.sortBy,
+                              startDate: state.startDate,
+                              endDate: state.endDate,
+                            ),
                           );
+                          kIsWeb
+                              ? showDialog(
+                                  context: context,
+                                  builder: (context) => filters,
+                                )
+                              : showGeneralDialog(
+                                  context: context,
+                                  transitionDuration: const Duration(
+                                    milliseconds: 300,
+                                  ),
+                                  pageBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                      ) => filters,
+                                );
                         },
                       );
                     },
@@ -139,11 +149,11 @@ class _FiltersModalState extends State<_FiltersModal> {
       endDate == widget.endDate;
 
   bool get _isDefaultState =>
-      isOpen == true &&
-      sortBy == 'recent' &&
-      filterByRegion == true &&
-      startDate == null &&
-      endDate == null;
+      isOpen == defaultIsOpen &&
+      sortBy == defaultSortBy &&
+      filterByRegion == defaultFilterByRegion &&
+      startDate == defaultStartDate &&
+      endDate == defaultEndDate;
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +166,7 @@ class _FiltersModalState extends State<_FiltersModal> {
         _buildSection(
           title: 'Sort by',
           child: FormBuilderRadioGroup<String>(
+            key: ValueKey('sortBy_$sortBy'),
             name: 'sort by',
             initialValue: sortBy,
             orientation: OptionsOrientation.vertical,
@@ -178,6 +189,7 @@ class _FiltersModalState extends State<_FiltersModal> {
         _buildSection(
           title: 'Status',
           child: FormBuilderRadioGroup<bool?>(
+            key: ValueKey('isOpen_$isOpen'),
             name: 'open',
             initialValue: isOpen,
             orientation: OptionsOrientation.vertical,
@@ -199,6 +211,7 @@ class _FiltersModalState extends State<_FiltersModal> {
         _buildSection(
           title: 'Filter by region',
           child: FormBuilderRadioGroup<bool>(
+            key: ValueKey('region_$filterByRegion'),
             name: 'region',
             initialValue: filterByRegion,
             orientation: OptionsOrientation.vertical,
@@ -218,6 +231,7 @@ class _FiltersModalState extends State<_FiltersModal> {
         _buildSection(
           title: 'Date Range',
           child: DateRangeFilter(
+            key: ValueKey('dateRange_${startDate}_$endDate'),
             initialValue: (startDate != null && endDate != null)
                 ? DateTimeRange(start: startDate!, end: endDate!)
                 : null,
@@ -274,11 +288,11 @@ class _FiltersModalState extends State<_FiltersModal> {
 
   void _clearFilters() {
     setState(() {
-      isOpen = true;
-      sortBy = 'recent';
-      filterByRegion = true;
-      startDate = null;
-      endDate = null;
+      isOpen = defaultIsOpen;
+      sortBy = defaultSortBy;
+      filterByRegion = defaultFilterByRegion;
+      startDate = defaultStartDate;
+      endDate = defaultEndDate;
     });
   }
 }

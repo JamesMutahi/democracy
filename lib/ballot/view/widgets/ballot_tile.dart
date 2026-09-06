@@ -413,7 +413,7 @@ class BallotPopUp extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
-            context.router.push(PostCreateRoute(ballot: ballot));
+            context.router.push(PostCreate(ballot: ballot));
           case 'Share':
             showModalBottomSheet<void>(
               context: context,

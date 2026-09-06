@@ -227,7 +227,7 @@ class SurveyPopUpMenu extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
-            context.router.push(PostCreateRoute(survey: survey));
+            context.router.push(PostCreate(survey: survey));
           case 'Share':
             showModalBottomSheet<void>(
               context: context,

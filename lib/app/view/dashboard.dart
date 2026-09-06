@@ -29,14 +29,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+@RoutePage()
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<Dashboard> createState() => _DashboardState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _DashboardState extends State<Dashboard> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -139,7 +140,7 @@ class _Web extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
-      drawer: responsive.isMobile ? Drawer(child: SideMenu()): null,
+      drawer: responsive.isMobile ? Drawer(child: SideMenu()) : null,
       body: SafeArea(
         child: Row(
           mainAxisAlignment: kIsWeb

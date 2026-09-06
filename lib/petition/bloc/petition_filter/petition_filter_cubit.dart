@@ -7,7 +7,7 @@ part 'petition_filter_state.dart';
 const defaultSearchTerm = '';
 const defaultIsOpen = null;
 const defaultFilterByRegion = true;
-const defaultSortBy = 'recent';
+const defaultSortBy = 'popular';
 const defaultStartDate = null;
 const defaultEndDate = null;
 

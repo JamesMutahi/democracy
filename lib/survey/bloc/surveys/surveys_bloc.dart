@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/app/shared/utils/transformers.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:equatable/equatable.dart';
@@ -62,6 +63,7 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
         event.payload['data']['results'].map((e) => Survey.fromJson(e)),
       );
       List previousSurveys = event.payload['data']['previous_surveys'] ?? [];
+      AppLogger.info(previousSurveys.toString());
       emit(
         state.copyWith(
           status: SurveysStatus.success,

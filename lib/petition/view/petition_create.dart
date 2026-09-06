@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
@@ -11,9 +12,11 @@ import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_form_widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class PetitionCreate extends StatelessWidget {
@@ -21,6 +24,8 @@ class PetitionCreate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+
     return BlocListener<PetitionDetailBloc, PetitionDetailState>(
       listener: (context, state) {
         if (state is PetitionCreated) {
@@ -63,39 +68,98 @@ class PetitionCreate extends StatelessWidget {
         },
         child: LoaderOverlay(
           overlayWidgetBuilder: (_) => const LoaderOverlayLoading(progress: ''),
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text('Create Petition'),
-              centerTitle: true,
-              leading: IconButton(
-                icon: const Icon(Icons.close_rounded),
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => const ExitDialog(),
-                ),
+          child: kIsWeb && responsive.largerThan(MOBILE)
+              ? _buildWeb(context)
+              : _buildMobile(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobile(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Create Petition'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.close_rounded),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => const ExitDialog(),
+          ),
+        ),
+      ),
+      body: PetitionFormWidget(
+        onPublishRequested:
+            (formData, imageFile, imageBytes, county, constituency, ward) {
+              _showPublishDialog(
+                context,
+                formData,
+                imageFile,
+                imageBytes,
+                county,
+                constituency,
+                ward,
+              );
+            },
+      ),
+    );
+  }
+
+  Widget _buildWeb(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600, maxHeight: 800),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Create Petition',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded),
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => const ExitDialog(),
+                    ),
+                  ),
+                ],
               ),
             ),
-            body: PetitionFormWidget(
-              onPublishRequested:
-                  (
-                    formData,
-                    imageFile,
-                    imageBytes,
-                    county,
-                    constituency,
-                    ward,
-                  ) {
-                    _showPublishDialog(
-                      context,
+            const Divider(height: 1),
+
+            Flexible(
+              child: PetitionFormWidget(
+                onPublishRequested:
+                    (
                       formData,
                       imageFile,
+                      imageBytes,
                       county,
                       constituency,
                       ward,
-                    );
-                  },
+                    ) {
+                      _showPublishDialog(
+                        context,
+                        formData,
+                        imageFile,
+                        imageBytes!,
+                        county,
+                        constituency,
+                        ward,
+                      );
+                    },
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -105,6 +169,7 @@ class PetitionCreate extends StatelessWidget {
     BuildContext context,
     Map<String, dynamic> formData,
     File? image,
+    Uint8List? imageBytes,
     County? county,
     Constituency? constituency,
     Ward? ward,
@@ -193,7 +258,7 @@ class PostPetitionDialog extends StatelessWidget {
       elevatedButtonText: 'Yes, Create Post',
       onElevatedButtonPressed: () {
         context.router.maybePop();
-        context.router.push(PostCreateRoute(petition: petition));
+        context.router.push(PostCreate(petition: petition));
       },
       textButtonText: 'No, Thanks',
       onTextButtonPressed: () => context.router.maybePop(),

@@ -332,7 +332,7 @@ class PetitionPopUpMenu extends StatelessWidget {
           onSelected: (selected) {
             switch (selected) {
               case 'Post':
-                context.router.push(PostCreateRoute(petition: petition));
+                context.router.push(PostCreate(petition: petition));
               case 'Share':
                 showModalBottomSheet<void>(
                   context: context,

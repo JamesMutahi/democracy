@@ -291,7 +291,10 @@ class _PostContainer extends StatelessWidget {
                                 ),
                               ),
                             if (post.communityNote.isNotEmpty)
-                              CommunityNote(post: post),
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: CommunityNote(post: post),
+                              ),
                             if (!isDependency)
                               Container(
                                 margin: EdgeInsets.only(top: 5),

@@ -152,13 +152,7 @@ class _HubState extends State<HubPage> {
           cubit: cubit,
         );
         kIsWeb
-            ? showModalBottomSheet<void>(
-                context: context,
-                isScrollControlled: true,
-                shape: const BeveledRectangleBorder(),
-                useSafeArea: true,
-                builder: (context) => filters,
-              )
+            ? showDialog(context: context, builder: (context) => filters)
             : showGeneralDialog(
                 context: context,
                 transitionDuration: const Duration(milliseconds: 300),

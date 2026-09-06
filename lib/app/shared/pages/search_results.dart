@@ -502,6 +502,7 @@ class _SearchFiltersState extends State<SearchFilters> {
       onClear: _clearFilters,
       widgets: [
         DateRangeFilter(
+          key: ValueKey('dateRange_${_startDate}_$_endDate'),
           initialValue: _startDate == null || _endDate == null
               ? null
               : DateTimeRange(start: _startDate!, end: _endDate!),

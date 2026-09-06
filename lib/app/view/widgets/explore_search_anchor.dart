@@ -81,14 +81,9 @@ class ExploreSearchAnchor extends StatelessWidget {
                     cubit: filterCubit,
                   );
                   kIsWeb
-                      ? showModalBottomSheet<void>(
+                      ? showDialog(
                           context: context,
-                          isScrollControlled: true,
-                          shape: const BeveledRectangleBorder(),
-                          useSafeArea: true,
-                          builder: (context) {
-                            return filters;
-                          },
+                          builder: (context) => filters,
                         )
                       : showGeneralDialog(
                           context: context,

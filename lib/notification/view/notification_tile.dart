@@ -125,7 +125,7 @@ class NotificationTile extends StatelessWidget {
 
     if (notification.isSupport) {
       return _NotificationContent(
-        asset: 'assets/icons/high-five.svg',
+        asset: 'assets/icons/digital-signature.svg',
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

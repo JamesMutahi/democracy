@@ -54,6 +54,7 @@ class _HubFiltersState extends State<HubFilters> {
         _buildSection(
           title: 'Sort by',
           child: FormBuilderRadioGroup<String>(
+            key: ValueKey('sortBy_$sortBy'),
             name: 'sort by',
             initialValue: sortBy,
             orientation: OptionsOrientation.vertical,
@@ -76,6 +77,7 @@ class _HubFiltersState extends State<HubFilters> {
         _buildSection(
           title: 'Filter by region',
           child: FormBuilderRadioGroup<bool>(
+            key: ValueKey('region_$filterByRegion'),
             name: 'region',
             initialValue: filterByRegion,
             orientation: OptionsOrientation.vertical,
@@ -95,6 +97,7 @@ class _HubFiltersState extends State<HubFilters> {
         _buildSection(
           title: 'Date Range',
           child: DateRangeFilter(
+            key: ValueKey('dateRange_${startDate}_$endDate'),
             initialValue: (startDate != null && endDate != null)
                 ? DateTimeRange(start: startDate!, end: endDate!)
                 : null,
@@ -151,10 +154,10 @@ class _HubFiltersState extends State<HubFilters> {
 
   void _clearFilters() {
     setState(() {
-      sortBy = 'recent';
-      filterByRegion = true;
-      startDate = null;
-      endDate = null;
+      sortBy = defaultSortBy;
+      filterByRegion = defaultFilterByRegion;
+      startDate = defaultStartDate;
+      endDate = defaultEndDate;
     });
   }
 }

@@ -159,7 +159,7 @@ class MeetingPopUp extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
-            context.router.push(PostCreateRoute(broadcast: broadcast));
+            context.router.push(PostCreate(broadcast: broadcast));
           case 'Share':
             showModalBottomSheet<void>(
               context: context,
