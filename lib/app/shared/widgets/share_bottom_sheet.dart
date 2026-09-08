@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/utils/copy.dart';
-import 'package:democracy/app/shared/pages/direct_message.dart';
+import 'package:democracy/chat/view/direct_message.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/models/ballot.dart';
@@ -52,7 +52,6 @@ class ShareBottomSheet extends StatelessWidget {
             context.router.popTop();
             showModalBottomSheet(
               context: context,
-              showDragHandle: true,
               isScrollControlled: true,
               useSafeArea: true,
               shape: const RoundedRectangleBorder(

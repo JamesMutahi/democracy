@@ -2,11 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
-import 'package:democracy/app/shared/widgets/dialogs.dart';
-import 'package:democracy/app/shared/widgets/more_pop_up.dart';
-import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
@@ -306,68 +302,6 @@ class PetitionSupportersRow extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-}
-
-class PetitionPopUpMenu extends StatelessWidget {
-  const PetitionPopUpMenu({super.key, required this.petition});
-
-  final Petition petition;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        final user = state.user!;
-        final isAuthor = user.id == petition.author.id;
-
-        final menuItems = [
-          'Post',
-          'Share',
-          if (isAuthor) (petition.isOpen ? 'Close' : 'Open'),
-        ];
-
-        return MorePopUp(
-          onSelected: (selected) {
-            switch (selected) {
-              case 'Post':
-                context.router.push(PostCreate(petition: petition));
-              case 'Share':
-                showModalBottomSheet<void>(
-                  context: context,
-                  shape: const BeveledRectangleBorder(),
-                  builder: (context) => ShareBottomSheet(petition: petition),
-                );
-              case 'Close':
-              case 'Open':
-                _showStatusChangeDialog(context, selected == 'Close');
-            }
-          },
-          texts: menuItems,
-        );
-      },
-    );
-  }
-
-  void _showStatusChangeDialog(BuildContext context, bool isClosing) {
-    showDialog(
-      context: context,
-      builder: (context) => CustomDialog(
-        title: isClosing ? 'Close petition' : 'Open petition',
-        content: isClosing
-            ? 'Are you sure you want to close this petition?\nYour petition will no longer allow any supporters'
-            : 'Are you sure you want to open this petition?\nPeople will be able to add and remove support',
-        elevatedButtonText: 'Yes',
-        onElevatedButtonPressed: () {
-          context.read<PetitionDetailBloc>().add(
-            PetitionDetailEvent.changeStatus(petition: petition),
-          );
-          context.router.popTop();
-        },
-        textButtonText: 'No',
-        onTextButtonPressed: () => context.router.popTop(),
-      ),
     );
   }
 }

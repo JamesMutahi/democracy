@@ -261,9 +261,7 @@ class RepostButton extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      shape: const BeveledRectangleBorder(),
       builder: (context) => CustomBottomSheet(
         title: 'Repost',
         children: [

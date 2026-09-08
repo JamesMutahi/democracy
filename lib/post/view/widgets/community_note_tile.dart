@@ -37,8 +37,6 @@ class CommunityNoteTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var numberFormat = NumberFormat.compact(locale: "en_UK");
-    var timeFormat = DateFormat('hh:mm a');
-    var dateFormat = DateFormat('dd/MM/yyyy');
 
     return VisibilityDetector(
       key: Key('${communityNote.id}'),
@@ -93,111 +91,7 @@ class CommunityNoteTile extends StatelessWidget {
                               ),
                             ),
                           SizedBox(width: 10),
-                          Flexible(
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                top: showTopThread ? 20 : 0,
-                                right: 15,
-                                bottom: 10,
-                              ),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            ProfileImage(
-                                              userId: communityNote.author.id,
-                                              username:
-                                                  communityNote.author.username,
-                                              imageUrl:
-                                                  communityNote.author.image,
-                                              navigateToProfile: true,
-                                            ),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                ProfileName(
-                                                  name:
-                                                      communityNote.author.name,
-                                                  username: communityNote
-                                                      .author
-                                                      .username,
-                                                ),
-                                                Text(
-                                                  '${timeFormat.format(communityNote.publishedAt)} • '
-                                                  '${dateFormat.format(communityNote.publishedAt)}',
-                                                  style: TextStyle(
-                                                    color: Theme.of(
-                                                      context,
-                                                    ).disabledColor,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      PostBody(
-                                        post: communityNote,
-                                        showWholeText: showWholeText,
-                                        isDependency: isDependency,
-                                      ),
-                                      SizedBox(height: 5),
-                                    ],
-                                  ),
-                                  if (!isDependency)
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            '${numberFormat.format(communityNote.replies)} ${communityNote.replies == 1 ? 'Comment' : 'Comments'}',
-                                            style: TextStyle(
-                                              color:
-                                                  communityNote
-                                                      .author
-                                                      .hasBlocked
-                                                  ? Theme.of(
-                                                      context,
-                                                    ).disabledColor
-                                                  : Theme.of(
-                                                      context,
-                                                    ).colorScheme.outline,
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              RepostButton(post: communityNote),
-                                              SizedBox(width: 20),
-                                              BookmarkButton(
-                                                post: communityNote,
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          _buildNote(context),
                         ],
                       ),
                     ),
@@ -212,6 +106,98 @@ class CommunityNoteTile extends StatelessWidget {
               child: PostPopUp(post: communityNote),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNote(BuildContext context) {
+    var numberFormat = NumberFormat.compact(locale: "en_UK");
+    var timeFormat = DateFormat('hh:mm a');
+    var dateFormat = DateFormat('dd/MM/yyyy');
+
+    return Flexible(
+      child: Container(
+        margin: EdgeInsets.only(
+          top: showTopThread ? 20 : 0,
+          right: 15,
+          bottom: 10,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ProfileImage(
+                        userId: communityNote.author.id,
+                        username: communityNote.author.username,
+                        imageUrl: communityNote.author.image,
+                        navigateToProfile: true,
+                      ),
+                      SizedBox(width: 10),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ProfileName(
+                            name: communityNote.author.name,
+                            username: communityNote.author.username,
+                          ),
+                          Text(
+                            '${timeFormat.format(communityNote.publishedAt)} • '
+                            '${dateFormat.format(communityNote.publishedAt)}',
+                            style: TextStyle(
+                              color: Theme.of(context).disabledColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 5),
+                PostBody(
+                  post: communityNote,
+                  showWholeText: showWholeText,
+                  isDependency: isDependency,
+                ),
+                SizedBox(height: 5),
+              ],
+            ),
+            if (!isDependency)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${numberFormat.format(communityNote.replies)} ${communityNote.replies == 1 ? 'Comment' : 'Comments'}',
+                      style: TextStyle(
+                        color: communityNote.author.hasBlocked
+                            ? Theme.of(context).disabledColor
+                            : Theme.of(context).colorScheme.outline,
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        RepostButton(post: communityNote),
+                        SizedBox(width: 20),
+                        BookmarkButton(post: communityNote),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -230,6 +216,7 @@ class _VoteColumn extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.only(left: 8),
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,

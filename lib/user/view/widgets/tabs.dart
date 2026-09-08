@@ -1,5 +1,6 @@
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_listener.dart';
@@ -52,6 +53,10 @@ class _UserPostsState extends State<UserPosts> {
           if (pinCompare != 0) return pinCompare;
           return b.publishedAt.compareTo(a.publishedAt);
         });
+
+        if (posts.isEmpty && state.status == UserPostsStatus.loading) {
+          return const BottomLoader();
+        }
 
         if (state.status == UserPostsStatus.success) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
@@ -139,6 +144,10 @@ class _UserRepliesState extends State<UserReplies> {
         final posts = state.posts.toList();
 
         if (state.status == UserRepliesStatus.initial) {
+          return const BottomLoader();
+        }
+
+        if (posts.isEmpty && state.status == UserRepliesStatus.loading) {
           return const BottomLoader();
         }
 
@@ -254,6 +263,10 @@ class _LikesState extends State<Likes> {
       builder: (context, state) {
         final posts = state.posts.toList();
 
+        if (posts.isEmpty && state.status == LikesStatus.loading) {
+          return const BottomLoader();
+        }
+
         if (state.status == LikesStatus.success) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
             _refreshController.refreshCompleted();
@@ -338,6 +351,10 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
           return const BottomLoader();
         }
 
+        if (posts.isEmpty && state.status == UserCommunityNotesStatus.loading) {
+          return const BottomLoader();
+        }
+
         if (state.status == UserCommunityNotesStatus.success) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
             _refreshController.refreshCompleted();
@@ -370,7 +387,9 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
               UserCommunityNotesEvent.update(posts: posts),
             );
           },
-          child: SmartRefresher(
+          child: posts.isEmpty
+              ? NoResults(text: 'No community notes')
+              : SmartRefresher(
             enablePullDown: true,
             enablePullUp: state.hasNext,
             header: ClassicHeader(),
@@ -443,6 +462,10 @@ class _UserPetitionsState extends State<UserPetitions> {
           return const BottomLoader();
         }
 
+        if (petitions.isEmpty && state.status == UserPetitionsStatus.loading) {
+          return const BottomLoader();
+        }
+
         if (state.status == UserPetitionsStatus.success) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
             _refreshController.refreshCompleted();
@@ -486,41 +509,43 @@ class _UserPetitionsState extends State<UserPetitions> {
               UserPetitionsEvent.remove(petitionId: petitionId),
             );
           },
-          child: SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: state.hasNext,
-            header: ClassicHeader(),
-            controller: _refreshController,
-            onRefresh: () {
-              context.read<UserPetitionsBloc>().add(
-                UserPetitionsEvent.get(user: widget.user),
-              );
-            },
-            onLoading: () {
-              context.read<UserPetitionsBloc>().add(
-                UserPetitionsEvent.get(
-                  user: widget.user,
-                  previousPetitions: petitions,
-                ),
-              );
-            },
-            footer: ClassicFooter(),
-            child: ListView.builder(
-              padding: EdgeInsets.all(15),
-              itemBuilder: (BuildContext context, int index) {
-                Petition petition = petitions[index];
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: PetitionTile(
-                    key: ValueKey(petition.id),
-                    petition: petition,
-                    isDependency: false,
+          child: petitions.isEmpty
+              ? NoResults(text: 'This account has no petitions')
+              : SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: state.hasNext,
+                  header: ClassicHeader(),
+                  controller: _refreshController,
+                  onRefresh: () {
+                    context.read<UserPetitionsBloc>().add(
+                      UserPetitionsEvent.get(user: widget.user),
+                    );
+                  },
+                  onLoading: () {
+                    context.read<UserPetitionsBloc>().add(
+                      UserPetitionsEvent.get(
+                        user: widget.user,
+                        previousPetitions: petitions,
+                      ),
+                    );
+                  },
+                  footer: ClassicFooter(),
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Petition petition = petitions[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: PetitionTile(
+                          key: ValueKey(petition.id),
+                          petition: petition,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: petitions.length,
                   ),
-                );
-              },
-              itemCount: petitions.length,
-            ),
-          ),
+                ),
         );
       },
     );

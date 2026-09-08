@@ -80,7 +80,6 @@ class _ChatPageState extends State<ChatPage> {
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
-                      showDragHandle: true,
                       isScrollControlled: true,
                       useSafeArea: true,
                       shape: const RoundedRectangleBorder(

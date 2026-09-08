@@ -10,7 +10,6 @@ class MorePopUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      padding: EdgeInsets.zero,
       menuPadding: EdgeInsets.zero,
       onSelected: onSelected,
       borderRadius: BorderRadius.circular(50),
@@ -22,10 +21,13 @@ class MorePopUp extends StatelessWidget {
           );
         }),
       ],
-      child: Icon(
-        Symbols.more_vert_rounded,
-        color: Theme.of(context).colorScheme.outline,
-        size: 20,
+      child: Padding(
+        padding: EdgeInsetsGeometry.all(10),
+        child: Icon(
+          Symbols.more_vert_rounded,
+          color: Theme.of(context).colorScheme.outline,
+          size: 20,
+        ),
       ),
     );
   }

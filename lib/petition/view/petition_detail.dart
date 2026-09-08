@@ -5,15 +5,18 @@ import 'package:democracy/app/bloc/services/websocket_service.dart'
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/bloc/petition/petition_bloc.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart'
-    show PetitionPopUpMenu, PetitionAuthorInfo;
+    show PetitionAuthorInfo;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,18 +32,22 @@ class PetitionDetail extends StatelessWidget {
       create: (context) =>
           PetitionBloc(webSocketService: context.read<WebSocketService>())
             ..add(PetitionEvent.load(petitionId: petitionId)),
-      child: Scaffold(
-        body: BlocBuilder<PetitionBloc, PetitionState>(
-          buildWhen: (previous, current) => current.petitionId == petitionId,
-          builder: (context, state) {
-            if (state.status == PetitionStatus.initial ||
-                (state.status == PetitionStatus.loading &&
-                    state.petition == null)) {
-              return const Center(child: BottomLoader());
-            }
-            if (state.status == PetitionStatus.failure &&
-                state.petition == null) {
-              return Center(
+      child: BlocBuilder<PetitionBloc, PetitionState>(
+        buildWhen: (previous, current) => current.petitionId == petitionId,
+        builder: (context, state) {
+          if (state.status == PetitionStatus.initial ||
+              (state.status == PetitionStatus.loading &&
+                  state.petition == null)) {
+            return Scaffold(
+              appBar: AppBar(leading: AutoLeadingButton()),
+              body: Center(child: BottomLoader()),
+            );
+          }
+          if (state.status == PetitionStatus.failure &&
+              state.petition == null) {
+            return Scaffold(
+              appBar: AppBar(leading: AutoLeadingButton()),
+              body: Center(
                 child: FailureRetryButton(
                   onPressed: () {
                     context.read<PetitionBloc>().add(
@@ -48,11 +55,11 @@ class PetitionDetail extends StatelessWidget {
                     );
                   },
                 ),
-              );
-            }
-            return _PetitionDetail(petition: state.petition!);
-          },
-        ),
+              ),
+            );
+          }
+          return _PetitionDetail(petition: state.petition!);
+        },
       ),
     );
   }
@@ -157,123 +164,126 @@ class _PetitionDetailState extends State<_PetitionDetail> {
                   child: Text('This petition has been deleted by the author'),
                 ),
               )
-            : CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    expandedHeight: 240,
-                    pinned: true,
-                    backgroundColor: Colors.transparent,
-                    leading: AutoLeadingButton(),
-                    actions: [
-                      CircleAvatar(
-                        radius: 35,
-                        backgroundColor: Theme.of(
-                          context,
-                        ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
-                        child: PetitionPopUpMenu(petition: petition),
+            : Scaffold(
+                body: CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      expandedHeight: 240,
+                      pinned: true,
+                      backgroundColor: Colors.transparent,
+                      leading: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Theme.of(context).colorScheme.tertiaryContainer
+                              .withValues(alpha: 0.6),
+                        ),
+                        child: AutoLeadingButton(),
                       ),
-                    ],
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          CachedNetworkImage(
-                            imageUrl: petition.image,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => const Center(
-                              child: CircularProgressIndicator(),
+                      actions: [PetitionPopUpMenu(petition: petition)],
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: petition.image,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.broken_image, size: 50),
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.broken_image, size: 50),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withValues(alpha: 0.7),
-                                ],
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black.withValues(alpha: 0.7),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          // Views Badge
-                          Positioned(
-                            bottom: 16,
-                            right: 16,
-                            child: _buildViewsBadge(petition.views),
-                          ),
-                        ],
+                            // Views Badge
+                            Positioned(
+                              bottom: 16,
+                              right: 16,
+                              child: _buildViewsBadge(petition.views),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Location Chips
-                          if (petition.county != null) ...[
-                            GeoChipRow(
-                              county: petition.county,
-                              constituency: petition.constituency,
-                              ward: petition.ward,
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Location Chips
+                            if (petition.county != null) ...[
+                              GeoChipRow(
+                                county: petition.county,
+                                constituency: petition.constituency,
+                                ward: petition.ward,
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+
+                            // Title
+                            Text(
+                              petition.title,
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 16),
+
+                            // Author Info
+                            GestureDetector(
+                              onTap: () => context.router.push(
+                                ProfileRoute(
+                                  username: petition.author.username,
+                                ),
+                              ),
+                              child: PetitionAuthorInfo(petition: petition),
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Supporters Count
+                            GestureDetector(
+                              onTap: () => context.router.push(
+                                Supporters(petitionId: petition.id),
+                              ),
+                              child: _buildSupportersInfo(petition),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Support Button
+                            _buildSupportAction(petition),
+
+                            const SizedBox(height: 32),
+
+                            // Description Section
+                            Text(
+                              'The Problem',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            CustomText(
+                              text: petition.description,
+                              style: Theme.of(context).textTheme.bodyMedium!,
+                              showAllText: true,
+                              suffix: '',
+                            ),
+                            const SizedBox(height: 24),
                           ],
-
-                          // Title
-                          Text(
-                            petition.title,
-                            style: Theme.of(context).textTheme.headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Author Info
-                          GestureDetector(
-                            onTap: () => context.router.push(
-                              ProfileRoute(username: petition.author.username),
-                            ),
-                            child: PetitionAuthorInfo(petition: petition),
-                          ),
-                          const SizedBox(height: 24),
-
-                          // Supporters Count
-                          GestureDetector(
-                            onTap: () => context.router.push(
-                              Supporters(petitionId: petition.id),
-                            ),
-                            child: _buildSupportersInfo(petition),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Support Button
-                          _buildSupportAction(petition),
-
-                          const SizedBox(height: 32),
-
-                          // Description Section
-                          Text(
-                            'The Problem',
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 8),
-                          CustomText(
-                            text: petition.description,
-                            style: Theme.of(context).textTheme.bodyMedium!,
-                            showAllText: true,
-                            suffix: '',
-                          ),
-                          const SizedBox(height: 24),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
       ),
     );
@@ -382,6 +392,87 @@ class _PetitionDetailState extends State<_PetitionDetail> {
   void _toggleSupport(Petition petition) {
     context.read<PetitionDetailBloc>().add(
       PetitionDetailEvent.support(petition: petition),
+    );
+  }
+}
+
+class PetitionPopUpMenu extends StatelessWidget {
+  const PetitionPopUpMenu({super.key, required this.petition});
+
+  final Petition petition;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        final user = state.user!;
+        final isAuthor = user.id == petition.author.id;
+
+        final menuItems = [
+          'Post',
+          'Share',
+          if (isAuthor) (petition.isOpen ? 'Close' : 'Open'),
+        ];
+
+        return PopupMenuButton<String>(
+          menuPadding: EdgeInsets.zero,
+          onSelected: (selected) {
+            switch (selected) {
+              case 'Post':
+                context.router.push(PostCreate(petition: petition));
+              case 'Share':
+                showModalBottomSheet<void>(
+                  context: context,
+                  shape: const BeveledRectangleBorder(),
+                  builder: (context) => ShareBottomSheet(petition: petition),
+                );
+              case 'Close':
+              case 'Open':
+                _showStatusChangeDialog(context, selected == 'Close');
+            }
+          },
+          borderRadius: BorderRadius.circular(50),
+          itemBuilder: (BuildContext context) => [
+            ...menuItems.map((text) {
+              return PopupMenuItem<String>(
+                value: text,
+                child: Text(text, textAlign: TextAlign.center),
+              );
+            }),
+          ],
+          child: Container(
+            padding: EdgeInsetsGeometry.all(15),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              color: Theme.of(
+                context,
+              ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
+            ),
+            child: Icon(Icons.more_vert_rounded, size: 25),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showStatusChangeDialog(BuildContext context, bool isClosing) {
+    showDialog(
+      context: context,
+      builder: (context) => CustomDialog(
+        title: isClosing ? 'Close petition' : 'Open petition',
+        content: isClosing
+            ? 'Are you sure you want to close this petition?\nYour petition will no longer allow any supporters'
+            : 'Are you sure you want to open this petition?\nPeople will be able to add and remove support',
+        elevatedButtonText: 'Yes',
+        onElevatedButtonPressed: () {
+          context.read<PetitionDetailBloc>().add(
+            PetitionDetailEvent.changeStatus(petition: petition),
+          );
+          context.router.popTop();
+        },
+        textButtonText: 'No',
+        onTextButtonPressed: () => context.router.popTop(),
+      ),
     );
   }
 }

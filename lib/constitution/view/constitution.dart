@@ -10,9 +10,7 @@ import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import 'package:flutter/services.dart';
-
 
 @RoutePage()
 class Constitution extends StatelessWidget {
@@ -30,41 +28,46 @@ class Constitution extends StatelessWidget {
     return sectionId == null
         ? _Constitution(selectionMode: selectionMode)
         : BlocProvider(
-      create: (context) {
-        final bloc = SectionBloc(
-          webSocketService: context.read<WebSocketService>(),
-        );
-        bloc.add(SectionEvent.load(sectionId: sectionId!));
-        return bloc;
-      },
-      child: BlocBuilder<SectionBloc, SectionState>(
-        buildWhen: (previous, current) => current.sectionId == sectionId,
-        builder: (context, state) {
-          if (state.status == SectionStatus.initial ||
-              (state.status == SectionStatus.loading && state.section == null)) {
-            return const Scaffold(body: Center(child: BottomLoader()));
-          }
-          if (state.status == SectionStatus.failure && state.section == null) {
-            return Scaffold(
-              appBar: AppBar(title: const Text('Constitution')),
-              body: Center(
-                child: FailureRetryButton(
-                  onPressed: () {
-                    context.read<SectionBloc>().add(
-                      SectionEvent.load(sectionId: sectionId!),
-                    );
-                  },
-                ),
-              ),
-            );
-          }
-          return _Constitution(
-            centeredSection: state.section!,
-            selectionMode: selectionMode,
+            create: (context) {
+              final bloc = SectionBloc(
+                webSocketService: context.read<WebSocketService>(),
+              );
+              bloc.add(SectionEvent.load(sectionId: sectionId!));
+              return bloc;
+            },
+            child: BlocBuilder<SectionBloc, SectionState>(
+              buildWhen: (previous, current) => current.sectionId == sectionId,
+              builder: (context, state) {
+                if (state.status == SectionStatus.initial ||
+                    (state.status == SectionStatus.loading &&
+                        state.section == null)) {
+                  return Scaffold(
+                    appBar: AppBar(title: const Text('Constitution')),
+                    body: const Center(child: BottomLoader()),
+                  );
+                }
+                if (state.status == SectionStatus.failure &&
+                    state.section == null) {
+                  return Scaffold(
+                    appBar: AppBar(title: const Text('Constitution')),
+                    body: Center(
+                      child: FailureRetryButton(
+                        onPressed: () {
+                          context.read<SectionBloc>().add(
+                            SectionEvent.load(sectionId: sectionId!),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }
+                return _Constitution(
+                  centeredSection: state.section!,
+                  selectionMode: selectionMode,
+                );
+              },
+            ),
           );
-        },
-      ),
-    );
   }
 }
 
@@ -99,7 +102,6 @@ class _ConstitutionState extends State<_Constitution> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Constitution'),
@@ -112,23 +114,26 @@ class _ConstitutionState extends State<_Constitution> {
               padding: const EdgeInsets.only(right: 12.0, top: 8, bottom: 8),
               child: widget.selectionMode
                   ? FilledButton.icon(
-                onPressed: () => context.router.pop(_selectedSection),
-                icon: const Icon(Icons.check, size: 18),
-                label: const Text('Select'),
-              )
+                      onPressed: () => context.router.pop(_selectedSection),
+                      icon: const Icon(Icons.check, size: 18),
+                      label: const Text('Select'),
+                    )
                   : FilledButton.tonalIcon(
-                onPressed: () {
-                  showModalBottomSheet<void>(
-                    context: context,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
+                          builder: (context) =>
+                              ShareBottomSheet(section: _selectedSection),
+                        );
+                      },
+                      icon: const Icon(Icons.share_rounded, size: 18),
+                      label: const Text('Share'),
                     ),
-                    builder: (context) => ShareBottomSheet(section: _selectedSection),
-                  );
-                },
-                icon: const Icon(Icons.share_rounded, size: 18),
-                label: const Text('Share'),
-              ),
             ),
           ),
         ],
@@ -145,7 +150,7 @@ class _ConstitutionState extends State<_Constitution> {
 
                 if (widget.centeredSection != null) {
                   index = sections.indexWhere(
-                        (section) => section.id == widget.centeredSection!.id,
+                    (section) => section.id == widget.centeredSection!.id,
                   );
                   topSections = sections.take(index).toList();
                   bottomSections = sections.skip(index + 1).toList();
@@ -183,14 +188,18 @@ class _ConstitutionState extends State<_Constitution> {
                         onSelection: onSelection,
                         onRemoveSelection: onRemoveSelection,
                       ),
-                    const SliverToBoxAdapter(child: SizedBox(height: 24)), // Bottom padding
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 24),
+                    ), // Bottom padding
                   ],
                 );
               case ConstitutionFailure():
                 return Center(
                   child: FailureRetryButton(
                     onPressed: () {
-                      context.read<ConstitutionBloc>().add(ConstitutionEvent.get());
+                      context.read<ConstitutionBloc>().add(
+                        ConstitutionEvent.get(),
+                      );
                     },
                   ),
                 );
@@ -220,18 +229,14 @@ class _Sections extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverList(
-      delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-          return SectionTile(
-            section: sections[index],
-            selectedSection: selectedSection,
-            onSelection: onSelection,
-            onRemoveSelection: onRemoveSelection,
-          );
-        },
-        childCount: sections.length,
-      ),
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+        return SectionTile(
+          section: sections[index],
+          selectedSection: selectedSection,
+          onSelection: onSelection,
+          onRemoveSelection: onRemoveSelection,
+        );
+      }, childCount: sections.length),
     );
   }
 }
-

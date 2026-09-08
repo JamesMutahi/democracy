@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-@RoutePage()
 class CreateMessage extends StatefulWidget {
   const CreateMessage({super.key});
 
@@ -44,96 +43,99 @@ class _CreateMessageState extends State<CreateMessage> {
             context.router.push(ChatDetail(chatId: state.chat.id));
           }
         },
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('New Message'),
-            leading: IconButton(
-              icon: const Icon(Icons.close_rounded),
-              onPressed: () => context.router.popTop(),
-              tooltip: 'Close',
+        child: SafeArea(
+          child: Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: const Text('New Message'),
+              leading: IconButton(
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () => context.router.popTop(),
+                tooltip: 'Close',
+              ),
+              backgroundColor: colorScheme.surface,
+              elevation: 0,
+              scrolledUnderElevation: 1,
             ),
-            backgroundColor: colorScheme.surface,
-            elevation: 0,
-            scrolledUnderElevation: 1,
-          ),
-          body: Column(
-            children: [
-              // 1. Modern Search Bar
-              _buildSearchBar(colorScheme),
+            body: Column(
+              children: [
+                _buildSearchBar(colorScheme),
 
-              // Subtle Divider
-              Divider(
-                height: 1,
-                color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-              ),
-
-              // 2. User List
-              Expanded(
-                child: BlocBuilder<UsersBloc, UsersState>(
-                  builder: (context, state) {
-                    final users = state.users.toList();
-
-                    // Handle RefreshController states
-                    if (state.status == UsersStatus.success) {
-                      if (_refreshController.headerStatus ==
-                          RefreshStatus.refreshing) {
-                        _refreshController.refreshCompleted();
-                      }
-                      if (_refreshController.footerStatus ==
-                          LoadStatus.loading) {
-                        _refreshController.loadComplete();
-                      }
-                    } else if (state.status == UsersStatus.failure) {
-                      if (_refreshController.headerStatus ==
-                          RefreshStatus.refreshing) {
-                        _refreshController.refreshFailed();
-                      }
-                      if (_refreshController.footerStatus ==
-                          LoadStatus.loading) {
-                        _refreshController.loadFailed();
-                      }
-                    }
-
-                    // Show empty state if search yields no results
-                    if (state.status == UsersStatus.success && users.isEmpty) {
-                      return _buildEmptyState();
-                    }
-
-                    return UsersListView(
-                      users: users,
-                      loading:
-                          state.status == UsersStatus.initial ||
-                          state.status == UsersStatus.loading,
-                      failure: state.status == UsersStatus.failure,
-                      refreshController: _refreshController,
-                      enablePullUp: state.hasNext,
-                      onUserTap: (user) {
-                        context.read<ChatDetailBloc>().add(
-                          ChatDetailEvent.create(user: user),
-                        );
-                      },
-                      onLoading: () {
-                        context.read<UsersBloc>().add(
-                          UsersEvent.get(
-                            searchTerm: _controller.text,
-                            lastUser: users.isNotEmpty ? users.last : null,
-                          ),
-                        );
-                      },
-                      onFailure: () {
-                        // 🚨 FIX: Safe access to users.last to prevent crash on empty list
-                        context.read<UsersBloc>().add(
-                          UsersEvent.get(
-                            searchTerm: _controller.text,
-                            lastUser: users.isNotEmpty ? users.last : null,
-                          ),
-                        );
-                      },
-                    );
-                  },
+                Divider(
+                  height: 1,
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
                 ),
-              ),
-            ],
+
+                Expanded(
+                  child: BlocBuilder<UsersBloc, UsersState>(
+                    builder: (context, state) {
+                      final users = state.users.toList();
+
+                      if (state.status == UsersStatus.success) {
+                        if (_refreshController.headerStatus ==
+                            RefreshStatus.refreshing) {
+                          _refreshController.refreshCompleted();
+                        }
+                        if (_refreshController.footerStatus ==
+                            LoadStatus.loading) {
+                          _refreshController.loadComplete();
+                        }
+                      } else if (state.status == UsersStatus.failure) {
+                        if (_refreshController.headerStatus ==
+                            RefreshStatus.refreshing) {
+                          _refreshController.refreshFailed();
+                        }
+                        if (_refreshController.footerStatus ==
+                            LoadStatus.loading) {
+                          _refreshController.loadFailed();
+                        }
+                      }
+
+                      if (state.status == UsersStatus.success &&
+                          users.isEmpty) {
+                        return _buildEmptyState();
+                      }
+
+                      bool loading =
+                          state.status == UsersStatus.initial ||
+                          (state.status == UsersStatus.loading &&
+                              users.isEmpty);
+
+                      return UsersListView(
+                        users: users,
+                        loading: loading,
+                        failure: users.isNotEmpty
+                            ? false
+                            : state.status == UsersStatus.failure,
+                        refreshController: _refreshController,
+                        enablePullUp: state.hasNext,
+                        onUserTap: (user) {
+                          context.read<ChatDetailBloc>().add(
+                            ChatDetailEvent.create(user: user),
+                          );
+                        },
+                        onLoading: () {
+                          context.read<UsersBloc>().add(
+                            UsersEvent.get(
+                              searchTerm: _controller.text,
+                              lastUser: users.isNotEmpty ? users.last : null,
+                            ),
+                          );
+                        },
+                        onFailure: () {
+                          context.read<UsersBloc>().add(
+                            UsersEvent.get(
+                              searchTerm: _controller.text,
+                              lastUser: users.isNotEmpty ? users.last : null,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

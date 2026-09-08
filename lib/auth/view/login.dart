@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/app_logo.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -15,9 +17,59 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  int _currentIndex = 0;
+  late Timer _timer;
+
+  final texts = ['Skiza Wakenya', 'Linda Mwananchi'];
+
+  List<Widget> _getWidgets(ColorScheme colorScheme) {
+    return texts
+        .map(
+          (text) => Row(
+            key: ValueKey<int>(_currentIndex),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.lightbulb_outline,
+                size: 16,
+                color: colorScheme.primary,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                text,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurfaceVariant,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
+          ),
+        )
+        .toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+      setState(() {
+        _currentIndex = (_currentIndex + 1) % texts.length;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final widgets = _getWidgets(colorScheme);
 
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
@@ -88,25 +140,9 @@ class _LoginPageState extends State<LoginPage> {
                           color: colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.lightbulb_outline,
-                              size: 16,
-                              color: colorScheme.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Skiza wakenya',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: colorScheme.onSurfaceVariant,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ],
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: widgets[_currentIndex],
                         ),
                       ),
 

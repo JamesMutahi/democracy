@@ -52,18 +52,22 @@ class MeetingDetail extends StatelessWidget {
         ),
         BlocProvider(create: (_) => SpeakingIndicatorBloc()),
       ],
-      child: Scaffold(
-        body: BlocBuilder<BroadcastBloc, BroadcastState>(
-          buildWhen: (previous, current) => current.broadcastId == broadcastId,
-          builder: (context, state) {
-            if (state.status == BroadcastStatus.initial ||
-                (state.status == BroadcastStatus.loading &&
-                    state.broadcast == null)) {
-              return const Center(child: BottomLoader());
-            }
-            if (state.status == BroadcastStatus.failure &&
-                state.broadcast == null) {
-              return Center(
+      child: BlocBuilder<BroadcastBloc, BroadcastState>(
+        buildWhen: (previous, current) => current.broadcastId == broadcastId,
+        builder: (context, state) {
+          if (state.status == BroadcastStatus.initial ||
+              (state.status == BroadcastStatus.loading &&
+                  state.broadcast == null)) {
+            return Scaffold(
+              appBar: AppBar(leading: AutoLeadingButton()),
+              body: const Center(child: BottomLoader()),
+            );
+          }
+          if (state.status == BroadcastStatus.failure &&
+              state.broadcast == null) {
+            return Scaffold(
+              appBar: AppBar(leading: AutoLeadingButton()),
+              body: Center(
                 child: FailureRetryButton(
                   onPressed: () {
                     context.read<BroadcastBloc>().add(
@@ -71,16 +75,16 @@ class MeetingDetail extends StatelessWidget {
                     );
                   },
                 ),
-              );
-            }
+              ),
+            );
+          }
 
-            if (!state.broadcast!.isActive || state.broadcast!.hasEnded) {
-              return const Center(child: Text('This meeting has been closed'));
-            }
+          if (!state.broadcast!.isActive || state.broadcast!.hasEnded) {
+            return const Center(child: Text('This meeting has been closed'));
+          }
 
-            return _MeetingDetail(broadcast: state.broadcast!);
-          },
-        ),
+          return _MeetingDetail(broadcast: state.broadcast!);
+        },
       ),
     );
   }

@@ -44,6 +44,9 @@ class BottomNavBar extends StatelessWidget {
                     isScrollControlled: true,
                     builder: (context) => Container(
                       margin: EdgeInsets.symmetric(horizontal: 15),
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                      ),
                       child: CreationButtons(),
                     ),
                   );

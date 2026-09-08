@@ -89,7 +89,6 @@ final otherRoutes = [
 
   // MESSAGES
   AutoRoute(path: 'chat/:id', page: ChatDetail.page),
-  AutoRoute(path: 'chat/create-message', page: CreateMessage.page),
   AutoRoute(path: 'chat/edit-message', page: EditMessage.page),
 
   // POSTS

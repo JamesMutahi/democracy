@@ -61,12 +61,18 @@ class ProfilePage extends StatelessWidget {
               return BottomLoader();
             }
             if (state.status == ProfileStatus.failure && state.user == null) {
-              return FailureRetryButton(
-                onPressed: () {
-                  context.read<ProfileBloc>().add(
-                    ProfileEvent.load(username: username),
-                  );
-                },
+              return Scaffold(
+                appBar: AppBar(
+                  leading: AutoLeadingButton(),
+                  title: Text('Profile'),
+                ),
+                body: FailureRetryButton(
+                  onPressed: () {
+                    context.read<ProfileBloc>().add(
+                      ProfileEvent.load(username: username),
+                    );
+                  },
+                ),
               );
             }
             if (state.status == ProfileStatus.notFound) {
@@ -357,17 +363,22 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
             height: appBarSize < kToolbarHeight ? kToolbarHeight : appBarSize,
             child: AppBar(
               elevation: 0.0,
-              leading: _ButtonContainer(
-                nameIsScrolled: nameIsScrolled,
+              leading: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: nameIsScrolled
+                      ? Colors.transparent
+                      : Theme.of(
+                          context,
+                        ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
+                ),
                 child: AutoLeadingButton(),
               ),
               actions: [
-                _ButtonContainer(
+                _ProfilePopUpMenu(
+                  user: user,
+                  isCurrentUser: isCurrentUser,
                   nameIsScrolled: nameIsScrolled,
-                  child: _ProfilePopUpMenu(
-                    user: user,
-                    isCurrentUser: isCurrentUser,
-                  ),
                 ),
               ],
               flexibleSpace: FlexibleSpaceBar.createSettings(
@@ -505,31 +516,16 @@ class _TabBarAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-class _ButtonContainer extends StatelessWidget {
-  const _ButtonContainer({required this.child, required this.nameIsScrolled});
-
-  final Widget child;
-  final bool nameIsScrolled;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: nameIsScrolled
-            ? Colors.transparent
-            : Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.5),
-      ),
-      child: child,
-    );
-  }
-}
-
 class _ProfilePopUpMenu extends StatelessWidget {
-  const _ProfilePopUpMenu({required this.user, required this.isCurrentUser});
+  const _ProfilePopUpMenu({
+    required this.user,
+    required this.isCurrentUser,
+    required this.nameIsScrolled,
+  });
 
   final User user;
   final bool isCurrentUser;
+  final bool nameIsScrolled;
 
   @override
   Widget build(BuildContext context) {
@@ -541,8 +537,9 @@ class _ProfilePopUpMenu extends StatelessWidget {
             user.isBlocked ? 'Unblock' : 'Block',
           ];
     return PopupMenuButton<String>(
-      padding: EdgeInsets.zero,
       menuPadding: EdgeInsets.zero,
+      splashRadius: 50,
+      borderRadius: BorderRadius.circular(50),
       onSelected: (selected) {
         switch (selected) {
           case 'Share':
@@ -578,7 +575,18 @@ class _ProfilePopUpMenu extends StatelessWidget {
           );
         }),
       ],
-      icon: Icon(Symbols.more_vert_rounded),
+      child: Container(
+        padding: EdgeInsetsGeometry.all(15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: nameIsScrolled
+              ? Colors.transparent
+              : Theme.of(
+                  context,
+                ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
+        ),
+        child: Icon(Icons.more_vert_rounded, size: 25),
+      ),
     );
   }
 }

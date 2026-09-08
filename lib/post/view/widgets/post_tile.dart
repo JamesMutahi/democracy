@@ -317,8 +317,9 @@ class _PostContainer extends StatelessWidget {
                   ),
                 ),
           if (!isDependency && !post.isDeleted)
-            Align(
-              alignment: Alignment.topRight,
+            Positioned(
+              top: -10,
+              right: -10,
               child: PostPopUp(post: post),
             ),
         ],
