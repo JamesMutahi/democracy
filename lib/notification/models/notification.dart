@@ -17,9 +17,6 @@ sealed class Notification with _$Notification {
     required final int id,
     required final String text,
     required final List<User> users,
-    @JsonKey(name: 'is_like') required final bool isLike,
-    @JsonKey(name: 'is_follow') required final bool isFollow,
-    @JsonKey(name: 'is_support') required final bool isSupport,
     required final Post? post,
     required final Ballot? ballot,
     required final Survey? survey,
@@ -27,12 +24,50 @@ sealed class Notification with _$Notification {
     required final Broadcast? broadcast,
     @ChatConverter() required final Chat? chat,
     @MessageConverter() required final Message? message,
+    @NotificationTypeConverter() required NotificationType type,
     @JsonKey(name: 'is_read') required final bool isRead,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
   }) = _Notification;
 
   factory Notification.fromJson(Map<String, Object?> json) =>
       _$NotificationFromJson(json);
+}
+
+enum NotificationType { general, like, follow, support }
+
+class NotificationTypeConverter
+    implements JsonConverter<NotificationType, String> {
+  const NotificationTypeConverter();
+
+  @override
+  NotificationType fromJson(String data) {
+    late NotificationType type;
+    switch (data) {
+      case 'general':
+        type = NotificationType.general;
+      case 'like':
+        type = NotificationType.like;
+      case 'follow':
+        type = NotificationType.follow;
+      case 'support':
+        type = NotificationType.support;
+    }
+    return type;
+  }
+
+  @override
+  String toJson(NotificationType object) {
+    switch (object) {
+      case NotificationType.general:
+        return 'general';
+      case NotificationType.like:
+        return 'like';
+      case NotificationType.follow:
+        return 'follow';
+      case NotificationType.support:
+        return 'support';
+    }
+  }
 }
 
 class ChatConverter implements JsonConverter<Chat?, Map<String, dynamic>?> {

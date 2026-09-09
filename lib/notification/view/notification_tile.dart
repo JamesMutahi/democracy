@@ -74,7 +74,7 @@ class NotificationTile extends StatelessWidget {
       color: Theme.of(context).colorScheme.onSurfaceVariant,
     );
 
-    if (notification.isLike) {
+    if (notification.type == n_.NotificationType.like) {
       return _NotificationContent(
         asset: 'assets/icons/heart.svg',
         iconColor: Colors.red,
@@ -96,7 +96,7 @@ class NotificationTile extends StatelessWidget {
       );
     }
 
-    if (notification.isFollow) {
+    if (notification.type == n_.NotificationType.follow) {
       return _NotificationContent(
         asset: 'assets/icons/person-add.svg',
         title: Column(
@@ -123,7 +123,7 @@ class NotificationTile extends StatelessWidget {
       );
     }
 
-    if (notification.isSupport) {
+    if (notification.type == n_.NotificationType.support) {
       return _NotificationContent(
         asset: 'assets/icons/digital-signature.svg',
         title: Column(

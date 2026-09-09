@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/widgets/audio_player.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -343,7 +344,12 @@ class MeetingBottomSheet extends StatelessWidget {
                   if (broadcast.hasEnded) {
                     context.router.popTop();
                     if (broadcast.recordingUrl != null) {
-                      startPip(url: broadcast.recordingUrl!);
+                      showDialog(
+                        context: context,
+                        builder: (context) => AudioPlayerWidget(
+                          audioUrl: broadcast.recordingUrl!,
+                        ),
+                      );
                     } else {
                       final snackBar = getSnackBar(
                         context: context,
