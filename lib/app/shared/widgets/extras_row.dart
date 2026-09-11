@@ -100,6 +100,45 @@ class ExtrasRow extends StatelessWidget {
               iconData: Symbols.photo_library_rounded,
               text: 'Gallery',
             ),
+          if (kIsWeb)
+            _ExtraCard(
+              onTap: () async {
+                await controller?.reverse();
+                if (maxAssets == 0) {
+                  maxAssetsReached();
+                } else {
+                  FilePickerResult? result = await FilePicker.pickFiles(
+                    type: FileType.custom,
+                    allowedExtensions: [
+                      'jpg',
+                      'jpeg',
+                      'png',
+                      'gif',
+                      'webp',
+                      'mp4',
+                      'mov',
+                      'mkv',
+                      'avi',
+                      'webm',
+                    ],
+                    allowMultiple: true,
+                    withData: true,
+                  );
+                  List<PlatformFile> files = [];
+                  if (result != null && result.files.isNotEmpty) {
+                    if (result.files.length > maxAssets) {
+                      files = result.files.sublist(0, maxAssets);
+                      maxAssetsReached();
+                    } else {
+                      files = result.files;
+                    }
+                  }
+                  // onMedia
+                }
+              },
+              iconData: Symbols.photo_library_rounded,
+              text: 'Media',
+            ),
           if (!kIsWeb)
             _ExtraCard(
               onTap: () async {
@@ -121,6 +160,7 @@ class ExtrasRow extends StatelessWidget {
               FilePickerResult? result = await FilePicker.pickFiles(
                 type: FileType.custom,
                 allowedExtensions: ['pdf', 'doc', 'docx'],
+                withData: kIsWeb,
               );
               if (result != null) {
                 File cachedFile = File(result.files.single.path!);

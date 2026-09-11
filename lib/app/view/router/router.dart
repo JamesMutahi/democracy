@@ -49,6 +49,16 @@ class AppRouter extends RootStackRouter {
           },
         ),
         CustomRoute(
+          page: CommunityNoteCreate.page,
+          customRouteBuilder: <T>(context, child, page) {
+            return DialogRoute<T>(
+              context: context,
+              builder: (context) => child,
+              settings: page,
+            );
+          },
+        ),
+        CustomRoute(
           page: BroadcastCreate.page,
           customRouteBuilder: <T>(context, child, page) {
             return DialogRoute<T>(
@@ -94,10 +104,6 @@ final otherRoutes = [
   // POSTS
   AutoRoute(path: 'post/:id', page: PostDetail.page),
   AutoRoute(path: 'post/:id/community-notes', page: CommunityNotes.page),
-  AutoRoute(
-    path: 'post/:id/create-community-note',
-    page: CommunityNoteCreate.page,
-  ),
   AutoRoute(path: 'community-note/:id', page: CommunityNoteDetail.page),
   AutoRoute(path: 'post/:id/reposts', page: Reposts.page),
   AutoRoute(path: 'drafts', page: DraftPosts.page),

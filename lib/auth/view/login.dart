@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: SizedBox(
                               width: double.infinity,
                               height: 56,
-                              child: FilledButton(
+                              child: OutlinedButton(
                                 onPressed: isLoading
                                     ? null
                                     : () {

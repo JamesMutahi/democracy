@@ -1,6 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 /// The [AppTheme] defines light and dark themes for the app.
 ///
 /// Theme setup for FlexColorScheme package v8.
@@ -19,7 +20,7 @@ abstract final class AppTheme {
   // The FlexColorScheme defined light mode ThemeData.
   static ThemeData light = FlexThemeData.light(
     // Using FlexColorScheme built-in FlexScheme enum based colors
-    scheme: FlexScheme.shadNeutral,
+    scheme: FlexScheme.shadGreen,
     // Input color modifiers.
     swapLegacyOnMaterial3: true,
     // Surface color adjustments.
@@ -49,7 +50,12 @@ abstract final class AppTheme {
       sliderValueTinted: true,
       sliderTrackHeight: 8,
       inputDecoratorIsDense: true,
-      inputDecoratorContentPadding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
+      inputDecoratorContentPadding: EdgeInsetsDirectional.fromSTEB(
+        12,
+        12,
+        12,
+        12,
+      ),
       inputDecoratorBorderSchemeColor: SchemeColor.primary,
       inputDecoratorBorderType: FlexInputBorderType.outline,
       inputDecoratorRadius: 8.0,
@@ -137,7 +143,7 @@ abstract final class AppTheme {
   // The FlexColorScheme defined dark mode ThemeData.
   static ThemeData dark = FlexThemeData.dark(
     // Using FlexColorScheme built-in FlexScheme enum based colors.
-    scheme: FlexScheme.shadNeutral,
+    scheme: FlexScheme.shadGreen,
     // Input color modifiers.
     swapLegacyOnMaterial3: true,
     // Convenience direct styling properties.
@@ -166,7 +172,12 @@ abstract final class AppTheme {
       sliderValueTinted: true,
       sliderTrackHeight: 8,
       inputDecoratorIsDense: true,
-      inputDecoratorContentPadding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
+      inputDecoratorContentPadding: EdgeInsetsDirectional.fromSTEB(
+        12,
+        12,
+        12,
+        12,
+      ),
       inputDecoratorBorderSchemeColor: SchemeColor.primary,
       inputDecoratorBorderType: FlexInputBorderType.outline,
       inputDecoratorRadius: 8.0,

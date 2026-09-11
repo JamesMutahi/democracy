@@ -1,62 +1,696 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="$FLUTTER_BASE_HREF">
-
+  <base href="/">
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="People of Kenya">
-
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="People of Kenya">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="shortcut icon" href="favicon.ico" />
-
+  <meta name="description" content="People of Kenya - Direct Civic Engagement">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>People of Kenya</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <!-- ==========================================
+       LANDING PAGE ASSETS (Bootstrap & Fonts)
+       ========================================== -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* =========================================
+       CRITICAL SCROLL FIXES
+       ========================================= */
+    html,
+    body {
+      height: auto !important;
+      /* Override Flutter's potential 100% height */
+      overflow-y: auto !important;
+      /* Force scrolling to be enabled */
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* =========================================
+       THEME VARIABLES (shadGreen inspired)
+       ========================================= */
+    :root {
+      --primary: #1A4D2E;
+      --primary-container: #2D6A4F;
+      --on-primary: #FFFFFF;
+      --surface: #FFFFFF;
+      --surface-container-low: #F8F9FA;
+      --on-surface: #212529;
+      --on-surface-variant: #6C757D;
+      --outline: #DEE2E6;
+      --shadow: rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--on-surface);
+      background-color: var(--surface);
+    }
+
+    /* =========================================
+       LANDING PAGE LAYOUT & UTILITIES
+       ========================================= */
+    #landing-page {
+      position: relative;
+      z-index: 100;
+      /* Keep landing page ABOVE the Flutter canvas */
+      background-color: var(--surface);
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    /* When hidden, lock it in place so it doesn't break document flow */
+    #landing-page.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      position: fixed;
+      /* Changed from absolute to fixed */
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      /* Disable scroll on the hidden layer */
+      z-index: 100;
+    }
+
+    .bg-primary-custom {
+      background-color: var(--primary) !important;
+    }
+
+    .text-primary-custom {
+      color: var(--primary) !important;
+    }
+
+    .bg-surface-low {
+      background-color: var(--surface-container-low) !important;
+    }
+
+    .font-serif {
+      font-family: 'Merriweather', serif;
+    }
+
+    .btn-demo {
+      background-color: var(--surface);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      font-weight: 600;
+      padding: 12px 32px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-demo:hover {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(26, 77, 46, 0.2);
+    }
+
+    /* =========================================
+       HERO & PHONE MOCKUPS
+       ========================================= */
+    .hero-section {
+      position: relative;
+      padding: 120px 0 80px;
+      overflow: hidden;
+    }
+
+    .geometric-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: radial-gradient(var(--on-primary) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .floating-phone {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    .phone-mockup {
+      width: 260px;
+      height: 520px;
+      background: #000;
+      border-radius: 36px;
+      padding: 10px;
+      box-shadow: 0 20px 40px rgba(26, 77, 46, 0.3);
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .phone-screen {
+      background: var(--surface);
+      border-radius: 28px;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 24px;
+      background: #000;
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+      z-index: 10;
+    }
+
+    .phone-header {
+      padding: 40px 16px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--outline);
+    }
+
+    .phone-content {
+      flex: 1;
+      background: var(--surface-container-low);
+      padding: 16px;
+    }
+
+    .ballot-item {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 4px var(--shadow);
+    }
+
+    .ballot-circle {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--outline);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* =========================================
+       FEATURES & SECTIONS
+       ========================================= */
+    .feature-card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      height: 100%;
+      box-shadow: 0 10px 30px var(--shadow);
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .philosophy-section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .quote-mark {
+      font-size: 6rem;
+      line-height: 1;
+      opacity: 0.3;
+      font-family: 'Merriweather', serif;
+    }
+
+    .showcase-phone {
+      width: 200px;
+      height: 400px;
+      background: #000;
+      border-radius: 28px;
+      padding: 8px;
+      box-shadow: 0 15px 30px var(--shadow);
+    }
+
+    .showcase-phone.tilt-left {
+      transform: rotate(-4deg) translateY(20px);
+    }
+
+    .showcase-phone.tilt-right {
+      transform: rotate(4deg) translateY(20px);
+    }
+
+    .showcase-screen {
+      background: var(--surface);
+      border-radius: 22px;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screen-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--on-surface-variant);
+      font-size: 0.8rem;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .footer-section {
+      padding: 80px 0 40px;
+    }
+
+    .footer-link {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .footer-link:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    /* Loading Overlay */
+    #loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--primary);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+      color: white;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
+
 <body>
 
+  <!-- ==========================================
+     LOADING OVERLAY (Shown when launching app)
+     ========================================== -->
+  <div id="loading-overlay">
+    <div class="spinner mb-3"></div>
+    <h5 class="fw-bold">Initializing Civic Platform...</h5>
+    <p class="small opacity-75">Loading secure environment</p>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"  type="application/javascript"></script>
-  <!-- AGORA WEB SUPPORT -->
-  <script src="iris-web-rtc.js"></script>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
+  <!-- ==========================================
+     LANDING PAGE CONTENT
+     ========================================== -->
+  <div id="landing-page">
 
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
-  <script src="flutter_bootstrap.js" async></script>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom sticky-top">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="#"><i class="bi bi-people-fill me-2"></i>People of Kenya</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item"><a class="nav-link" href="#philosophy">Philosophy</a></li>
+            <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+            <li class="nav-item"><a class="nav-link" href="#showcase">App Preview</a></li>
+            <li class="nav-item ms-lg-3">
+              <button class="btn btn-light text-primary-custom fw-semibold px-4" onclick="launchApp()">Launch
+                Demo</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section bg-primary-custom text-white">
+      <div class="geometric-bg"></div>
+      <div class="container position-relative">
+        <div class="row align-items-center">
+          <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0">
+            <h1 class="display-4 fw-bold mb-4">Democracy.<br>Just the People.</h1>
+            <p class="lead mb-4 opacity-75">Experience a civic social media platform where the
+              power to decide lies solely with you.</p>
+            <button class="btn btn-demo btn-lg" onclick="launchApp()">
+              <i class="bi bi-box-arrow-in-right me-2"></i>LAUNCH DEMO
+            </button>
+          </div>
+          <div class="col-lg-6 text-center">
+            <div class="floating-phone phone-mockup">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="phone-header">
+                  <div class="rounded-3 bg-primary-custom text-white d-flex align-items-center justify-content-center"
+                    style="width: 36px; height: 36px;">
+                    <i class="bi bi-check2-square"></i>
+                  </div>
+                  <span class="fw-bold">Active Ballot</span>
+                </div>
+                <div class="phone-content">
+                  <div class="ballot-item">
+                    <div class="ballot-circle"></div>
+                    <div>
+                      <div class="fw-semibold small">Approve Budget 2025</div>
+                      <div class="text-muted" style="font-size: 0.7rem;">Municipal</div>
+                    </div>
+                  </div>
+                  <div class="ballot-item">
+                    <div class="ballot-circle"></div>
+                    <div>
+                      <div class="fw-semibold small">Legalize Community Solar</div>
+                    </div>
+                  </div>
+                  <div class="ballot-item">
+                    <div class="ballot-circle"></div>
+                    <div>
+                      <div class="fw-semibold small">Fund Public Transit</div>
+                    </div>
+                  </div>
+                  <div class="mt-4">
+                    <div class="progress" style="height: 6px;">
+                      <div class="progress-bar bg-primary-custom" role="progressbar" style="width: 60%"></div>
+                    </div>
+                    <button class="btn btn-primary-custom w-100 mt-3 py-2 fw-semibold" style="font-size: 0.9rem;">Submit
+                      Vote</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5 bg-surface-low">
+      <div class="container py-5">
+        <div class="text-center mb-5">
+          <h2 class="fw-bold text-primary-custom">Tools for the People, By the People</h2>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          <div class="col">
+            <div class="feature-card"><i class="bi bi-megaphone feature-icon"></i>
+              <h5 class="fw-bold">Social Media</h5>
+              <p class="text-muted small mb-0">A decentralized public square. No party algorithms, no elite propaganda.
+              </p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="feature-card"><i class="bi bi-check2-circle feature-icon"></i>
+              <h5 class="fw-bold">Ballots</h5>
+              <p class="text-muted small mb-0">Vote on legislation and civic issues directly. No representatives voting
+                on your behalf.</p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="feature-card"><i class="bi bi-file-earmark-text feature-icon"></i>
+              <h5 class="fw-bold">Petitions</h5>
+              <p class="text-muted small mb-0">Draft, sign, and push petitions to the public ballot. The people set the
+                agenda.</p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="feature-card"><i class="bi bi-people feature-icon"></i>
+              <h5 class="fw-bold">Live Meetings</h5>
+              <p class="text-muted small mb-0">Real-time, moderated and recorded audio and video town halls. Raw,
+                unfiltered public
+                discourse.</p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="feature-card"><i class="bi bi-clipboard-data feature-icon"></i>
+              <h5 class="fw-bold">Surveys</h5>
+              <p class="text-muted small mb-0">Quick, transparent polling on emerging community issues to gauge true
+                public will.</p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="feature-card"><i class="bi bi-book feature-icon"></i>
+              <h5 class="fw-bold">Constitution</h5>
+              <p class="text-muted small mb-0">Read, reference, and cite the foundational rules of our society. Open and
+                transparent.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Philosophy Section -->
+    <section id="philosophy" class="philosophy-section bg-primary-custom text-white text-center">
+      <div class="geometric-bg"></div>
+      <div class="container position-relative">
+        <div class="row justify-content-center">
+          <div class="col-lg-10">
+            <div class="quote-mark">“</div>
+            <h2 class="font-serif fw-normal mb-4" style="font-size: 2rem; line-height: 1.4;">
+              A true democracy means that the power lies solely with the people and that the people alone are entitled
+              to it and thus, parties, rulers, the powerful, the hierarchical and other rulers are not allowed to decide 
+              on any matters independently or even to make propaganda for their ideas.
+            </h2>
+            <div class="quote-mark">”</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Showcase Section -->
+    <section id="showcase" class="py-5">
+      <div class="container py-5">
+        <div class="text-center mb-5">
+          <h2 class="fw-bold text-primary-custom">Experience the Platform</h2>
+          <p class="text-muted">A glimpse into the tools of self-governance.</p>
+        </div>
+        <div class="row justify-content-center align-items-end g-4">
+          <div class="col-6 col-md-4 col-lg-3 text-center">
+            <div class="showcase-phone tilt-left mx-auto">
+              <div class="showcase-screen bg-primary-custom text-white">
+                <div class="phone-notch"></div>
+                <div class="screen-placeholder">
+                  <i class="bi bi-camera-video fs-1 mb-2"></i>
+                  <span class="fw-bold">Live Meeting</span>
+                  <span class="opacity-75" style="font-size: 0.7rem;">Quarantine Facility</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 col-lg-3 text-center">
+            <div class="showcase-phone mx-auto" style="transform: scale(1.1); z-index: 2;">
+              <div class="showcase-screen">
+                <div class="phone-notch"></div>
+                <div class="screen-placeholder">
+                  <i class="bi bi-file-earmark-check fs-1 mb-2 text-primary-custom"></i>
+                  <span class="fw-bold text-dark">Petition</span>
+                  <span class="text-muted" style="font-size: 0.7rem;">Support Clean Water</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 col-lg-3 text-center">
+            <div class="showcase-phone tilt-right mx-auto">
+              <div class="showcase-screen" style="background-color: #E9F5EC;">
+                <div class="phone-notch"></div>
+                <div class="screen-placeholder">
+                  <i class="bi bi-book fs-1 mb-2 text-primary-custom"></i>
+                  <span class="fw-bold text-dark">Constitution</span>
+                  <span class="text-muted" style="font-size: 0.7rem;">Article I, Section 8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer-section bg-primary-custom text-white text-center">
+      <div class="container">
+        <h2 class="fw-bold mb-3">The era of self-governance begins now.</h2>
+        <p class="lead opacity-75 mb-5">Take your rightful place in society.</p>
+        <div class="d-flex justify-content-center gap-3 mb-5">
+          <button class="btn btn-light text-primary-custom fw-semibold px-4" onclick="launchApp()">
+            <i class="bi bi-laptop me-2"></i>Launch Web Demo
+          </button>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap gap-4 mb-4">
+          <a class="footer-link" data-bs-toggle="modal" data-bs-target="#tcModal">Terms & Conditions</a>
+          <a class="footer-link" href="#">Privacy Policy</a>
+          <a class="footer-link" href="#">Read the Constitution</a>
+        </div>
+        <p class="small opacity-50 mb-0">© 2026 People of Kenya. Power to the People</p>
+      </div>
+    </footer>
+  </div> <!-- End Landing Page -->
+
+  <!-- Terms Modal -->
+  <div class="modal fade" id="tcModal" tabindex="-1" aria-labelledby="tcModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="tcModalLabel">Terms & Conditions</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body pt-4">
+          <p class="text-muted mb-4">Please read these terms carefully before using this demonstration application.</p>
+          <div class="d-flex mb-4">
+            <div class="tc-number bg-primary-custom text-white me-3"
+              style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0.85rem;flex-shrink:0;">
+              1</div>
+            <div>
+              <h6 class="fw-bold mb-1">Acceptance of Terms</h6>
+              <p class="small text-muted mb-0">By downloading, installing, or accessing this demonstration application,
+                you agree to be bound by these Terms and Conditions.</p>
+            </div>
+          </div>
+          <div class="d-flex mb-4">
+            <div class="tc-number bg-primary-custom text-white me-3"
+              style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0.85rem;flex-shrink:0;">
+              2</div>
+            <div>
+              <h6 class="fw-bold mb-1">Evaluation Purpose</h6>
+              <p class="small text-muted mb-0">This application is strictly for evaluation, testing, and demonstration
+                purposes only.</p>
+            </div>
+          </div>
+          <div class="d-flex mb-4">
+            <div class="tc-number bg-primary-custom text-white me-3"
+              style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0.85rem;flex-shrink:0;">
+              3</div>
+            <div>
+              <h6 class="fw-bold mb-1">Data Usage and Disclaimers</h6>
+              <p class="small text-muted mb-0">• Temporary Storage: Data entered may be deleted, reset, or overwritten
+                at any time without notice.<br>• No Production Data: Do not upload or process real-world sensitive,
+                personal, or financial data within this environment.</p>
+            </div>
+          </div>
+          <div class="d-flex mb-4">
+            <div class="tc-number bg-danger bg-opacity-10 text-danger me-3"
+              style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0.85rem;flex-shrink:0;">
+              4</div>
+            <div>
+              <h6 class="fw-bold mb-1 text-danger">Disclaimer of Warranties</h6>
+              <p class="small text-muted mb-0">The application is provided on an "AS IS" and "AS AVAILABLE" basis. We
+                expressly disclaim all warranties, express or implied.</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn text-white" style="background-color: var(--primary);"
+            data-bs-dismiss="modal">I Understand</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+     SCRIPTS (Bootstrap & Flutter Bootstrap)
+     ========================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('firebase-messaging-sw.js', {
-          scope: '/firebase-cloud-messaging-push-scope',
-        });
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
       });
+    });
+
+    // Navbar shadow on scroll
+    window.addEventListener('scroll', function () {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) navbar.classList.add('shadow-sm');
+      else navbar.classList.remove('shadow-sm');
+    });
+
+    // ==========================================
+    // FLUTTER APP LAUNCH LOGIC
+    // ==========================================
+    function launchApp() {
+      const landingPage = document.getElementById('landing-page');
+      const loadingOverlay = document.getElementById('loading-overlay');
+
+      // Show loading overlay
+      loadingOverlay.style.display = 'flex';
+
+      // Fade out landing page
+      landingPage.classList.add('hidden');
+
+      // In a real scenario, Flutter is already loading in the background via flutter_bootstrap.js.
+      // We just give it a moment to render the canvas, then hide the loading overlay.
+      setTimeout(() => {
+        loadingOverlay.style.display = 'none';
+      }, 2500); // Adjust this timeout based on your app's actual load time
     }
   </script>
+
+  <!-- CRITICAL: Flutter Web Bootstrap Script -->
+  <script src="flutter_bootstrap.js" async></script>
 </body>
+
 </html>

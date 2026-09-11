@@ -207,7 +207,7 @@ class _PostCreateState extends State<PostCreate> {
             child: ValueListenableBuilder<bool>(
               valueListenable: ValueNotifier<bool>(
                 _canPost,
-              ), // Simplified for this example, or use a dedicated notifier
+              ),
               builder: (context, canPost, child) {
                 return FilledButton(
                   onPressed: canPost

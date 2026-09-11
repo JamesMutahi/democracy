@@ -10,6 +10,7 @@ import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -115,81 +116,146 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
                 },
               );
             },
-            child: Scaffold(
-              appBar: AppBar(
-                leading: IconButton(
-                  onPressed: _closePage,
-                  icon: Icon(Symbols.close),
-                ),
-                actions: [
-                  OutlinedButton(
-                    onPressed: _disablePostButton
-                        ? null
-                        : () {
+            child: kIsWeb ? _buildWeb() : _buildMobile(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobile() {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(onPressed: _closePage, icon: Icon(Symbols.close)),
+        actions: [
+          OutlinedButton(
+            onPressed: _disablePostButton
+                ? null
+                : () {
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          _CreateDialog(onYesPressed: _createPost),
+                    );
+                  },
+            child: Text('Post'),
+          ),
+        ],
+        actionsPadding: EdgeInsets.only(right: 15),
+      ),
+      body: _buildForm(),
+    );
+  }
+
+  Widget _buildWeb() {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600, maxHeight: 800),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Community Note', style: Theme.of(context).textTheme.titleLarge),
+                  Row(
+                    children: [
+                      FilledButton(
+                        onPressed: _disablePostButton
+                            ? null
+                            : () => showDialog(
+                                context: context,
+                                builder: (context) =>
+                                    _CreateDialog(onYesPressed: _createPost),
+                              ),
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: Text('Post'),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(Symbols.close),
+                        onPressed: () {
+                          if (_disablePostButton) {
+                            context.router.popTop();
+                          } else {
                             showDialog(
                               context: context,
-                              builder: (context) =>
-                                  _CreateDialog(onYesPressed: _createPost),
+                              builder: (context) => _CloseDialog(),
                             );
-                          },
-                    child: Text('Post'),
-                  ),
-                ],
-                actionsPadding: EdgeInsets.only(right: 15),
-              ),
-              body: CustomScrollView(
-                center: _centerKey,
-                slivers: <Widget>[
-                  ReplyTos(postId: widget.postId),
-                  SliverToBoxAdapter(
-                    key: _centerKey,
-                    child: Stack(
-                      children: [
-                        ThreadLine(
-                          showBottomThread: false,
-                          showTopThread: true,
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(
-                            left: 10,
-                            right: 15,
-                            top: 10,
-                            bottom: 5,
-                          ),
-                          child: SingleChildScrollView(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const PostAuthor(),
-                                PostTextField(
-                                  controller: _controller,
-                                  focusNode: _focusNode,
-                                  hintText: "What's the note?",
-                                  onChanged: (value) {
-                                    setState(() {
-                                      if (value == '') {
-                                        _disablePostButton = true;
-                                      } else {
-                                        _disablePostButton = false;
-                                      }
-                                    });
-                                  },
-                                  onContentInsertion: (imageFile) {},
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-          ),
+            const Divider(height: 1),
+            Flexible(child: _buildForm()),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildForm() {
+    return CustomScrollView(
+      center: _centerKey,
+      slivers: <Widget>[
+        ReplyTos(postId: widget.postId),
+        SliverToBoxAdapter(
+          key: _centerKey,
+          child: Stack(
+            children: [
+              ThreadLine(showBottomThread: false, showTopThread: true),
+              Container(
+                padding: EdgeInsets.only(
+                  left: 10,
+                  right: 15,
+                  top: 10,
+                  bottom: 5,
+                ),
+                child: SingleChildScrollView(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const PostAuthor(),
+                      PostTextField(
+                        controller: _controller,
+                        focusNode: _focusNode,
+                        hintText: "What's the note?",
+                        onChanged: (value) {
+                          setState(() {
+                            if (value == '') {
+                              _disablePostButton = true;
+                            } else {
+                              _disablePostButton = false;
+                            }
+                          });
+                        },
+                        onContentInsertion: (imageFile) {},
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
