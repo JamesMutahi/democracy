@@ -313,6 +313,20 @@
       text-decoration: underline;
     }
 
+    .showcase-img {
+      max-width: 240px;
+      /* Prevents them from getting too huge on desktop */
+      width: 100%;
+      height: auto;
+      /* Maintains correct aspect ratio */
+      transition: transform 0.3s ease;
+    }
+
+    .showcase-img:hover {
+      transform: translateY(-10px);
+      /* Nice hover effect */
+    }
+
     /* Loading Overlay */
     #loading-overlay {
       position: fixed;
@@ -401,45 +415,10 @@
             </button>
           </div>
           <div class="col-lg-6 text-center">
-            <div class="floating-phone phone-mockup">
-              <div class="phone-notch"></div>
-              <div class="phone-screen">
-                <div class="phone-header">
-                  <div class="rounded-3 bg-primary-custom text-white d-flex align-items-center justify-content-center"
-                    style="width: 36px; height: 36px;">
-                    <i class="bi bi-check2-square"></i>
-                  </div>
-                  <span class="fw-bold">Active Ballot</span>
-                </div>
-                <div class="phone-content">
-                  <div class="ballot-item">
-                    <div class="ballot-circle"></div>
-                    <div>
-                      <div class="fw-semibold small">Approve Budget 2025</div>
-                      <div class="text-muted" style="font-size: 0.7rem;">Municipal</div>
-                    </div>
-                  </div>
-                  <div class="ballot-item">
-                    <div class="ballot-circle"></div>
-                    <div>
-                      <div class="fw-semibold small">Legalize Community Solar</div>
-                    </div>
-                  </div>
-                  <div class="ballot-item">
-                    <div class="ballot-circle"></div>
-                    <div>
-                      <div class="fw-semibold small">Fund Public Transit</div>
-                    </div>
-                  </div>
-                  <div class="mt-4">
-                    <div class="progress" style="height: 6px;">
-                      <div class="progress-bar bg-primary-custom" role="progressbar" style="width: 60%"></div>
-                    </div>
-                    <button class="btn btn-primary-custom w-100 mt-3 py-2 fw-semibold" style="font-size: 0.9rem;">Submit
-                      Vote</button>
-                  </div>
-                </div>
-              </div>
+            <!-- Constrained container to prevent the image from blowing up the layout -->
+            <div class="hero-image-wrapper mx-auto floating-phone" style="max-width: 320px;">
+              <img src="images/home.png" class="img-fluid rounded-4 shadow-lg" alt="App Screenshot"
+                style="width: 100%; height: auto; object-fit: contain;">
             </div>
           </div>
         </div>
@@ -509,7 +488,7 @@
             <div class="quote-mark">“</div>
             <h2 class="font-serif fw-normal mb-4" style="font-size: 2rem; line-height: 1.4;">
               A true democracy means that the power lies solely with the people and that the people alone are entitled
-              to it and thus, parties, rulers, the powerful, the hierarchical and other rulers are not allowed to decide 
+              to it and thus, parties, rulers, the powerful, the hierarchical and other rulers are not allowed to decide
               on any matters independently or even to make propaganda for their ideas.
             </h2>
             <div class="quote-mark">”</div>
@@ -519,49 +498,41 @@
     </section>
 
     <!-- Showcase Section -->
-    <section id="showcase" class="py-5">
+    <section id="showcase" class="py-5 bg-surface-low">
       <div class="container py-5">
         <div class="text-center mb-5">
           <h2 class="fw-bold text-primary-custom">Experience the Platform</h2>
           <p class="text-muted">A glimpse into the tools of self-governance.</p>
         </div>
-        <div class="row justify-content-center align-items-end g-4">
-          <div class="col-6 col-md-4 col-lg-3 text-center">
-            <div class="showcase-phone tilt-left mx-auto">
-              <div class="showcase-screen bg-primary-custom text-white">
-                <div class="phone-notch"></div>
-                <div class="screen-placeholder">
-                  <i class="bi bi-camera-video fs-1 mb-2"></i>
-                  <span class="fw-bold">Live Meeting</span>
-                  <span class="opacity-75" style="font-size: 0.7rem;">Quarantine Facility</span>
-                </div>
-              </div>
-            </div>
+
+        <div class="row justify-content-center align-items-center g-4">
+
+          <!-- Mobile: 1 per row, Tablet: 2 per row, lg-xl: 3 per row, xxl: 5 per row -->
+          <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 text-center">
+            <img src="images/ballot.png" alt="Direct Ballots Interface"
+              class="img-fluid rounded-4 shadow-sm showcase-img">
           </div>
-          <div class="col-6 col-md-4 col-lg-3 text-center">
-            <div class="showcase-phone mx-auto" style="transform: scale(1.1); z-index: 2;">
-              <div class="showcase-screen">
-                <div class="phone-notch"></div>
-                <div class="screen-placeholder">
-                  <i class="bi bi-file-earmark-check fs-1 mb-2 text-primary-custom"></i>
-                  <span class="fw-bold text-dark">Petition</span>
-                  <span class="text-muted" style="font-size: 0.7rem;">Support Clean Water</span>
-                </div>
-              </div>
-            </div>
+
+          <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 text-center">
+            <img src="images/survey.png" alt="Public Surveys Interface"
+              class="img-fluid rounded-4 shadow-sm showcase-img">
           </div>
-          <div class="col-6 col-md-4 col-lg-3 text-center">
-            <div class="showcase-phone tilt-right mx-auto">
-              <div class="showcase-screen" style="background-color: #E9F5EC;">
-                <div class="phone-notch"></div>
-                <div class="screen-placeholder">
-                  <i class="bi bi-book fs-1 mb-2 text-primary-custom"></i>
-                  <span class="fw-bold text-dark">Constitution</span>
-                  <span class="text-muted" style="font-size: 0.7rem;">Article I, Section 8</span>
-                </div>
-              </div>
-            </div>
+
+          <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 text-center">
+            <img src="images/meeting.png" alt="Live Meetings Interface"
+              class="img-fluid rounded-4 shadow-sm showcase-img">
           </div>
+
+          <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 text-center">
+            <img src="images/petition.png" alt="Citizen Petitions Interface"
+              class="img-fluid rounded-4 shadow-sm showcase-img">
+          </div>
+
+          <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 text-center">
+            <img src="images/constitution.png" alt="Constitution Hub Interface"
+              class="img-fluid rounded-4 shadow-sm showcase-img">
+          </div>
+
         </div>
       </div>
     </section>
