@@ -6,6 +6,7 @@ import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
@@ -142,136 +143,140 @@ class _EditProfileState extends State<EditProfile> {
       },
       child: LoaderOverlay(
         overlayWidgetBuilder: (_) => const LoaderOverlayLoading(progress: ''),
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Edit Profile'),
-            centerTitle: true,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: FilledButton(
-                  onPressed: _hasChanges ? _handleSave : null,
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
+        child: MainContainer(
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text('Edit Profile'),
+              centerTitle: true,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: FilledButton(
+                    onPressed: _hasChanges ? _handleSave : null,
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                    child: const Text('Save'),
                   ),
-                  child: const Text('Save'),
                 ),
-              ),
-            ],
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    GestureDetector(
-                      onTap: () => _pickImage(isCoverPhoto: true),
-                      child: Container(
-                        height: 200,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: coverPhoto == null && coverPhotoBytes == null
-                                ? CachedNetworkImageProvider(
-                                    user.coverPhoto,
-                                    cacheKey: 'cover ${user.id}',
-                                  )
-                                : kIsWeb
-                                ? MemoryImage(coverPhotoBytes!)
-                                : FileImage(coverPhoto!),
-                            fit: BoxFit.cover,
+              ],
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      GestureDetector(
+                        onTap: () => _pickImage(isCoverPhoto: true),
+                        child: Container(
+                          height: 200,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image:
+                                  coverPhoto == null && coverPhotoBytes == null
+                                  ? CachedNetworkImageProvider(
+                                      user.coverPhoto,
+                                      cacheKey: 'cover ${user.id}',
+                                    )
+                                  : kIsWeb
+                                  ? MemoryImage(coverPhotoBytes!)
+                                  : FileImage(coverPhoto!),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    // Cover Photo Edit Button
-                    Positioned(
-                      bottom: 16,
-                      right: 16,
-                      child: FloatingActionButton.small(
-                        heroTag: 'cover_photo_edit',
-                        onPressed: () => _pickImage(isCoverPhoto: true),
-                        backgroundColor: Colors.black54,
-                        child: const Icon(
-                          Symbols.edit,
-                          color: Colors.white,
-                          size: 20,
+                      // Cover Photo Edit Button
+                      Positioned(
+                        bottom: 16,
+                        right: 16,
+                        child: FloatingActionButton.small(
+                          heroTag: 'cover_photo_edit',
+                          onPressed: () => _pickImage(isCoverPhoto: true),
+                          backgroundColor: Colors.black54,
+                          child: const Icon(
+                            Symbols.edit,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
-                    ),
 
-                    Positioned(
-                      bottom: -50,
-                      left: 16,
-                      child: GestureDetector(
-                        onTap: () => _pickImage(isCoverPhoto: false),
-                        child: CircleAvatar(
-                          radius: 54,
-                          backgroundColor: colorScheme.surface,
+                      Positioned(
+                        bottom: -50,
+                        left: 16,
+                        child: GestureDetector(
+                          onTap: () => _pickImage(isCoverPhoto: false),
                           child: CircleAvatar(
-                            radius: 50,
-                            backgroundImage: image == null && imageBytes == null
-                                ? CachedNetworkImageProvider(
-                                    user.image,
-                                    cacheKey: 'profile ${user.id}',
-                                  )
-                                : kIsWeb
-                                ? MemoryImage(imageBytes!)
-                                : FileImage(image!),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.4),
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              child: const Center(
-                                child: Icon(
-                                  Symbols.add_a_photo_rounded,
-                                  color: Colors.white,
-                                  size: 28,
+                            radius: 54,
+                            backgroundColor: colorScheme.surface,
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundImage:
+                                  image == null && imageBytes == null
+                                  ? CachedNetworkImageProvider(
+                                      user.image,
+                                      cacheKey: 'profile ${user.id}',
+                                    )
+                                  : kIsWeb
+                                  ? MemoryImage(imageBytes!)
+                                  : FileImage(image!),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 0.4),
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Symbols.add_a_photo_rounded,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 66),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildModernTextField(
-                        label: 'Name',
-                        initialValue: user.name,
-                        maxLines: 1,
-                        maxLength: 50,
-                        onChanged: (value) => setState(() => name = value),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildModernTextField(
-                        label: 'Bio',
-                        initialValue: user.bio,
-                        maxLines: 4,
-                        maxLength: 255,
-                        onChanged: (value) => setState(() => bio = value),
-                      ),
-                      const SizedBox(height: 32),
                     ],
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 66),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildModernTextField(
+                          label: 'Name',
+                          initialValue: user.name,
+                          maxLines: 1,
+                          maxLength: 50,
+                          onChanged: (value) => setState(() => name = value),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildModernTextField(
+                          label: 'Bio',
+                          initialValue: user.bio,
+                          maxLines: 4,
+                          maxLength: 255,
+                          onChanged: (value) => setState(() => bio = value),
+                        ),
+                        const SizedBox(height: 32),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

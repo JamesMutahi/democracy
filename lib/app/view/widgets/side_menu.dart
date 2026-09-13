@@ -132,15 +132,16 @@ class SideMenu extends StatelessWidget {
                               DrawerListTile(
                                 onTap: () {
                                   menuController.closeDrawer();
-                                  if (currentRoute != Constitution.name) {
+                                  if (currentRoute != ConstitutionRoute.name) {
                                     context.router.push(
-                                      Constitution(selectionMode: false),
+                                      ConstitutionRoute(selectionMode: false),
                                     );
                                   }
                                 },
                                 icon: 'assets/icons/notebook.svg',
                                 title: 'Constitution',
-                                selected: currentRoute == Constitution.name,
+                                selected:
+                                    currentRoute == ConstitutionRoute.name,
                               ),
                               DrawerListTile(
                                 onTap: () {
@@ -263,7 +264,7 @@ class SideMenu extends StatelessWidget {
       height: 22,
       width: 22,
       colorFilter: ColorFilter.mode(
-        Theme.of(context).primaryColor,
+        Theme.of(context).colorScheme.onSurfaceVariant,
         BlendMode.srcIn,
       ),
     );

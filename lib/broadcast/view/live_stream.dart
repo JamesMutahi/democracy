@@ -8,6 +8,7 @@ import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast/broadcast_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
@@ -30,26 +31,28 @@ class LiveStream extends StatelessWidget {
       create: (context) =>
           BroadcastBloc(webSocketService: context.read<WebSocketService>())
             ..add(BroadcastEvent.load(broadcastId: broadcastId)),
-      child: BlocBuilder<BroadcastBloc, BroadcastState>(
-        buildWhen: (previous, current) => current.broadcastId == broadcastId,
-        builder: (context, state) {
-          if (state.status == BroadcastStatus.initial ||
-              (state.status == BroadcastStatus.loading &&
-                  state.broadcast == null)) {
-            return BottomLoader();
-          }
-          if (state.status == BroadcastStatus.failure &&
-              state.broadcast == null) {
-            return FailureRetryButton(
-              onPressed: () {
-                context.read<BroadcastBloc>().add(
-                  BroadcastEvent.load(broadcastId: broadcastId),
-                );
-              },
-            );
-          }
-          return _LiveStream(broadcast: state.broadcast!);
-        },
+      child: MainContainer(
+        child: BlocBuilder<BroadcastBloc, BroadcastState>(
+          buildWhen: (previous, current) => current.broadcastId == broadcastId,
+          builder: (context, state) {
+            if (state.status == BroadcastStatus.initial ||
+                (state.status == BroadcastStatus.loading &&
+                    state.broadcast == null)) {
+              return BottomLoader();
+            }
+            if (state.status == BroadcastStatus.failure &&
+                state.broadcast == null) {
+              return FailureRetryButton(
+                onPressed: () {
+                  context.read<BroadcastBloc>().add(
+                    BroadcastEvent.load(broadcastId: broadcastId),
+                  );
+                },
+              );
+            }
+            return _LiveStream(broadcast: state.broadcast!);
+          },
+        ),
       ),
     );
   }

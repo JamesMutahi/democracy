@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -106,61 +107,46 @@ class PetitionCreate extends StatelessWidget {
   }
 
   Widget _buildWeb(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 600, maxHeight: 800),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Create Petition',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close_rounded),
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) => const ExitDialog(),
-                    ),
-                  ),
-                ],
+    return DialogContainer(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Create Petition',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-            ),
-            const Divider(height: 1),
-
-            Flexible(
-              child: PetitionFormWidget(
-                onPublishRequested:
-                    (
-                      formData,
-                      imageFile,
-                      imageBytes,
-                      county,
-                      constituency,
-                      ward,
-                    ) {
-                      _showPublishDialog(
-                        context,
-                        formData,
-                        imageFile,
-                        imageBytes!,
-                        county,
-                        constituency,
-                        ward,
-                      );
-                    },
+              IconButton(
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => const ExitDialog(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+        const Divider(height: 1),
+
+        Flexible(
+          child: PetitionFormWidget(
+            onPublishRequested:
+                (formData, imageFile, imageBytes, county, constituency, ward) {
+                  _showPublishDialog(
+                    context,
+                    formData,
+                    imageFile,
+                    imageBytes!,
+                    county,
+                    constituency,
+                    ward,
+                  );
+                },
+          ),
+        ),
+      ],
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/utils/custom_editing_controller.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
@@ -148,65 +149,60 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
   }
 
   Widget _buildWeb() {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 600, maxHeight: 800),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return DialogContainer(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Community Note',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Row(
                 children: [
-                  Text('Community Note', style: Theme.of(context).textTheme.titleLarge),
-                  Row(
-                    children: [
-                      FilledButton(
-                        onPressed: _disablePostButton
-                            ? null
-                            : () => showDialog(
-                                context: context,
-                                builder: (context) =>
-                                    _CreateDialog(onYesPressed: _createPost),
-                              ),
-                        style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
+                  FilledButton(
+                    onPressed: _disablePostButton
+                        ? null
+                        : () => showDialog(
+                            context: context,
+                            builder: (context) =>
+                                _CreateDialog(onYesPressed: _createPost),
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: Text('Post'),
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
                       ),
-                      const SizedBox(width: 8),
-                      IconButton(
-                        icon: const Icon(Symbols.close),
-                        onPressed: () {
-                          if (_disablePostButton) {
-                            context.router.popTop();
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) => _CloseDialog(),
-                            );
-                          }
-                        },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                    ],
+                    ),
+                    child: Text('Post'),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Symbols.close),
+                    onPressed: () {
+                      if (_disablePostButton) {
+                        context.router.popTop();
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => _CloseDialog(),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
-            ),
-            const Divider(height: 1),
-            Flexible(child: _buildForm()),
-          ],
+            ],
+          ),
         ),
-      ),
+        const Divider(height: 1),
+        Flexible(child: _buildForm()),
+      ],
     );
   }
 

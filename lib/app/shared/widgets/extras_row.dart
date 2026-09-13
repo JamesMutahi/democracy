@@ -11,8 +11,8 @@ import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -57,8 +57,8 @@ class ExtrasRow extends StatelessWidget {
     return Center(
       child: Wrap(
         alignment: WrapAlignment.center,
-        spacing: 15.0,
-        runSpacing: 5.0,
+        spacing: 12.0,
+        runSpacing: 16.0,
         children: <Widget>[
           if (!kIsWeb)
             _ExtraCard(
@@ -78,7 +78,7 @@ class ExtrasRow extends StatelessWidget {
                   }
                 }
               },
-              iconData: Symbols.photo_camera_rounded,
+              icon: 'assets/icons/camera.svg',
               text: 'Camera',
             ),
           if (!kIsWeb)
@@ -97,7 +97,7 @@ class ExtrasRow extends StatelessWidget {
                   }
                 }
               },
-              iconData: Symbols.photo_library_rounded,
+              icon: 'assets/icons/gallery.svg',
               text: 'Gallery',
             ),
           if (kIsWeb)
@@ -124,6 +124,7 @@ class ExtrasRow extends StatelessWidget {
                     allowMultiple: true,
                     withData: true,
                   );
+
                   List<PlatformFile> files = [];
                   if (result != null && result.files.isNotEmpty) {
                     if (result.files.length > maxAssets) {
@@ -132,11 +133,27 @@ class ExtrasRow extends StatelessWidget {
                     } else {
                       files = result.files;
                     }
+                    final List<File> pickedFiles = [];
+                    for (final platformFile in files) {
+                      if (platformFile.bytes != null) {
+                        final directory = await getTemporaryDirectory();
+                        final file = File(
+                          p.join(directory.path, platformFile.name),
+                        );
+                        await file.writeAsBytes(platformFile.bytes!);
+                        pickedFiles.add(file);
+                      } else if (platformFile.path != null) {
+                        pickedFiles.add(File(platformFile.path!));
+                      }
+                    }
+
+                    if (pickedFiles.isNotEmpty && context.mounted) {
+                      onMedia(pickedFiles);
+                    }
                   }
-                  // onMedia
                 }
               },
-              iconData: Symbols.photo_library_rounded,
+              icon: 'assets/icons/gallery-wide.svg',
               text: 'Media',
             ),
           if (!kIsWeb)
@@ -151,7 +168,7 @@ class ExtrasRow extends StatelessWidget {
                   context.router.push(Location(onLocation: onLocation));
                 }
               },
-              iconData: Symbols.location_on_rounded,
+              icon: 'assets/icons/location.svg',
               text: 'Location',
             ),
           _ExtraCard(
@@ -162,34 +179,36 @@ class ExtrasRow extends StatelessWidget {
                 allowedExtensions: ['pdf', 'doc', 'docx'],
                 withData: kIsWeb,
               );
-              if (result != null) {
+              if (result != null && result.files.single.path != null) {
                 File cachedFile = File(result.files.single.path!);
-
                 Directory directory = await getTemporaryDirectory();
-
                 String fileName = p.basename(cachedFile.path);
-
                 String targetPath = p.join(directory.path, fileName);
-
                 File permanentFile = await cachedFile.copy(targetPath);
-
                 onDocument(permanentFile);
               }
             },
-            iconData: Symbols.file_present_rounded,
+            icon: 'assets/icons/folder.svg',
             text: 'Document',
           ),
           _ExtraCard(
             onTap: () async {
               await controller?.reverse();
               if (context.mounted) {
-                Section? section = await context.router.push(
-                  Constitution(selectionMode: true),
-                );
+                Section? section;
+                if (kIsWeb) {
+                  section = await context.router.push(
+                    ConstitutionView(selectionMode: true),
+                  );
+                } else {
+                  section = await context.router.push(
+                    ConstitutionRoute(selectionMode: true),
+                  );
+                }
                 if (section != null) onSection(section);
               }
             },
-            iconData: Symbols.book_rounded,
+            icon: 'assets/icons/notebook.svg',
             text: 'Constitution',
           ),
         ],
@@ -201,21 +220,59 @@ class ExtrasRow extends StatelessWidget {
 class _ExtraCard extends StatelessWidget {
   const _ExtraCard({
     required this.onTap,
-    required this.iconData,
+    required this.icon,
     required this.text,
   });
 
   final VoidCallback onTap;
-  final IconData iconData;
+  final String icon;
   final String text;
 
   @override
   Widget build(BuildContext context) {
-    return IconButton.filledTonal(
-      onPressed: onTap,
-      tooltip: text,
-      padding: EdgeInsets.all(10),
-      icon: Icon(iconData, size: 25),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest,
+                  shape: BoxShape.circle,
+                ),
+                child: SvgPicture.asset(
+                  icon,
+                  height: 24,
+                  width: 24,
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.primary,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                text,
+                style: TextStyle(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                  letterSpacing: 0.2,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

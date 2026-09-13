@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/survey/bloc/survey/survey_bloc.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
@@ -27,45 +28,49 @@ class SurveyDetail extends StatelessWidget {
       create: (context) =>
           SurveyBloc(webSocketService: context.read<WebSocketService>())
             ..add(SurveyEvent.load(surveyId: surveyId)),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Survey'),
-          actions: [
-            BlocBuilder<SurveyBloc, SurveyState>(
-              buildWhen: (previous, current) => current.surveyId == surveyId,
-              builder: (context, state) {
-                return state.survey != null
-                    ? Visibility(
-                        visible: state.survey != null,
-                        child: Container(
-                          margin: EdgeInsets.only(right: 15),
-                          child: SurveyPopUpMenu(survey: state.survey!),
-                        ),
-                      )
-                    : SizedBox.shrink();
-              },
-            ),
-          ],
-        ),
-        body: BlocBuilder<SurveyBloc, SurveyState>(
-          buildWhen: (previous, current) => current.surveyId == surveyId,
-          builder: (context, state) {
-            if (state.status == SurveyStatus.initial ||
-                (state.status == SurveyStatus.loading &&
-                    state.survey == null)) {
-              return BottomLoader();
-            }
-            if (state.status == SurveyStatus.failure && state.survey == null) {
-              return FailureRetryButton(
-                onPressed: () {
-                  context.read<SurveyBloc>().add(
-                    SurveyEvent.load(surveyId: surveyId),
-                  );
+      child: MainContainer(
+        child: Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text('Survey'),
+            actions: [
+              BlocBuilder<SurveyBloc, SurveyState>(
+                buildWhen: (previous, current) => current.surveyId == surveyId,
+                builder: (context, state) {
+                  return state.survey != null
+                      ? Visibility(
+                          visible: state.survey != null,
+                          child: Container(
+                            margin: EdgeInsets.only(right: 15),
+                            child: SurveyPopUpMenu(survey: state.survey!),
+                          ),
+                        )
+                      : SizedBox.shrink();
                 },
-              );
-            }
-            return _SurveyDetail(survey: state.survey!);
-          },
+              ),
+            ],
+          ),
+          body: BlocBuilder<SurveyBloc, SurveyState>(
+            buildWhen: (previous, current) => current.surveyId == surveyId,
+            builder: (context, state) {
+              if (state.status == SurveyStatus.initial ||
+                  (state.status == SurveyStatus.loading &&
+                      state.survey == null)) {
+                return BottomLoader();
+              }
+              if (state.status == SurveyStatus.failure &&
+                  state.survey == null) {
+                return FailureRetryButton(
+                  onPressed: () {
+                    context.read<SurveyBloc>().add(
+                      SurveyEvent.load(surveyId: surveyId),
+                    );
+                  },
+                );
+              }
+              return _SurveyDetail(survey: state.survey!);
+            },
+          ),
         ),
       ),
     );

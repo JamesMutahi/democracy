@@ -5,6 +5,7 @@ import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart' show TimeLeft;
 import 'package:democracy/survey/bloc/survey/survey_bloc.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
@@ -30,39 +31,43 @@ class SurveyProcess extends StatelessWidget {
       create: (context) =>
           SurveyBloc(webSocketService: context.read<WebSocketService>())
             ..add(SurveyEvent.load(surveyId: surveyId)),
-      child: Scaffold(
-        appBar: AppBar(
-          title: BlocBuilder<SurveyBloc, SurveyState>(
-            buildWhen: (previous, current) => current.surveyId == surveyId,
-            builder: (context, state) => Text(state.survey?.title ?? 'Survey'),
+      child: MainContainer(
+        child: Scaffold(
+          appBar: AppBar(
+            title: BlocBuilder<SurveyBloc, SurveyState>(
+              buildWhen: (previous, current) => current.surveyId == surveyId,
+              builder: (context, state) =>
+                  Text(state.survey?.title ?? 'Survey'),
+            ),
+            centerTitle: true,
           ),
-          centerTitle: true,
-        ),
-        body: BlocBuilder<SurveyBloc, SurveyState>(
-          buildWhen: (previous, current) => current.surveyId == surveyId,
-          builder: (context, state) {
-            if (state.status == SurveyStatus.initial ||
-                (state.status == SurveyStatus.loading &&
-                    state.survey == null)) {
-              return const Center(child: BottomLoader());
-            }
-            if (state.status == SurveyStatus.failure && state.survey == null) {
-              return Center(
-                child: FailureRetryButton(
-                  onPressed: () => context.read<SurveyBloc>().add(
-                    SurveyEvent.load(surveyId: surveyId),
+          body: BlocBuilder<SurveyBloc, SurveyState>(
+            buildWhen: (previous, current) => current.surveyId == surveyId,
+            builder: (context, state) {
+              if (state.status == SurveyStatus.initial ||
+                  (state.status == SurveyStatus.loading &&
+                      state.survey == null)) {
+                return const Center(child: BottomLoader());
+              }
+              if (state.status == SurveyStatus.failure &&
+                  state.survey == null) {
+                return Center(
+                  child: FailureRetryButton(
+                    onPressed: () => context.read<SurveyBloc>().add(
+                      SurveyEvent.load(surveyId: surveyId),
+                    ),
                   ),
-                ),
-              );
-            }
-            return _SurveyProcess(survey: state.survey!);
-          },
-        ),
-        bottomNavigationBar: BlocBuilder<SurveyBloc, SurveyState>(
-          buildWhen: (previous, current) => current.surveyId == surveyId,
-          builder: (context, state) => state.survey != null
-              ? BottomNavBar(survey: state.survey!)
-              : const SizedBox.shrink(),
+                );
+              }
+              return _SurveyProcess(survey: state.survey!);
+            },
+          ),
+          bottomNavigationBar: BlocBuilder<SurveyBloc, SurveyState>(
+            buildWhen: (previous, current) => current.surveyId == surveyId,
+            builder: (context, state) => state.survey != null
+                ? BottomNavBar(survey: state.survey!)
+                : const SizedBox.shrink(),
+          ),
         ),
       ),
     );

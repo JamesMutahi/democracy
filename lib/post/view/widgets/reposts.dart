@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/post/bloc/quotes/quotes_bloc.dart';
 import 'package:democracy/post/bloc/reposts/reposts_bloc.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
@@ -32,24 +33,26 @@ class Reposts extends StatelessWidget {
       ],
       child: DefaultTabController(
         length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Reposts'),
-            bottom: TabBar(
-              dividerColor: Theme.of(context).colorScheme.outlineVariant,
-              labelStyle: Theme.of(context).textTheme.titleMedium,
-              tabs: [
-                Tab(text: 'Quotes'),
-                Tab(text: 'Reposts'),
+        child: MainContainer(
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text('Reposts'),
+              bottom: TabBar(
+                dividerColor: Theme.of(context).colorScheme.outlineVariant,
+                labelStyle: Theme.of(context).textTheme.titleMedium,
+                tabs: [
+                  Tab(text: 'Quotes'),
+                  Tab(text: 'Reposts'),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                _Quotes(postId: postId),
+                _Reposts(postId: postId),
               ],
             ),
-          ),
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              _Quotes(postId: postId),
-              _Reposts(postId: postId),
-            ],
           ),
         ),
       ),

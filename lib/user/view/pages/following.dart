@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/user/bloc/followers/followers_bloc.dart';
 import 'package:democracy/user/bloc/following/following_bloc.dart';
 import 'package:democracy/user/models/user.dart';
@@ -33,30 +34,34 @@ class FollowingPage extends StatelessWidget {
               FollowersBloc(webSocketService: context.read<WebSocketService>()),
         ),
       ],
-      child: Scaffold(
-        body: DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
-            headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  floating: true,
-                  snap: true,
-                  title: Text(userName),
-                  bottom: TabBar(
-                    dividerColor: Theme.of(context).colorScheme.outlineVariant,
-                    labelStyle: Theme.of(context).textTheme.titleMedium,
-                    tabs: [
-                      Tab(text: 'Followers'),
-                      Tab(text: 'Following'),
-                    ],
+      child: MainContainer(
+        child: Scaffold(
+          body: DefaultTabController(
+            length: 2,
+            child: NestedScrollView(
+              headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    floating: true,
+                    snap: true,
+                    title: Text(userName),
+                    bottom: TabBar(
+                      dividerColor: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant,
+                      labelStyle: Theme.of(context).textTheme.titleMedium,
+                      tabs: [
+                        Tab(text: 'Followers'),
+                        Tab(text: 'Following'),
+                      ],
+                    ),
                   ),
-                ),
-              ];
-            },
-            body: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              children: [_FollowersTab(userId), _FollowingTab(userId)],
+                ];
+              },
+              body: TabBarView(
+                physics: NeverScrollableScrollPhysics(),
+                children: [_FollowersTab(userId), _FollowingTab(userId)],
+              ),
             ),
           ),
         ),

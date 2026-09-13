@@ -26,28 +26,28 @@ import 'package:democracy/app/view/widgets/wrappers.dart' as _i7;
 import 'package:democracy/auth/view/failure.dart' as _i17;
 import 'package:democracy/auth/view/login.dart' as _i25;
 import 'package:democracy/auth/view/splash.dart' as _i42;
-import 'package:democracy/ballot/models/ballot.dart' as _i55;
+import 'package:democracy/ballot/models/ballot.dart' as _i56;
 import 'package:democracy/ballot/view/ballot_detail.dart' as _i1;
 import 'package:democracy/ballot/view/ballot_page.dart' as _i2;
-import 'package:democracy/broadcast/models/broadcast.dart' as _i58;
+import 'package:democracy/broadcast/models/broadcast.dart' as _i59;
 import 'package:democracy/broadcast/view/broadcast_create.dart' as _i4;
 import 'package:democracy/broadcast/view/live_stream.dart' as _i23;
 import 'package:democracy/broadcast/view/meeting_detail.dart' as _i26;
 import 'package:democracy/broadcast/view/meeting_page.dart' as _i27;
-import 'package:democracy/chat/models/chat.dart' as _i51;
-import 'package:democracy/chat/models/message.dart' as _i52;
+import 'package:democracy/chat/models/chat.dart' as _i52;
+import 'package:democracy/chat/models/message.dart' as _i53;
 import 'package:democracy/chat/view/chat_detail.dart' as _i5;
 import 'package:democracy/chat/view/edit_message.dart' as _i14;
-import 'package:democracy/constitution/models/section.dart' as _i59;
+import 'package:democracy/constitution/models/section.dart' as _i51;
 import 'package:democracy/constitution/view/constitution.dart' as _i11;
 import 'package:democracy/notification/view/notifications.dart' as _i29;
 import 'package:democracy/notification/view/preferences.dart' as _i36;
-import 'package:democracy/petition/models/petition.dart' as _i57;
+import 'package:democracy/petition/models/petition.dart' as _i58;
 import 'package:democracy/petition/view/petition_create.dart' as _i30;
 import 'package:democracy/petition/view/petition_detail.dart' as _i31;
 import 'package:democracy/petition/view/petition_page.dart' as _i32;
 import 'package:democracy/petition/view/widgets/supporters.dart' as _i43;
-import 'package:democracy/post/models/post.dart' as _i54;
+import 'package:democracy/post/models/post.dart' as _i55;
 import 'package:democracy/post/view/community_note_create.dart' as _i8;
 import 'package:democracy/post/view/community_note_detail.dart' as _i9;
 import 'package:democracy/post/view/community_notes.dart' as _i10;
@@ -56,7 +56,7 @@ import 'package:democracy/post/view/post_create.dart' as _i33;
 import 'package:democracy/post/view/post_detail.dart' as _i34;
 import 'package:democracy/post/view/post_update.dart' as _i35;
 import 'package:democracy/post/view/widgets/reposts.dart' as _i38;
-import 'package:democracy/survey/models/survey.dart' as _i56;
+import 'package:democracy/survey/models/survey.dart' as _i57;
 import 'package:democracy/survey/view/survey_detail.dart' as _i44;
 import 'package:democracy/survey/view/survey_page.dart' as _i45;
 import 'package:democracy/survey/view/survey_process/page.dart' as _i46;
@@ -69,7 +69,7 @@ import 'package:democracy/user/view/pages/users.dart' as _i47;
 import 'package:democracy/user/view/profile.dart' as _i37;
 import 'package:flutter/foundation.dart' as _i50;
 import 'package:flutter/material.dart' as _i49;
-import 'package:latlong2/latlong.dart' as _i53;
+import 'package:latlong2/latlong.dart' as _i54;
 
 /// generated route for
 /// [_i1.BallotDetail]
@@ -210,7 +210,7 @@ class BroadcastCreateArgs {
 /// [_i5.ChatDetail]
 class ChatDetail extends _i48.PageRouteInfo<ChatDetailArgs> {
   ChatDetail({
-    _i49.Key? key,
+    _i50.Key? key,
     required int chatId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -237,7 +237,7 @@ class ChatDetail extends _i48.PageRouteInfo<ChatDetailArgs> {
 class ChatDetailArgs {
   const ChatDetailArgs({this.key, required this.chatId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int chatId;
 
@@ -293,7 +293,7 @@ class ChatWrapper extends _i48.PageRouteInfo<void> {
 /// [_i8.CommunityNoteCreate]
 class CommunityNoteCreate extends _i48.PageRouteInfo<CommunityNoteCreateArgs> {
   CommunityNoteCreate({
-    _i49.Key? key,
+    _i50.Key? key,
     required int postId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -320,7 +320,7 @@ class CommunityNoteCreate extends _i48.PageRouteInfo<CommunityNoteCreateArgs> {
 class CommunityNoteCreateArgs {
   const CommunityNoteCreateArgs({this.key, required this.postId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int postId;
 
@@ -344,7 +344,7 @@ class CommunityNoteCreateArgs {
 /// [_i9.CommunityNoteDetail]
 class CommunityNoteDetail extends _i48.PageRouteInfo<CommunityNoteDetailArgs> {
   CommunityNoteDetail({
-    _i49.Key? key,
+    _i50.Key? key,
     required int postId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -371,7 +371,7 @@ class CommunityNoteDetail extends _i48.PageRouteInfo<CommunityNoteDetailArgs> {
 class CommunityNoteDetailArgs {
   const CommunityNoteDetailArgs({this.key, required this.postId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int postId;
 
@@ -395,7 +395,7 @@ class CommunityNoteDetailArgs {
 /// [_i10.CommunityNotes]
 class CommunityNotes extends _i48.PageRouteInfo<CommunityNotesArgs> {
   CommunityNotes({
-    _i49.Key? key,
+    _i50.Key? key,
     required int postId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -422,7 +422,7 @@ class CommunityNotes extends _i48.PageRouteInfo<CommunityNotesArgs> {
 class CommunityNotesArgs {
   const CommunityNotesArgs({this.key, required this.postId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int postId;
 
@@ -443,16 +443,16 @@ class CommunityNotesArgs {
 }
 
 /// generated route for
-/// [_i11.Constitution]
-class Constitution extends _i48.PageRouteInfo<ConstitutionArgs> {
-  Constitution({
-    _i49.Key? key,
+/// [_i11.ConstitutionPage]
+class ConstitutionRoute extends _i48.PageRouteInfo<ConstitutionRouteArgs> {
+  ConstitutionRoute({
+    _i50.Key? key,
     int? sectionId,
     bool selectionMode = false,
     List<_i48.PageRouteInfo>? children,
   }) : super(
-         Constitution.name,
-         args: ConstitutionArgs(
+         ConstitutionRoute.name,
+         args: ConstitutionRouteArgs(
            key: key,
            sectionId: sectionId,
            selectionMode: selectionMode,
@@ -461,19 +461,19 @@ class Constitution extends _i48.PageRouteInfo<ConstitutionArgs> {
          initialChildren: children,
        );
 
-  static const String name = 'Constitution';
+  static const String name = 'ConstitutionRoute';
 
   static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final queryParams = data.queryParams;
-      final args = data.argsAs<ConstitutionArgs>(
-        orElse: () => ConstitutionArgs(
+      final args = data.argsAs<ConstitutionRouteArgs>(
+        orElse: () => ConstitutionRouteArgs(
           sectionId: queryParams.optInt('id'),
           selectionMode: queryParams.getBool('select', false),
         ),
       );
-      return _i11.Constitution(
+      return _i11.ConstitutionPage(
         key: args.key,
         sectionId: args.sectionId,
         selectionMode: args.selectionMode,
@@ -482,14 +482,14 @@ class Constitution extends _i48.PageRouteInfo<ConstitutionArgs> {
   );
 }
 
-class ConstitutionArgs {
-  const ConstitutionArgs({
+class ConstitutionRouteArgs {
+  const ConstitutionRouteArgs({
     this.key,
     this.sectionId,
     this.selectionMode = false,
   });
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int? sectionId;
 
@@ -497,13 +497,13 @@ class ConstitutionArgs {
 
   @override
   String toString() {
-    return 'ConstitutionArgs{key: $key, sectionId: $sectionId, selectionMode: $selectionMode}';
+    return 'ConstitutionRouteArgs{key: $key, sectionId: $sectionId, selectionMode: $selectionMode}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! ConstitutionArgs) return false;
+    if (other is! ConstitutionRouteArgs) return false;
     return key == other.key &&
         sectionId == other.sectionId &&
         selectionMode == other.selectionMode;
@@ -512,6 +512,77 @@ class ConstitutionArgs {
   @override
   int get hashCode =>
       key.hashCode ^ sectionId.hashCode ^ selectionMode.hashCode;
+}
+
+/// generated route for
+/// [_i11.ConstitutionView]
+class ConstitutionView extends _i48.PageRouteInfo<ConstitutionViewArgs> {
+  ConstitutionView({
+    _i50.Key? key,
+    _i51.Section? centeredSection,
+    bool selectionMode = false,
+    List<_i48.PageRouteInfo>? children,
+  }) : super(
+         ConstitutionView.name,
+         args: ConstitutionViewArgs(
+           key: key,
+           centeredSection: centeredSection,
+           selectionMode: selectionMode,
+         ),
+         rawQueryParams: {'select': selectionMode},
+         initialChildren: children,
+       );
+
+  static const String name = 'ConstitutionView';
+
+  static _i48.PageInfo page = _i48.PageInfo(
+    name,
+    builder: (data) {
+      final queryParams = data.queryParams;
+      final args = data.argsAs<ConstitutionViewArgs>(
+        orElse: () => ConstitutionViewArgs(
+          selectionMode: queryParams.getBool('select', false),
+        ),
+      );
+      return _i11.ConstitutionView(
+        key: args.key,
+        centeredSection: args.centeredSection,
+        selectionMode: args.selectionMode,
+      );
+    },
+  );
+}
+
+class ConstitutionViewArgs {
+  const ConstitutionViewArgs({
+    this.key,
+    this.centeredSection,
+    this.selectionMode = false,
+  });
+
+  final _i50.Key? key;
+
+  final _i51.Section? centeredSection;
+
+  final bool selectionMode;
+
+  @override
+  String toString() {
+    return 'ConstitutionViewArgs{key: $key, centeredSection: $centeredSection, selectionMode: $selectionMode}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ConstitutionViewArgs) return false;
+    return key == other.key &&
+        centeredSection == other.centeredSection &&
+        selectionMode == other.selectionMode;
+  }
+
+  @override
+  int get hashCode =>
+      key.hashCode ^ centeredSection.hashCode ^ selectionMode.hashCode;
 }
 
 /// generated route for
@@ -551,8 +622,8 @@ class DraftPosts extends _i48.PageRouteInfo<void> {
 class EditMessage extends _i48.PageRouteInfo<EditMessageArgs> {
   EditMessage({
     _i49.Key? key,
-    required _i51.Chat chat,
-    required _i52.Message message,
+    required _i52.Chat chat,
+    required _i53.Message message,
     List<_i48.PageRouteInfo>? children,
   }) : super(
          EditMessage.name,
@@ -580,9 +651,9 @@ class EditMessageArgs {
 
   final _i49.Key? key;
 
-  final _i51.Chat chat;
+  final _i52.Chat chat;
 
-  final _i52.Message message;
+  final _i53.Message message;
 
   @override
   String toString() {
@@ -952,7 +1023,7 @@ class LiveStreamArgs {
 class Location extends _i48.PageRouteInfo<LocationArgs> {
   Location({
     _i49.Key? key,
-    required void Function(_i53.LatLng) onLocation,
+    required void Function(_i54.LatLng) onLocation,
     List<_i48.PageRouteInfo>? children,
   }) : super(
          Location.name,
@@ -976,7 +1047,7 @@ class LocationArgs {
 
   final _i49.Key? key;
 
-  final void Function(_i53.LatLng) onLocation;
+  final void Function(_i54.LatLng) onLocation;
 
   @override
   String toString() {
@@ -1129,7 +1200,7 @@ class PetitionCreate extends _i48.PageRouteInfo<void> {
 /// [_i31.PetitionDetail]
 class PetitionDetail extends _i48.PageRouteInfo<PetitionDetailArgs> {
   PetitionDetail({
-    _i49.Key? key,
+    _i50.Key? key,
     required int petitionId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -1156,7 +1227,7 @@ class PetitionDetail extends _i48.PageRouteInfo<PetitionDetailArgs> {
 class PetitionDetailArgs {
   const PetitionDetailArgs({this.key, required this.petitionId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int petitionId;
 
@@ -1213,13 +1284,13 @@ class PetitionWrapper extends _i48.PageRouteInfo<void> {
 class PostCreate extends _i48.PageRouteInfo<PostCreateArgs> {
   PostCreate({
     _i50.Key? key,
-    _i54.Post? replyTo,
-    _i54.Post? repostOf,
-    _i55.Ballot? ballot,
-    _i56.Survey? survey,
-    _i57.Petition? petition,
-    _i58.Broadcast? broadcast,
-    _i59.Section? section,
+    _i55.Post? replyTo,
+    _i55.Post? repostOf,
+    _i56.Ballot? ballot,
+    _i57.Survey? survey,
+    _i58.Petition? petition,
+    _i59.Broadcast? broadcast,
+    _i51.Section? section,
     List<_i48.PageRouteInfo>? children,
   }) : super(
          PostCreate.name,
@@ -1272,19 +1343,19 @@ class PostCreateArgs {
 
   final _i50.Key? key;
 
-  final _i54.Post? replyTo;
+  final _i55.Post? replyTo;
 
-  final _i54.Post? repostOf;
+  final _i55.Post? repostOf;
 
-  final _i55.Ballot? ballot;
+  final _i56.Ballot? ballot;
 
-  final _i56.Survey? survey;
+  final _i57.Survey? survey;
 
-  final _i57.Petition? petition;
+  final _i58.Petition? petition;
 
-  final _i58.Broadcast? broadcast;
+  final _i59.Broadcast? broadcast;
 
-  final _i59.Section? section;
+  final _i51.Section? section;
 
   @override
   String toString() {
@@ -1321,7 +1392,7 @@ class PostCreateArgs {
 /// [_i34.PostDetail]
 class PostDetail extends _i48.PageRouteInfo<PostDetailArgs> {
   PostDetail({
-    _i49.Key? key,
+    _i50.Key? key,
     required int postId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -1348,7 +1419,7 @@ class PostDetail extends _i48.PageRouteInfo<PostDetailArgs> {
 class PostDetailArgs {
   const PostDetailArgs({this.key, required this.postId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int postId;
 
@@ -1372,7 +1443,7 @@ class PostDetailArgs {
 /// [_i35.PostUpdate]
 class PostUpdate extends _i48.PageRouteInfo<PostUpdateArgs> {
   PostUpdate({
-    _i49.Key? key,
+    _i50.Key? key,
     required int draftId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -1399,7 +1470,7 @@ class PostUpdate extends _i48.PageRouteInfo<PostUpdateArgs> {
 class PostUpdateArgs {
   const PostUpdateArgs({this.key, required this.draftId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int draftId;
 
@@ -1455,7 +1526,7 @@ class PreferencesRoute extends _i48.PageRouteInfo<void> {
 /// [_i37.ProfilePage]
 class ProfileRoute extends _i48.PageRouteInfo<ProfileRouteArgs> {
   ProfileRoute({
-    _i49.Key? key,
+    _i50.Key? key,
     required String username,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -1483,7 +1554,7 @@ class ProfileRoute extends _i48.PageRouteInfo<ProfileRouteArgs> {
 class ProfileRouteArgs {
   const ProfileRouteArgs({this.key, required this.username});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final String username;
 
@@ -1523,7 +1594,7 @@ class ProfileWrapper extends _i48.PageRouteInfo<void> {
 /// [_i38.Reposts]
 class Reposts extends _i48.PageRouteInfo<RepostsArgs> {
   Reposts({
-    _i49.Key? key,
+    _i50.Key? key,
     required int postId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -1550,7 +1621,7 @@ class Reposts extends _i48.PageRouteInfo<RepostsArgs> {
 class RepostsArgs {
   const RepostsArgs({this.key, required this.postId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int postId;
 
@@ -1719,7 +1790,7 @@ class SplashRoute extends _i48.PageRouteInfo<void> {
 /// [_i43.Supporters]
 class Supporters extends _i48.PageRouteInfo<SupportersArgs> {
   Supporters({
-    _i49.Key? key,
+    _i50.Key? key,
     required int petitionId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -1746,7 +1817,7 @@ class Supporters extends _i48.PageRouteInfo<SupportersArgs> {
 class SupportersArgs {
   const SupportersArgs({this.key, required this.petitionId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int petitionId;
 
@@ -1770,7 +1841,7 @@ class SupportersArgs {
 /// [_i44.SurveyDetail]
 class SurveyDetail extends _i48.PageRouteInfo<SurveyDetailArgs> {
   SurveyDetail({
-    _i49.Key? key,
+    _i50.Key? key,
     required int surveyId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -1797,7 +1868,7 @@ class SurveyDetail extends _i48.PageRouteInfo<SurveyDetailArgs> {
 class SurveyDetailArgs {
   const SurveyDetailArgs({this.key, required this.surveyId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int surveyId;
 
@@ -1837,7 +1908,7 @@ class SurveyRoute extends _i48.PageRouteInfo<void> {
 /// [_i46.SurveyProcess]
 class SurveyProcess extends _i48.PageRouteInfo<SurveyProcessArgs> {
   SurveyProcess({
-    _i49.Key? key,
+    _i50.Key? key,
     required int surveyId,
     List<_i48.PageRouteInfo>? children,
   }) : super(
@@ -1864,7 +1935,7 @@ class SurveyProcess extends _i48.PageRouteInfo<SurveyProcessArgs> {
 class SurveyProcessArgs {
   const SurveyProcessArgs({this.key, required this.surveyId});
 
-  final _i49.Key? key;
+  final _i50.Key? key;
 
   final int surveyId;
 

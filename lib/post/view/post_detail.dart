@@ -7,6 +7,7 @@ import 'package:democracy/app/shared/widgets/cached_link_preview.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
@@ -59,42 +60,49 @@ class PostDetail extends StatelessWidget {
               UsersBloc(webSocketService: context.read<WebSocketService>()),
         ),
       ],
-      child: Scaffold(
-        appBar: AppBar(leading: const AutoLeadingButton(), title: Text('Post')),
-        body: BlocBuilder<PostBloc, PostState>(
-          buildWhen: (previous, current) => current.postId == postId,
-          builder: (context, state) {
-            if (state.status == PostStatus.initial ||
-                (state.status == PostStatus.loading && state.post == null)) {
-              return BottomLoader();
-            }
-            if (state.status == PostStatus.failure && state.post == null) {
-              return FailureRetryButton(
-                onPressed: () {
-                  context.read<PostBloc>().add(PostEvent.load(postId: postId));
-                },
-              );
-            }
-            return _PostDetail(post: state.post!);
-          },
-        ),
-        bottomNavigationBar: BlocBuilder<PostBloc, PostState>(
-          buildWhen: (previous, current) => current.postId == postId,
-          builder: (context, state) {
-            return state.post == null
-                ? SizedBox.shrink()
-                : state.post!.isDeleted
-                ? SizedBox.shrink()
-                : state.post!.author.hasBlocked
-                ? Container(
-                    margin: const EdgeInsets.only(bottom: 8.0),
-                    child: Text(
-                      'You have been blocked',
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                : BottomReplyTextField(post: state.post!);
-          },
+      child: MainContainer(
+        child: Scaffold(
+          appBar: AppBar(
+            leading: const AutoLeadingButton(),
+            title: Text('Post'),
+          ),
+          body: BlocBuilder<PostBloc, PostState>(
+            buildWhen: (previous, current) => current.postId == postId,
+            builder: (context, state) {
+              if (state.status == PostStatus.initial ||
+                  (state.status == PostStatus.loading && state.post == null)) {
+                return BottomLoader();
+              }
+              if (state.status == PostStatus.failure && state.post == null) {
+                return FailureRetryButton(
+                  onPressed: () {
+                    context.read<PostBloc>().add(
+                      PostEvent.load(postId: postId),
+                    );
+                  },
+                );
+              }
+              return _PostDetail(post: state.post!);
+            },
+          ),
+          bottomNavigationBar: BlocBuilder<PostBloc, PostState>(
+            buildWhen: (previous, current) => current.postId == postId,
+            builder: (context, state) {
+              return state.post == null
+                  ? SizedBox.shrink()
+                  : state.post!.isDeleted
+                  ? SizedBox.shrink()
+                  : state.post!.author.hasBlocked
+                  ? Container(
+                      margin: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        'You have been blocked',
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  : BottomReplyTextField(post: state.post!);
+            },
+          ),
         ),
       ),
     );

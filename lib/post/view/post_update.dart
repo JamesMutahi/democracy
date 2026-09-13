@@ -14,6 +14,7 @@ import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/broadcast/view/widgets/broadcast_tile.dart';
 import 'package:democracy/constitution/models/section.dart';
@@ -58,31 +59,34 @@ class PostUpdate extends StatelessWidget {
               UsersBloc(webSocketService: context.read<WebSocketService>()),
         ),
       ],
-      child: Scaffold(
-        body: BlocBuilder<DraftBloc, DraftState>(
-          buildWhen: (previous, current) => current.draftId == draftId,
-          builder: (context, state) {
-            if (state.status == DraftStatus.initial ||
-                (state.status == DraftStatus.loading && state.draft == null)) {
-              return BottomLoader();
-            }
-            if (state.status == DraftStatus.failure && state.draft == null) {
-              return FailureRetryButton(
-                onPressed: () {
-                  context.read<DraftBloc>().add(
-                    DraftEvent.load(draftId: draftId),
-                  );
-                },
-              );
-            }
-            if (state.status == DraftStatus.notFound) {
-              return Scaffold(
-                appBar: AppBar(title: Text('Edit post')),
-                body: Center(child: Text('Draft not found')),
-              );
-            }
-            return _PostUpdate(draft: state.draft!);
-          },
+      child: MainContainer(
+        child: Scaffold(
+          body: BlocBuilder<DraftBloc, DraftState>(
+            buildWhen: (previous, current) => current.draftId == draftId,
+            builder: (context, state) {
+              if (state.status == DraftStatus.initial ||
+                  (state.status == DraftStatus.loading &&
+                      state.draft == null)) {
+                return BottomLoader();
+              }
+              if (state.status == DraftStatus.failure && state.draft == null) {
+                return FailureRetryButton(
+                  onPressed: () {
+                    context.read<DraftBloc>().add(
+                      DraftEvent.load(draftId: draftId),
+                    );
+                  },
+                );
+              }
+              if (state.status == DraftStatus.notFound) {
+                return Scaffold(
+                  appBar: AppBar(title: Text('Edit post')),
+                  body: Center(child: Text('Draft not found')),
+                );
+              }
+              return _PostUpdate(draft: state.draft!);
+            },
+          ),
         ),
       ),
     );

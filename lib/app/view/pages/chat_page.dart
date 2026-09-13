@@ -1,11 +1,21 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/chat/bloc/chat/chat_bloc.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
+import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:democracy/chat/view/chats.dart';
 import 'package:democracy/chat/view/create_message.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
@@ -31,71 +41,196 @@ class _ChatPageState extends State<ChatPage> {
 
     return Scaffold(
       body: SafeArea(
-        child: NestedScrollView(
-          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-            return [
-              if (responsive.isMobile)
-                CustomAppBar(
-                  middle: Text(
-                    'Chat',
-                    style: Theme.of(context).textTheme.titleLarge,
+        child: kIsWeb && responsive.largerThan(MOBILE)
+            ? _buildWeb(responsive)
+            : _buildMobile(responsive),
+      ),
+    );
+  }
+
+  Widget _buildWeb(ResponsiveBreakpointsData responsive) {
+    return BlocProvider(
+      create: (context) =>
+          ChatBloc(webSocketService: context.read<WebSocketService>()),
+      child: Row(
+        children: [
+          Flexible(
+            flex: 3,
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 600),
+              padding: const EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(
+                    color: Theme.of(context).colorScheme.outlineVariant,
                   ),
-                  bottom: PreferredSize(
-                    preferredSize: Size.fromHeight(60.0),
-                    child: BlocConsumer<ChatFilterCubit, ChatFilterState>(
-                      listener: (context, state) {
-                        context.read<ChatsBloc>().add(
-                          ChatsEvent.get(searchTerm: state.searchTerm),
-                        );
-                      },
-                      builder: (context, state) {
-                        return _buildSearchBar();
-                      },
+                  right: BorderSide(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
+                ),
+              ),
+              child: Column(
+                children: [
+                  _buildSearchBar(),
+                  Expanded(child: const Chats()),
+                ],
+              ),
+            ),
+          ),
+          if (responsive.largerOrEqualTo(expandSidePanel))
+            BlocListener<ChatDetailBloc, ChatDetailState>(
+              listener: (context, state) {
+                if (state is ChatCreated) {
+                  context.read<ChatBloc>().add(
+                    ChatEvent.load(chatId: state.chat.id),
+                  );
+                }
+              },
+              child: Flexible(
+                flex: 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      right: BorderSide(
+                        color: Theme.of(context).colorScheme.outlineVariant,
+                      ),
                     ),
                   ),
-                )
-              else
-                SliverAppBar(
-                  pinned: true,
-                  floating: false,
-                  snap: false,
-                  automaticallyImplyLeading: false,
-                  flexibleSpace: Builder(
-                    builder: (context) {
-                      return _buildSearchBar();
+                  child: BlocBuilder<ChatBloc, ChatState>(
+                    builder: (context, state) {
+                      if (state.status == ChatStatus.initial &&
+                          state.chatId == null) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 40,
+                                child: SvgPicture.asset(
+                                  'assets/icons/chat.svg',
+                                  height: 35,
+                                  width: 35,
+                                  colorFilter: ColorFilter.mode(
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => const CreateMessage(),
+                                  );
+                                },
+                                child: Text(
+                                  'New chat',
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      if (state.status == ChatStatus.loading &&
+                          state.chat == null) {
+                        return const Scaffold(
+                          body: Center(child: BottomLoader()),
+                        );
+                      }
+                      if (state.status == ChatStatus.failure &&
+                          state.chat == null) {
+                        return Scaffold(
+                          appBar: AppBar(leading: const AutoLeadingButton()),
+                          body: Center(
+                            child: FailureRetryButton(
+                              onPressed: () {
+                                context.read<ChatBloc>().add(
+                                  ChatEvent.load(chatId: state.chatId!),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      }
+
+                      final me = context.read<AuthBloc>().state.user!;
+                      final otherUser = state.chat!.users.length > 1
+                          ? state.chat!.users.firstWhere((u) => u.id != me.id)
+                          : me;
+
+                      return ChatDetailView(
+                        key: ValueKey(state.chat!.id),
+                        chat: state.chat!,
+                        me: me,
+                        otherUser: otherUser,
+                      );
                     },
                   ),
                 ),
-            ];
-          },
-          body: Stack(
-            children: [
-              const Chats(),
-              Positioned(
-                bottom: 24,
-                right: 24,
-                child: FloatingActionButton(
-                  heroTag: 'new_message',
-                  elevation: 4,
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      useSafeArea: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20),
-                        ),
-                      ),
-                      builder: (context) => const CreateMessage(),
-                    );
-                  },
-                  child: const Icon(Icons.edit_rounded, size: 28),
-                ),
               ),
-            ],
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobile(ResponsiveBreakpointsData responsive) {
+    return NestedScrollView(
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
+          CustomAppBar(
+            middle: Text('Chat', style: Theme.of(context).textTheme.titleLarge),
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(60.0),
+              child: BlocConsumer<ChatFilterCubit, ChatFilterState>(
+                listener: (context, state) {
+                  context.read<ChatsBloc>().add(
+                    ChatsEvent.get(searchTerm: state.searchTerm),
+                  );
+                },
+                builder: (context, state) {
+                  return _buildSearchBar();
+                },
+              ),
+            ),
           ),
-        ),
+        ];
+      },
+      body: Stack(
+        children: [
+          const Chats(),
+          Positioned(
+            bottom: 24,
+            right: 24,
+            child: FloatingActionButton(
+              heroTag: 'new_message',
+              elevation: 4,
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  useSafeArea: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                  ),
+                  builder: (context) => const CreateMessage(),
+                );
+              },
+              child: const Icon(Icons.edit_rounded, size: 28),
+            ),
+          ),
+        ],
       ),
     );
   }

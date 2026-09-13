@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/user/bloc/blocked/blocked_bloc.dart';
 import 'package:democracy/user/bloc/muted/muted_bloc.dart';
 import 'package:democracy/user/models/user.dart';
@@ -14,30 +15,32 @@ class MutedAndBlocked extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                floating: true,
-                snap: true,
-                title: Text('Muted and Blocked'),
-                bottom: TabBar(
-                  dividerColor: Theme.of(context).colorScheme.outlineVariant,
-                  labelStyle: Theme.of(context).textTheme.titleMedium,
-                  tabs: [
-                    Tab(text: 'Muted accounts'),
-                    Tab(text: 'Blocked accounts'),
-                  ],
+    return MainContainer(
+      child: Scaffold(
+        body: DefaultTabController(
+          length: 2,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  floating: true,
+                  snap: true,
+                  title: Text('Muted and Blocked'),
+                  bottom: TabBar(
+                    dividerColor: Theme.of(context).colorScheme.outlineVariant,
+                    labelStyle: Theme.of(context).textTheme.titleMedium,
+                    tabs: [
+                      Tab(text: 'Muted accounts'),
+                      Tab(text: 'Blocked accounts'),
+                    ],
+                  ),
                 ),
-              ),
-            ];
-          },
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            children: [_MutedTab(), _BlockedTab()],
+              ];
+            },
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: [_MutedTab(), _BlockedTab()],
+            ),
           ),
         ),
       ),

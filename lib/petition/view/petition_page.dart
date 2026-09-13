@@ -3,6 +3,7 @@ import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/view/widgets/petitions.dart';
@@ -39,86 +40,89 @@ class _PetitionPageState extends State<PetitionPage> {
         ),
         BlocProvider(create: (context) => PetitionFilterCubit()),
       ],
-      child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                floating: true,
-                snap: true,
-                forceElevated: true,
-                leading: AutoLeadingButton(),
-                title: Text('Petitions'),
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(60.0),
-                  child: BlocConsumer<PetitionFilterCubit, PetitionFilterState>(
-                    listener: (context, state) {
-                      context.read<PetitionsBloc>().add(
-                        PetitionsEvent.get(
-                          searchTerm: state.searchTerm,
-                          isOpen: state.isOpen,
-                          sortBy: state.sortBy,
-                          filterByRegion: state.filterByRegion,
-                          startDate: state.startDate,
-                          endDate: state.endDate,
-                        ),
-                      );
-                    },
-                    builder: (context, state) {
-                      return CustomSearchBar(
-                        controller: _controller,
-                        hintText: 'Search',
-                        filterCount: state.count,
-                        onChanged: (value) {
-                          context.read<PetitionFilterCubit>().searchTermChanged(
-                            searchTerm: value,
-                          );
-                        },
-                        onFilterTap: () {
-                          final filterCubit = context
-                              .read<PetitionFilterCubit>();
-                          final filters = BlocProvider.value(
-                            value: filterCubit,
-                            child: _FiltersModal(
-                              isOpen: state.isOpen,
-                              filterByRegion: state.filterByRegion,
-                              sortBy: state.sortBy,
-                              startDate: state.startDate,
-                              endDate: state.endDate,
-                            ),
-                          );
-                          kIsWeb
-                              ? showDialog(
-                                  context: context,
-                                  builder: (context) => filters,
-                                )
-                              : showGeneralDialog(
-                                  context: context,
-                                  transitionDuration: const Duration(
-                                    milliseconds: 300,
+      child: MainContainer(
+        child: Scaffold(
+          body: NestedScrollView(
+            headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  floating: true,
+                  snap: true,
+                  forceElevated: true,
+                  leading: AutoLeadingButton(),
+                  title: Text('Petitions'),
+                  bottom: PreferredSize(
+                    preferredSize: Size.fromHeight(60.0),
+                    child:
+                        BlocConsumer<PetitionFilterCubit, PetitionFilterState>(
+                          listener: (context, state) {
+                            context.read<PetitionsBloc>().add(
+                              PetitionsEvent.get(
+                                searchTerm: state.searchTerm,
+                                isOpen: state.isOpen,
+                                sortBy: state.sortBy,
+                                filterByRegion: state.filterByRegion,
+                                startDate: state.startDate,
+                                endDate: state.endDate,
+                              ),
+                            );
+                          },
+                          builder: (context, state) {
+                            return CustomSearchBar(
+                              controller: _controller,
+                              hintText: 'Search',
+                              filterCount: state.count,
+                              onChanged: (value) {
+                                context
+                                    .read<PetitionFilterCubit>()
+                                    .searchTermChanged(searchTerm: value);
+                              },
+                              onFilterTap: () {
+                                final filterCubit = context
+                                    .read<PetitionFilterCubit>();
+                                final filters = BlocProvider.value(
+                                  value: filterCubit,
+                                  child: _FiltersModal(
+                                    isOpen: state.isOpen,
+                                    filterByRegion: state.filterByRegion,
+                                    sortBy: state.sortBy,
+                                    startDate: state.startDate,
+                                    endDate: state.endDate,
                                   ),
-                                  pageBuilder:
-                                      (
-                                        context,
-                                        animation,
-                                        secondaryAnimation,
-                                      ) => filters,
                                 );
-                        },
-                      );
-                    },
+                                kIsWeb
+                                    ? showDialog(
+                                        context: context,
+                                        builder: (context) => filters,
+                                      )
+                                    : showGeneralDialog(
+                                        context: context,
+                                        transitionDuration: const Duration(
+                                          milliseconds: 300,
+                                        ),
+                                        pageBuilder:
+                                            (
+                                              context,
+                                              animation,
+                                              secondaryAnimation,
+                                            ) => filters,
+                                      );
+                              },
+                            );
+                          },
+                        ),
                   ),
                 ),
-              ),
-            ];
-          },
-          body: Petitions(),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            context.router.push(PetitionCreate());
-          },
-          child: Icon(Symbols.create_rounded),
+              ];
+            },
+            body: Petitions(),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              context.router.push(PetitionCreate());
+            },
+            child: Icon(Symbols.create_rounded),
+          ),
         ),
       ),
     );

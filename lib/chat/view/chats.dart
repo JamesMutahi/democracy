@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/chat/bloc/chat/chat_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
@@ -14,10 +16,12 @@ import 'package:democracy/notification/bloc/notification_detail/notification_det
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class Chats extends StatefulWidget {
   const Chats({super.key});
@@ -243,13 +247,17 @@ class ChatTile extends StatelessWidget {
     final hasUnread = chat.unreadMessages > 0;
     final isFromMe = lastMessage.author.id == currentUser.id;
     final lastMessagePrefix = isFromMe ? 'You: ' : '';
-    final subtitleText = getLastMessageText(
-      lastMessage,
-      lastMessagePrefix,
-    ); // Assuming this helper exists
+    final subtitleText = getLastMessageText(lastMessage, lastMessagePrefix);
+    final responsive = ResponsiveBreakpoints.of(context);
 
     return InkWell(
-      onTap: () => context.router.push(ChatDetail(chatId: chat.id)),
+      onTap: () {
+        if (kIsWeb && responsive.largerOrEqualTo(expandSidePanel)) {
+          context.read<ChatBloc>().add(ChatEvent.load(chatId: chat.id));
+        } else {
+          context.router.push(ChatDetail(chatId: chat.id));
+        }
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         child: Row(

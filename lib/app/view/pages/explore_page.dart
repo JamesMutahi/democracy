@@ -5,6 +5,7 @@ import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/explore_search_anchor.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/trending_posts/trending_posts_bloc.dart';
@@ -16,6 +17,7 @@ import 'package:democracy/user/bloc/follow_recommendations/follow_recommendation
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -53,50 +55,64 @@ class _ExplorePageState extends State<ExplorePage> {
               builder: (context, state) {
                 final filterCubit = context.read<PostFilterCubit>();
 
-                return NestedScrollView(
-                  headerSliverBuilder: (context, innerBoxIsScrolled) {
-                    return [
-                      if (responsive.isMobile)
-                        CustomAppBar(
-                          middle: Text(
-                            'Explore',
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          bottom: PreferredSize(
-                            preferredSize: Size.fromHeight(108.0),
-                            child: Column(
-                              children: [
-                                _buildSearchBar(filterCubit, state),
-                                _buildTabBar(),
-                              ],
-                            ),
-                          ),
-                        )
-                      else
-                        SliverAppBar(
-                          pinned: true,
-                          floating: false,
-                          snap: false,
-                          automaticallyImplyLeading: false,
-                          flexibleSpace: Builder(
-                            builder: (context) {
-                              return _buildSearchBar(filterCubit, state);
-                            },
-                          ),
-                          bottom: _buildTabBar(),
-                        ),
-                    ];
-                  },
-                  body: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: const [_ForYouTab(), _TrendingTab()],
-                  ),
-                );
+                return kIsWeb && responsive.largerThan(MOBILE)
+                    ? _buildWeb(responsive, filterCubit, state)
+                    : _buildMobile(filterCubit, state);
               },
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildWeb(
+    ResponsiveBreakpointsData responsive,
+    PostFilterCubit cubit,
+    PostFilterState state,
+  ) {
+    return MainContainer(
+      child: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              pinned: true,
+              floating: false,
+              snap: false,
+              automaticallyImplyLeading: false,
+              flexibleSpace: Builder(
+                builder: (context) {
+                  return _buildSearchBar(cubit, state);
+                },
+              ),
+              bottom: _buildTabBar(),
+            ),
+          ];
+        },
+        body: _buildTabBarView(),
+      ),
+    );
+  }
+
+  Widget _buildMobile(PostFilterCubit cubit, PostFilterState state) {
+    return NestedScrollView(
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
+          CustomAppBar(
+            middle: Text(
+              'Explore',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(108.0),
+              child: Column(
+                children: [_buildSearchBar(cubit, state), _buildTabBar()],
+              ),
+            ),
+          ),
+        ];
+      },
+      body: _buildTabBarView(),
     );
   }
 
@@ -117,6 +133,13 @@ class _ExplorePageState extends State<ExplorePage> {
         Tab(text: 'For You'),
         Tab(text: 'Trending'),
       ],
+    );
+  }
+
+  Widget _buildTabBarView() {
+    return const TabBarView(
+      physics: NeverScrollableScrollPhysics(),
+      children: [_ForYouTab(), _TrendingTab()],
     );
   }
 }

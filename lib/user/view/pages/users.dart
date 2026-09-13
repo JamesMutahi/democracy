@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/user_listener.dart';
@@ -26,30 +27,32 @@ class _UsersPageState extends State<UsersPage> {
     final authBloc = context.read<AuthBloc>();
     final me = authBloc.state.user!;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: UserListener(
-        users: _users,
-        showProfileButtons: true,
-        onUsersUpdated: (users) {
-          setState(() {
-            _users = users;
-          });
-        },
-        child: ListView.builder(
-          itemBuilder: (BuildContext context, int index) {
-            User user = _users[index];
-            return UserTile(
-              user: user,
-              me: me,
-              showProfileButtons: true,
-              selectedUsers: [],
-              onTap: () {
-                context.router.push(ProfileRoute(username: user.username));
-              },
-            );
+    return MainContainer(
+      child: Scaffold(
+        appBar: AppBar(title: Text(widget.title)),
+        body: UserListener(
+          users: _users,
+          showProfileButtons: true,
+          onUsersUpdated: (users) {
+            setState(() {
+              _users = users;
+            });
           },
-          itemCount: _users.length,
+          child: ListView.builder(
+            itemBuilder: (BuildContext context, int index) {
+              User user = _users[index];
+              return UserTile(
+                user: user,
+                me: me,
+                showProfileButtons: true,
+                selectedUsers: [],
+                onTap: () {
+                  context.router.push(ProfileRoute(username: user.username));
+                },
+              );
+            },
+            itemCount: _users.length,
+          ),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/agora_service.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
@@ -8,25 +9,25 @@ import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/broadcast/bloc/broadcast_view/broadcast_view_cubit.dart';
-import 'package:democracy/broadcast/bloc/comments/comments_bloc.dart';
-import 'package:democracy/broadcast/bloc/speaking_indicator/speaking_indicator_bloc.dart';
-import 'package:democracy/broadcast/models/speaker_invite.dart';
-import 'package:democracy/broadcast/view/widgets/comments.dart';
-import 'package:democracy/broadcast/bloc/listeners/listeners_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast/broadcast_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
+import 'package:democracy/broadcast/bloc/broadcast_view/broadcast_view_cubit.dart';
+import 'package:democracy/broadcast/bloc/comments/comments_bloc.dart';
+import 'package:democracy/broadcast/bloc/listeners/listeners_bloc.dart';
 import 'package:democracy/broadcast/bloc/participants/participants_bloc.dart';
 import 'package:democracy/broadcast/bloc/speaker_detail/speaker_detail_bloc.dart';
 import 'package:democracy/broadcast/bloc/speaker_requests/speaker_requests_bloc.dart';
+import 'package:democracy/broadcast/bloc/speaking_indicator/speaking_indicator_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
-import 'package:democracy/broadcast/view/widgets/participant/tile.dart';
+import 'package:democracy/broadcast/models/speaker_invite.dart';
+import 'package:democracy/broadcast/view/widgets/comments.dart';
 import 'package:democracy/broadcast/view/widgets/participant/tabs/index.dart';
+import 'package:democracy/broadcast/view/widgets/participant/tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -52,39 +53,41 @@ class MeetingDetail extends StatelessWidget {
         ),
         BlocProvider(create: (_) => SpeakingIndicatorBloc()),
       ],
-      child: BlocBuilder<BroadcastBloc, BroadcastState>(
-        buildWhen: (previous, current) => current.broadcastId == broadcastId,
-        builder: (context, state) {
-          if (state.status == BroadcastStatus.initial ||
-              (state.status == BroadcastStatus.loading &&
-                  state.broadcast == null)) {
-            return Scaffold(
-              appBar: AppBar(leading: AutoLeadingButton()),
-              body: const Center(child: BottomLoader()),
-            );
-          }
-          if (state.status == BroadcastStatus.failure &&
-              state.broadcast == null) {
-            return Scaffold(
-              appBar: AppBar(leading: AutoLeadingButton()),
-              body: Center(
-                child: FailureRetryButton(
-                  onPressed: () {
-                    context.read<BroadcastBloc>().add(
-                      BroadcastEvent.load(broadcastId: broadcastId),
-                    );
-                  },
+      child: MainContainer(
+        child: BlocBuilder<BroadcastBloc, BroadcastState>(
+          buildWhen: (previous, current) => current.broadcastId == broadcastId,
+          builder: (context, state) {
+            if (state.status == BroadcastStatus.initial ||
+                (state.status == BroadcastStatus.loading &&
+                    state.broadcast == null)) {
+              return Scaffold(
+                appBar: AppBar(leading: AutoLeadingButton()),
+                body: const Center(child: BottomLoader()),
+              );
+            }
+            if (state.status == BroadcastStatus.failure &&
+                state.broadcast == null) {
+              return Scaffold(
+                appBar: AppBar(leading: AutoLeadingButton()),
+                body: Center(
+                  child: FailureRetryButton(
+                    onPressed: () {
+                      context.read<BroadcastBloc>().add(
+                        BroadcastEvent.load(broadcastId: broadcastId),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            );
-          }
+              );
+            }
 
-          if (!state.broadcast!.isActive || state.broadcast!.hasEnded) {
-            return const Center(child: Text('This meeting has been closed'));
-          }
+            if (!state.broadcast!.isActive || state.broadcast!.hasEnded) {
+              return const Center(child: Text('This meeting has been closed'));
+            }
 
-          return _MeetingDetail(broadcast: state.broadcast!);
-        },
+            return _MeetingDetail(broadcast: state.broadcast!);
+          },
+        ),
       ),
     );
   }

@@ -1,20 +1,22 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/bloc/section/section_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter/services.dart';
-
-@RoutePage()
-class Constitution extends StatelessWidget {
-  const Constitution({
+@RoutePage(name: 'ConstitutionRoute')
+class ConstitutionPage extends StatelessWidget {
+  const ConstitutionPage({
     super.key,
     @QueryParam('id') this.sectionId,
     @QueryParam('select') this.selectionMode = false,
@@ -25,63 +27,71 @@ class Constitution extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return sectionId == null
-        ? _Constitution(selectionMode: selectionMode)
-        : BlocProvider(
-            create: (context) {
-              final bloc = SectionBloc(
-                webSocketService: context.read<WebSocketService>(),
-              );
-              bloc.add(SectionEvent.load(sectionId: sectionId!));
-              return bloc;
-            },
-            child: BlocBuilder<SectionBloc, SectionState>(
-              buildWhen: (previous, current) => current.sectionId == sectionId,
-              builder: (context, state) {
-                if (state.status == SectionStatus.initial ||
-                    (state.status == SectionStatus.loading &&
-                        state.section == null)) {
-                  return Scaffold(
-                    appBar: AppBar(title: const Text('Constitution')),
-                    body: const Center(child: BottomLoader()),
-                  );
-                }
-                if (state.status == SectionStatus.failure &&
-                    state.section == null) {
-                  return Scaffold(
-                    appBar: AppBar(title: const Text('Constitution')),
-                    body: Center(
-                      child: FailureRetryButton(
-                        onPressed: () {
-                          context.read<SectionBloc>().add(
-                            SectionEvent.load(sectionId: sectionId!),
-                          );
-                        },
-                      ),
-                    ),
-                  );
-                }
-                return _Constitution(
-                  centeredSection: state.section!,
-                  selectionMode: selectionMode,
+    return MainContainer(
+      child: sectionId == null
+          ? ConstitutionView(selectionMode: selectionMode)
+          : BlocProvider(
+              create: (context) {
+                final bloc = SectionBloc(
+                  webSocketService: context.read<WebSocketService>(),
                 );
+                bloc.add(SectionEvent.load(sectionId: sectionId!));
+                return bloc;
               },
+              child: BlocBuilder<SectionBloc, SectionState>(
+                buildWhen: (previous, current) =>
+                    current.sectionId == sectionId,
+                builder: (context, state) {
+                  if (state.status == SectionStatus.initial ||
+                      (state.status == SectionStatus.loading &&
+                          state.section == null)) {
+                    return Scaffold(
+                      appBar: AppBar(title: const Text('Constitution')),
+                      body: const Center(child: BottomLoader()),
+                    );
+                  }
+                  if (state.status == SectionStatus.failure &&
+                      state.section == null) {
+                    return Scaffold(
+                      appBar: AppBar(title: const Text('Constitution')),
+                      body: Center(
+                        child: FailureRetryButton(
+                          onPressed: () {
+                            context.read<SectionBloc>().add(
+                              SectionEvent.load(sectionId: sectionId!),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  }
+                  return ConstitutionView(
+                    centeredSection: state.section!,
+                    selectionMode: selectionMode,
+                  );
+                },
+              ),
             ),
-          );
+    );
   }
 }
 
-class _Constitution extends StatefulWidget {
-  const _Constitution({this.centeredSection, required this.selectionMode});
+@RoutePage()
+class ConstitutionView extends StatefulWidget {
+  const ConstitutionView({
+    super.key,
+    this.centeredSection,
+    @QueryParam('select') this.selectionMode = false,
+  });
 
   final Section? centeredSection;
   final bool selectionMode;
 
   @override
-  State<_Constitution> createState() => _ConstitutionState();
+  State<ConstitutionView> createState() => _ConstitutionState();
 }
 
-class _ConstitutionState extends State<_Constitution> {
+class _ConstitutionState extends State<ConstitutionView> {
   final GlobalKey _centerKey = GlobalKey();
   Section? _selectedSection;
 
@@ -102,6 +112,12 @@ class _ConstitutionState extends State<_Constitution> {
 
   @override
   Widget build(BuildContext context) {
+    return kIsWeb && widget.selectionMode
+        ? _buildDialog(context)
+        : _buildPage(context);
+  }
+
+  Widget _buildPage(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Constitution'),
@@ -138,76 +154,126 @@ class _ConstitutionState extends State<_Constitution> {
           ),
         ],
       ),
-      body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 15),
-        child: BlocBuilder<ConstitutionBloc, ConstitutionState>(
-          builder: (context, state) {
-            switch (state) {
-              case ConstitutionLoaded(:final sections):
-                int index = 0;
-                List<Section> topSections = [];
-                List<Section> bottomSections = [];
+      body: _buildBody(),
+    );
+  }
 
-                if (widget.centeredSection != null) {
-                  index = sections.indexWhere(
-                    (section) => section.id == widget.centeredSection!.id,
-                  );
-                  topSections = sections.take(index).toList();
-                  bottomSections = sections.skip(index + 1).toList();
-                }
-
-                return CustomScrollView(
-                  center: widget.centeredSection != null ? _centerKey : null,
-                  slivers: [
-                    SliverPadding(
-                      padding: const EdgeInsets.only(top: 8),
-                      sliver: _Sections(
-                        sections: widget.centeredSection == null
-                            ? sections
-                            : topSections.reversed.toList(),
-                        selectedSection: _selectedSection,
-                        onSelection: onSelection,
-                        onRemoveSelection: onRemoveSelection,
+  Widget _buildDialog(BuildContext context) {
+    return DialogContainer(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Constitution',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Row(
+                children: [
+                  AnimatedOpacity(
+                    opacity: _selectedSection != null ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 300),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        right: 12.0,
+                        top: 8,
+                        bottom: 8,
+                      ),
+                      child: FilledButton.icon(
+                        onPressed: () => context.router.pop(_selectedSection),
+                        icon: const Icon(Icons.check, size: 18),
+                        label: const Text('Select'),
                       ),
                     ),
-                    if (widget.centeredSection != null)
-                      SliverToBoxAdapter(
-                        key: _centerKey,
-                        child: SectionTile(
-                          section: widget.centeredSection!,
-                          selectedSection: _selectedSection,
-                          onSelection: onSelection,
-                          onRemoveSelection: onRemoveSelection,
-                          isHighlighted: true,
-                        ),
-                      ),
-                    if (widget.centeredSection != null)
-                      _Sections(
-                        sections: bottomSections,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded),
+                    onPressed: () => context.router.pop(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const Divider(height: 1),
+
+        Flexible(child: _buildBody()),
+      ],
+    );
+  }
+
+  Widget _buildBody() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15),
+      child: BlocBuilder<ConstitutionBloc, ConstitutionState>(
+        builder: (context, state) {
+          switch (state) {
+            case ConstitutionLoaded(:final sections):
+              int index = 0;
+              List<Section> topSections = [];
+              List<Section> bottomSections = [];
+
+              if (widget.centeredSection != null) {
+                index = sections.indexWhere(
+                  (section) => section.id == widget.centeredSection!.id,
+                );
+                topSections = sections.take(index).toList();
+                bottomSections = sections.skip(index + 1).toList();
+              }
+
+              return CustomScrollView(
+                center: widget.centeredSection != null ? _centerKey : null,
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.only(top: 8),
+                    sliver: _Sections(
+                      sections: widget.centeredSection == null
+                          ? sections
+                          : topSections.reversed.toList(),
+                      selectedSection: _selectedSection,
+                      onSelection: onSelection,
+                      onRemoveSelection: onRemoveSelection,
+                    ),
+                  ),
+                  if (widget.centeredSection != null)
+                    SliverToBoxAdapter(
+                      key: _centerKey,
+                      child: SectionTile(
+                        section: widget.centeredSection!,
                         selectedSection: _selectedSection,
                         onSelection: onSelection,
                         onRemoveSelection: onRemoveSelection,
+                        isHighlighted: true,
                       ),
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: 24),
-                    ), // Bottom padding
-                  ],
-                );
-              case ConstitutionFailure():
-                return Center(
-                  child: FailureRetryButton(
-                    onPressed: () {
-                      context.read<ConstitutionBloc>().add(
-                        ConstitutionEvent.get(),
-                      );
-                    },
-                  ),
-                );
-              default:
-                return const Center(child: BottomLoader());
-            }
-          },
-        ),
+                    ),
+                  if (widget.centeredSection != null)
+                    _Sections(
+                      sections: bottomSections,
+                      selectedSection: _selectedSection,
+                      onSelection: onSelection,
+                      onRemoveSelection: onRemoveSelection,
+                    ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 24),
+                  ), // Bottom padding
+                ],
+              );
+            case ConstitutionFailure():
+              return Center(
+                child: FailureRetryButton(
+                  onPressed: () {
+                    context.read<ConstitutionBloc>().add(
+                      ConstitutionEvent.get(),
+                    );
+                  },
+                ),
+              );
+            default:
+              return const Center(child: BottomLoader());
+          }
+        },
       ),
     );
   }

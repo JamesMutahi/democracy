@@ -10,7 +10,6 @@ import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
 import 'package:democracy/app/view/widgets/side_menu.dart';
-import 'package:democracy/app/view/widgets/side_panel.dart';
 import 'package:democracy/broadcast/bloc/broadcast_view/broadcast_view_cubit.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/broadcast/view/widgets/minimized.dart';
@@ -158,50 +157,31 @@ class _Web extends StatelessWidget {
               ),
             ),
             Flexible(
-              flex: responsive.largerOrEqualTo(expandSideMenu) ? 5 : 6,
+              flex: responsive.largerOrEqualTo(expandSideMenu) ? 8 : 9,
               child: Container(
-                constraints: BoxConstraints(maxWidth: 600),
-                decoration: BoxDecoration(
-                  border: Border(
-                    left: BorderSide(
-                      color: responsive.isMobile
-                          ? Colors.transparent
-                          : Theme.of(context).colorScheme.outlineVariant,
+                constraints: BoxConstraints(maxWidth: 1000),
+                child: Stack(
+                  children: [
+                    AutoRouter(),
+                    BlocBuilder<BroadcastViewCubit, BroadcastViewState>(
+                      builder: (context, state) {
+                        if (state.view == BroadcastView.minimized) {
+                          return Positioned(
+                            bottom: 24,
+                            left: 16,
+                            right: 16,
+                            child: MinimizedBroadcastBar(
+                              broadcast: state.broadcast!,
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
                     ),
-                    right: BorderSide(
-                      color: responsive.isMobile
-                          ? Colors.transparent
-                          : Theme.of(context).colorScheme.outlineVariant,
-                    ),
-                  ),
-                ),
-                child: Container(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Stack(
-                    children: [
-                      AutoRouter(),
-                      BlocBuilder<BroadcastViewCubit, BroadcastViewState>(
-                        builder: (context, state) {
-                          if (state.view == BroadcastView.minimized) {
-                            return Positioned(
-                              bottom: 24,
-                              left: 16,
-                              right: 16,
-                              child: MinimizedBroadcastBar(
-                                broadcast: state.broadcast!,
-                              ),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
               ),
             ),
-            if (responsive.largerOrEqualTo(expandSidePanel))
-              Flexible(flex: 3, child: SidePanel()),
           ],
         ),
       ),

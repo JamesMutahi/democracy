@@ -10,6 +10,7 @@ import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/bloc/petition/petition_bloc.dart';
@@ -32,34 +33,36 @@ class PetitionDetail extends StatelessWidget {
       create: (context) =>
           PetitionBloc(webSocketService: context.read<WebSocketService>())
             ..add(PetitionEvent.load(petitionId: petitionId)),
-      child: BlocBuilder<PetitionBloc, PetitionState>(
-        buildWhen: (previous, current) => current.petitionId == petitionId,
-        builder: (context, state) {
-          if (state.status == PetitionStatus.initial ||
-              (state.status == PetitionStatus.loading &&
-                  state.petition == null)) {
-            return Scaffold(
-              appBar: AppBar(leading: AutoLeadingButton()),
-              body: Center(child: BottomLoader()),
-            );
-          }
-          if (state.status == PetitionStatus.failure &&
-              state.petition == null) {
-            return Scaffold(
-              appBar: AppBar(leading: AutoLeadingButton()),
-              body: Center(
-                child: FailureRetryButton(
-                  onPressed: () {
-                    context.read<PetitionBloc>().add(
-                      PetitionEvent.load(petitionId: petitionId),
-                    );
-                  },
+      child: MainContainer(
+        child: BlocBuilder<PetitionBloc, PetitionState>(
+          buildWhen: (previous, current) => current.petitionId == petitionId,
+          builder: (context, state) {
+            if (state.status == PetitionStatus.initial ||
+                (state.status == PetitionStatus.loading &&
+                    state.petition == null)) {
+              return Scaffold(
+                appBar: AppBar(leading: AutoLeadingButton()),
+                body: Center(child: BottomLoader()),
+              );
+            }
+            if (state.status == PetitionStatus.failure &&
+                state.petition == null) {
+              return Scaffold(
+                appBar: AppBar(leading: AutoLeadingButton()),
+                body: Center(
+                  child: FailureRetryButton(
+                    onPressed: () {
+                      context.read<PetitionBloc>().add(
+                        PetitionEvent.load(petitionId: petitionId),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            );
-          }
-          return _PetitionDetail(petition: state.petition!);
-        },
+              );
+            }
+            return _PetitionDetail(petition: state.petition!);
+          },
+        ),
       ),
     );
   }

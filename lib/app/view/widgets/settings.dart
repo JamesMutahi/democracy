@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -11,29 +12,33 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Settings')),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ThemeModeListTile(),
-            ListTile(
-              leading: const Icon(Icons.volume_mute),
-              title: const Text('Mute and block'),
-              subtitle: const Text("Manage accounts you've muted and blocked"),
-              onTap: () {
-                context.router.push(MutedAndBlocked());
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.tune_rounded),
-              title: const Text('Preferences'),
-              subtitle: const Text("Manage your notification preferences"),
-              onTap: () {
-                context.pushRoute(PreferencesRoute());
-              },
-            ),
-          ],
+    return MainContainer(
+      child: Scaffold(
+        appBar: AppBar(title: Text('Settings')),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              ThemeModeListTile(),
+              ListTile(
+                leading: const Icon(Icons.volume_mute),
+                title: const Text('Mute and block'),
+                subtitle: const Text(
+                  "Manage accounts you've muted and blocked",
+                ),
+                onTap: () {
+                  context.router.push(MutedAndBlocked());
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.tune_rounded),
+                title: const Text('Preferences'),
+                subtitle: const Text("Manage your notification preferences"),
+                onTap: () {
+                  context.pushRoute(PreferencesRoute());
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

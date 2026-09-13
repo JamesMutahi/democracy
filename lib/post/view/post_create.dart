@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/ballot/models/ballot.dart';
@@ -205,9 +206,7 @@ class _PostCreateState extends State<PostCreate> {
           Padding(
             padding: const EdgeInsets.only(right: 15),
             child: ValueListenableBuilder<bool>(
-              valueListenable: ValueNotifier<bool>(
-                _canPost,
-              ),
+              valueListenable: ValueNotifier<bool>(_canPost),
               builder: (context, canPost, child) {
                 return FilledButton(
                   onPressed: canPost
@@ -250,83 +249,73 @@ class _PostCreateState extends State<PostCreate> {
   }
 
   Widget _buildWeb() {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 600, maxHeight: 800),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return DialogContainer(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.replyTo != null ? 'Reply' : 'Create Post',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Row(
                 children: [
-                  Text(
-                    widget.replyTo != null ? 'Reply' : 'Create Post',
-                    style: Theme.of(context).textTheme.titleLarge,
+                  FilledButton(
+                    onPressed: _canPost
+                        ? () => showDialog(
+                            context: context,
+                            builder: (context) =>
+                                _PostCreateDialog(onYesPressed: _createPost),
+                          )
+                        : null,
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Text(widget.replyTo != null ? 'Reply' : 'Post'),
                   ),
-                  Row(
-                    children: [
-                      FilledButton(
-                        onPressed: _canPost
-                            ? () => showDialog(
-                                context: context,
-                                builder: (context) => _PostCreateDialog(
-                                  onYesPressed: _createPost,
-                                ),
-                              )
-                            : null,
-                        style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: Text(widget.replyTo != null ? 'Reply' : 'Post'),
-                      ),
-                      const SizedBox(width: 8),
-                      IconButton(
-                        icon: const Icon(Symbols.close),
-                        onPressed: () {
-                          if (!_canPost) {
-                            context.router.popTop();
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) =>
-                                  _SaveDraftDialog(onYesPressed: _saveDraft),
-                            );
-                          }
-                        },
-                      ),
-                    ],
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Symbols.close),
+                    onPressed: () {
+                      if (!_canPost) {
+                        context.router.popTop();
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              _SaveDraftDialog(onYesPressed: _saveDraft),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
-            ),
-            const Divider(height: 1),
-            Flexible(
-              child: PostFormWidget(
-                key: _formKey,
-                replyTo: widget.replyTo,
-                repostOf: widget.repostOf,
-                ballot: widget.ballot,
-                survey: widget.survey,
-                petition: widget.petition,
-                broadcast: widget.broadcast,
-                section: widget.section,
-                onCanPostChanged: (canPost) =>
-                    setState(() => _canPost = canPost),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+        const Divider(height: 1),
+        Flexible(
+          child: PostFormWidget(
+            key: _formKey,
+            replyTo: widget.replyTo,
+            repostOf: widget.repostOf,
+            ballot: widget.ballot,
+            survey: widget.survey,
+            petition: widget.petition,
+            broadcast: widget.broadcast,
+            section: widget.section,
+            onCanPostChanged: (canPost) => setState(() => _canPost = canPost),
+          ),
+        ),
+      ],
     );
   }
 }

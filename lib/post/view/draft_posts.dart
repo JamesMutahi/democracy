@@ -10,6 +10,7 @@ import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/broadcast/view/widgets/broadcast_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
@@ -57,33 +58,35 @@ class _DraftsPostsState extends State<DraftPosts> {
           draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
         }
       },
-      child: Scaffold(
-        appBar: AppBar(title: Text('Drafts'), elevation: 0.5),
-        body: BlocBuilder<DraftPostsBloc, DraftPostsState>(
-          builder: (context, state) {
-            final drafts = state.drafts.toList();
+      child: MainContainer(
+        child: Scaffold(
+          appBar: AppBar(title: Text('Drafts'), elevation: 0.5),
+          body: BlocBuilder<DraftPostsBloc, DraftPostsState>(
+            builder: (context, state) {
+              final drafts = state.drafts.toList();
 
-            if (state.status == DraftPostsStatus.initial ||
-                state.status == DraftPostsStatus.loading && drafts.isEmpty) {
-              return const BottomLoader();
-            }
+              if (state.status == DraftPostsStatus.initial ||
+                  state.status == DraftPostsStatus.loading && drafts.isEmpty) {
+                return const BottomLoader();
+              }
 
-            if (state.status == DraftPostsStatus.failure && drafts.isEmpty) {
-              return FailureRetryButton(
-                onPressed: () =>
-                    context.read<DraftPostsBloc>().add(DraftPostsEvent.get()),
+              if (state.status == DraftPostsStatus.failure && drafts.isEmpty) {
+                return FailureRetryButton(
+                  onPressed: () =>
+                      context.read<DraftPostsBloc>().add(DraftPostsEvent.get()),
+                );
+              }
+
+              return ListView.builder(
+                padding: EdgeInsets.only(bottom: 50),
+                itemBuilder: (BuildContext context, int index) {
+                  DraftPost draft = drafts[index];
+                  return DraftTile(key: ValueKey(draft.key), draft: draft);
+                },
+                itemCount: drafts.length,
               );
-            }
-
-            return ListView.builder(
-              padding: EdgeInsets.only(bottom: 50),
-              itemBuilder: (BuildContext context, int index) {
-                DraftPost draft = drafts[index];
-                return DraftTile(key: ValueKey(draft.key), draft: draft);
-              },
-              itemCount: drafts.length,
-            );
-          },
+            },
+          ),
         ),
       ),
     );

@@ -7,6 +7,7 @@ import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
@@ -52,40 +53,43 @@ class ProfilePage extends StatelessWidget {
       create: (context) =>
           ProfileBloc(webSocketService: context.read<WebSocketService>())
             ..add(ProfileEvent.load(username: username)),
-      child: Scaffold(
-        body: BlocBuilder<ProfileBloc, ProfileState>(
-          buildWhen: (previous, current) => current.username == username,
-          builder: (context, state) {
-            if (state.status == ProfileStatus.initial ||
-                (state.status == ProfileStatus.loading && state.user == null)) {
-              return BottomLoader();
-            }
-            if (state.status == ProfileStatus.failure && state.user == null) {
-              return Scaffold(
-                appBar: AppBar(
-                  leading: AutoLeadingButton(),
-                  title: Text('Profile'),
-                ),
-                body: FailureRetryButton(
-                  onPressed: () {
-                    context.read<ProfileBloc>().add(
-                      ProfileEvent.load(username: username),
-                    );
-                  },
-                ),
-              );
-            }
-            if (state.status == ProfileStatus.notFound) {
-              return Scaffold(
-                appBar: AppBar(
-                  leading: AutoLeadingButton(),
-                  title: Text('Profile'),
-                ),
-                body: Center(child: Text('This account does not exist')),
-              );
-            }
-            return _Profile(user: state.user!);
-          },
+      child: MainContainer(
+        child: Scaffold(
+          body: BlocBuilder<ProfileBloc, ProfileState>(
+            buildWhen: (previous, current) => current.username == username,
+            builder: (context, state) {
+              if (state.status == ProfileStatus.initial ||
+                  (state.status == ProfileStatus.loading &&
+                      state.user == null)) {
+                return BottomLoader();
+              }
+              if (state.status == ProfileStatus.failure && state.user == null) {
+                return Scaffold(
+                  appBar: AppBar(
+                    leading: AutoLeadingButton(),
+                    title: Text('Profile'),
+                  ),
+                  body: FailureRetryButton(
+                    onPressed: () {
+                      context.read<ProfileBloc>().add(
+                        ProfileEvent.load(username: username),
+                      );
+                    },
+                  ),
+                );
+              }
+              if (state.status == ProfileStatus.notFound) {
+                return Scaffold(
+                  appBar: AppBar(
+                    leading: AutoLeadingButton(),
+                    title: Text('Profile'),
+                  ),
+                  body: Center(child: Text('This account does not exist')),
+                );
+              }
+              return _Profile(user: state.user!);
+            },
+          ),
         ),
       ),
     );

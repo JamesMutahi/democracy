@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:democracy/app/view/widgets/main_container.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -27,65 +28,59 @@ class _HomePageState extends State<HomePage> {
       length: 2,
       child: Scaffold(
         body: SafeArea(
-          child: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                if (!kIsWeb || responsive.isMobile)
-                  SliverAppBar(
-                    floating: true,
-                    snap: true,
-                    automaticallyImplyLeading: false,
-                    forceElevated: true,
-                    flexibleSpace: Builder(
-                      builder: (context) {
-                        return Stack(
-                          // Allows children to go outside bounds
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.center,
-                          children: [
-                            SizedBox(
-                              height: 55,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  if (responsive.isMobile) DrawerOpener(),
-                                  NotificationButton(),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              top: 5,
-                              child: Logo(width: 60, height: 60),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    bottom: _buildTabBar(),
-                  )
-                else
-                  SliverAppBar(
-                    pinned: true,
-                    floating: false,
-                    snap: false,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: Builder(
-                      builder: (context) {
-                        return _buildTabBar();
-                      },
-                    ),
-                  ),
-              ];
-            },
-            body: const TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              children: [ForYouTab(), FollowingTab()],
-            ),
-          ),
+          child: kIsWeb && responsive.largerThan(MOBILE)
+              ? _buildWeb(responsive)
+              : _buildMobile(),
         ),
       ),
+    );
+  }
+
+  Widget _buildWeb(ResponsiveBreakpointsData responsive) {
+    return MainContainer(
+      child: Column(
+        children: [
+          _buildTabBar(),
+          Expanded(child: _buildTabBarView()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobile() {
+    return NestedScrollView(
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            automaticallyImplyLeading: false,
+            forceElevated: true,
+            flexibleSpace: Builder(
+              builder: (context) {
+                return Stack(
+                  // Allows children to go outside bounds
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(
+                      height: 55,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [DrawerOpener(), NotificationButton()],
+                      ),
+                    ),
+                    Positioned(top: 5, child: Logo(width: 60, height: 60)),
+                  ],
+                );
+              },
+            ),
+            bottom: _buildTabBar(),
+          ),
+        ];
+      },
+      body: _buildTabBarView(),
     );
   }
 
@@ -93,13 +88,18 @@ class _HomePageState extends State<HomePage> {
     return TabBar(
       dividerColor: Theme.of(context).colorScheme.outlineVariant,
       labelStyle: Theme.of(context).textTheme.titleMedium,
-      unselectedLabelStyle: Theme.of(
-        context,
-      ).textTheme.titleMedium,
+      unselectedLabelStyle: Theme.of(context).textTheme.titleMedium,
       tabs: [
         Tab(text: 'For You'),
         Tab(text: 'Following'),
       ],
+    );
+  }
+
+  Widget _buildTabBarView() {
+    return const TabBarView(
+      physics: NeverScrollableScrollPhysics(),
+      children: [ForYouTab(), FollowingTab()],
     );
   }
 }

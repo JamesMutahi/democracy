@@ -37,7 +37,7 @@ class SectionTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         onTap: () {
           if (isDependency) {
-            context.router.push(Constitution(sectionId: section.id));
+            context.router.push(ConstitutionRoute(sectionId: section.id));
           } else {
             onRemoveSelection?.call(section);
           }

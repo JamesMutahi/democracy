@@ -38,44 +38,93 @@ class AppRouter extends RootStackRouter {
           ],
         ),
         if (!kIsWeb) ...otherRoutes,
+
         CustomRoute(
           page: PostCreate.page,
           customRouteBuilder: <T>(context, child, page) {
-            return DialogRoute<T>(
-              context: context,
-              builder: (context) => child,
-              settings: page,
-            );
+            if (kIsWeb) {
+              return DialogRoute<T>(
+                context: context,
+                builder: (context) => child,
+                settings: page,
+              );
+            } else {
+              return MaterialPageRoute<T>(
+                builder: (context) => child,
+                settings: page,
+              );
+            }
           },
         ),
         CustomRoute(
           page: CommunityNoteCreate.page,
           customRouteBuilder: <T>(context, child, page) {
-            return DialogRoute<T>(
-              context: context,
-              builder: (context) => child,
-              settings: page,
-            );
+            if (kIsWeb) {
+              return DialogRoute<T>(
+                context: context,
+                builder: (context) => child,
+                settings: page,
+              );
+            } else {
+              return MaterialPageRoute<T>(
+                builder: (context) => child,
+                settings: page,
+              );
+            }
           },
         ),
         CustomRoute(
+          path: 'create-broadcast',
           page: BroadcastCreate.page,
           customRouteBuilder: <T>(context, child, page) {
-            return DialogRoute<T>(
-              context: context,
-              builder: (context) => child,
-              settings: page,
-            );
+            if (kIsWeb) {
+              return DialogRoute<T>(
+                context: context,
+                builder: (context) => child,
+                settings: page,
+              );
+            } else {
+              return MaterialPageRoute<T>(
+                builder: (context) => child,
+                settings: page,
+              );
+            }
           },
         ),
         CustomRoute(
+          path: 'create-petition',
           page: PetitionCreate.page,
           customRouteBuilder: <T>(context, child, page) {
-            return DialogRoute<T>(
-              context: context,
-              builder: (context) => child,
-              settings: page,
-            );
+            if (kIsWeb) {
+              return DialogRoute<T>(
+                context: context,
+                builder: (context) => child,
+                settings: page,
+              );
+            } else {
+              return MaterialPageRoute<T>(
+                builder: (context) => child,
+                settings: page,
+              );
+            }
+          },
+        ),
+        CustomRoute(
+          path: 'constitution-select',
+          page: ConstitutionView.page,
+          customRouteBuilder: <T>(context, child, page) {
+            if (kIsWeb) {
+              return DialogRoute<T>(
+                context: context,
+                builder: (context) => child,
+                settings: page,
+              );
+            } else {
+              return MaterialPageRoute<T>(
+                builder: (context) => child,
+                settings: page,
+              );
+            }
           },
         ),
       ],
@@ -85,7 +134,7 @@ class AppRouter extends RootStackRouter {
 }
 
 final otherRoutes = [
-  AutoRoute(path: 'constitution', page: Constitution.page),
+  AutoRoute(path: 'constitution', page: ConstitutionRoute.page),
   AutoRoute(path: 'bookmarks', page: Bookmarks.page),
   AutoRoute(path: 'notifications', page: Notifications.page),
   AutoRoute(path: 'preferences', page: PreferencesRoute.page),

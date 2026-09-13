@@ -6,6 +6,7 @@ import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus, WebSocketService;
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/utils/copy.dart';
@@ -27,10 +28,12 @@ import 'package:democracy/notification/bloc/notifications/notifications_bloc.dar
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class ChatDetail extends StatelessWidget {
@@ -71,15 +74,20 @@ class ChatDetail extends StatelessWidget {
               ? state.chat!.users.firstWhere((u) => u.id != me.id)
               : me;
 
-          return _ChatDetail(chat: state.chat!, me: me, otherUser: otherUser);
+          return ChatDetailView(
+            chat: state.chat!,
+            me: me,
+            otherUser: otherUser,
+          );
         },
       ),
     );
   }
 }
 
-class _ChatDetail extends StatefulWidget {
-  const _ChatDetail({
+class ChatDetailView extends StatefulWidget {
+  const ChatDetailView({
+    super.key,
     required this.chat,
     required this.me,
     required this.otherUser,
@@ -90,10 +98,10 @@ class _ChatDetail extends StatefulWidget {
   final User otherUser;
 
   @override
-  State<_ChatDetail> createState() => _ChatDetailState();
+  State<ChatDetailView> createState() => _ChatDetailViewState();
 }
 
-class _ChatDetailState extends State<_ChatDetail> {
+class _ChatDetailViewState extends State<ChatDetailView> {
   late User _otherUser = widget.otherUser;
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
@@ -141,6 +149,8 @@ class _ChatDetailState extends State<_ChatDetail> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final responsive = ResponsiveBreakpoints.of(context);
+    bool hideLeading = kIsWeb && responsive.largerOrEqualTo(expandSidePanel);
 
     return BlocProvider(
       create: (context) => MessagesBloc(
@@ -152,9 +162,11 @@ class _ChatDetailState extends State<_ChatDetail> {
           BlocListener<ChatDetailBloc, ChatDetailState>(
             listener: (context, state) {
               if (state is ChatLoaded) {
-                context.read<ChatBloc>().add(
-                  ChatEvent.updated(chat: state.chat),
-                );
+                if (state.chat.id == widget.chat.id) {
+                  context.read<ChatBloc>().add(
+                    ChatEvent.updated(chat: state.chat),
+                  );
+                }
               }
             },
           ),
@@ -271,8 +283,9 @@ class _ChatDetailState extends State<_ChatDetail> {
           },
           child: Scaffold(
             appBar: AppBar(
-              leading: const AutoLeadingButton(),
-              titleSpacing: 0,
+              automaticallyImplyLeading: false,
+              leading: hideLeading ? null : const AutoLeadingButton(),
+              titleSpacing: hideLeading ? null : 0,
               title: showMessageActions
                   ? Text(
                       '${messages.length} selected',
