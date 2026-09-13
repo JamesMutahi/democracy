@@ -10,6 +10,7 @@ class MorePopUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
+      useRootNavigator: true,
       menuPadding: EdgeInsets.zero,
       onSelected: onSelected,
       borderRadius: BorderRadius.circular(50),

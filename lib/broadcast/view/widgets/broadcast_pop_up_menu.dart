@@ -11,6 +11,7 @@ class BroadcastPopUpMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
+      useRootNavigator: true,
       padding: EdgeInsets.zero,
       menuPadding: EdgeInsets.zero,
       onSelected: (selected) {

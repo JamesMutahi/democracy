@@ -335,6 +335,7 @@ class CommentTile extends StatelessWidget {
       ),
       trailing: canManageSpeakers
           ? PopupMenuButton<String>(
+              useRootNavigator: true,
               padding: EdgeInsets.zero,
               menuPadding: EdgeInsets.zero,
               onSelected: (selected) {

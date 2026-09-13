@@ -8,7 +8,6 @@ import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key, required this.middle, this.bottom});
@@ -76,6 +75,7 @@ class CustomSearchBar extends StatelessWidget {
     this.onChanged,
     this.onSubmitted,
     this.onFilterTap,
+    this.textInputAction = TextInputAction.search,
   });
 
   final TextEditingController? controller;
@@ -85,43 +85,107 @@ class CustomSearchBar extends StatelessWidget {
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
   final VoidCallback? onFilterTap;
+  final TextInputAction textInputAction;
 
   @override
   Widget build(BuildContext context) {
-    Color color = Theme.of(context).disabledColor;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
-      height: 50,
-      margin: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       child: SearchBar(
         controller: controller,
-        padding: WidgetStateProperty.all(EdgeInsets.only(left: 15)),
-        leading: Icon(Symbols.search_rounded, color: color),
+        textInputAction: textInputAction,
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: 16),
+        ),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
+        elevation: const WidgetStatePropertyAll(0),
+        backgroundColor: WidgetStatePropertyAll(
+          theme.disabledColor.withAlpha(30),
+        ),
+        overlayColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.pressed)) {
+            return colorScheme.primary.withValues(alpha: 0.1);
+          }
+          return null;
+        }),
+
+        leading: Icon(
+          Icons.search_rounded,
+          color: colorScheme.onSurfaceVariant,
+          size: 24,
+        ),
+
         trailing: [
-          if (onFilterTap != null)
-            Stack(
+          if (onFilterTap != null || controller != null)
+            Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  onPressed: onFilterTap,
-                  icon: Icon(Icons.tune_rounded, color: color),
-                ),
-                filterCount == 0
-                    ? SizedBox.shrink()
-                    : Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          filterCount.toString(),
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyLarge?.copyWith(color: color),
+                if (onFilterTap != null)
+                  Stack(
+                    children: [
+                      IconButton(
+                        onPressed: onFilterTap,
+                        icon: Icon(
+                          Icons.tune_rounded,
+                          color: colorScheme.onSurfaceVariant,
                         ),
+                        tooltip: 'Filters',
                       ),
+                      filterCount == 0
+                          ? SizedBox.shrink()
+                          : Positioned(
+                              left: 0,
+                              bottom: 10,
+                              child: Text(
+                                filterCount.toString(),
+                                style: Theme.of(context).textTheme.bodyLarge
+                                    ?.copyWith(
+                                      color: Theme.of(context).disabledColor,
+                                    ),
+                              ),
+                            ),
+                    ],
+                  ),
+
+                if (controller != null)
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: controller!,
+                    builder: (context, value, child) {
+                      if (value.text.isEmpty) return const SizedBox.shrink();
+                      return IconButton(
+                        onPressed: () {
+                          controller!.clear();
+                          onChanged?.call('');
+                        },
+                        icon: Icon(
+                          Icons.clear_rounded,
+                          color: colorScheme.onSurfaceVariant,
+                          size: 24,
+                        ),
+                        tooltip: 'Clear',
+                        constraints: const BoxConstraints(),
+                      );
+                    },
+                  ),
               ],
             ),
         ],
+
         hintText: hintText,
-        hintStyle: WidgetStateProperty.all(
-          TextStyle(color: Theme.of(context).hintColor),
+        hintStyle: WidgetStatePropertyAll(
+          theme.textTheme.bodyLarge?.copyWith(
+            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+          ),
         ),
+        textStyle: WidgetStatePropertyAll(
+          theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
+        ),
+
         onTapOutside: (event) {
           FocusManager.instance.primaryFocus?.unfocus();
         },

@@ -317,11 +317,7 @@ class _PostContainer extends StatelessWidget {
                   ),
                 ),
           if (!isDependency && !post.isDeleted)
-            Positioned(
-              top: -10,
-              right: -10,
-              child: PostPopUp(post: post),
-            ),
+            Positioned(top: -10, right: -10, child: PostPopUp(post: post)),
         ],
       ),
     );

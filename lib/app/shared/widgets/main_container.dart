@@ -12,6 +12,7 @@ class MainContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
+    final borderColor = Theme.of(context).disabledColor.withAlpha(30);
 
     return kIsWeb && responsive.largerThan(MOBILE)
         ? Row(
@@ -23,12 +24,8 @@ class MainContainer extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 10),
                   decoration: BoxDecoration(
                     border: Border(
-                      left: BorderSide(
-                        color: Theme.of(context).colorScheme.outlineVariant,
-                      ),
-                      right: BorderSide(
-                        color: Theme.of(context).colorScheme.outlineVariant,
-                      ),
+                      left: BorderSide(color: borderColor),
+                      right: BorderSide(color: borderColor),
                     ),
                   ),
                   child: child,

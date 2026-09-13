@@ -44,6 +44,7 @@ class PostTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Flexible(
       flex: 9,
       child: SingleChildScrollView(
@@ -61,13 +62,13 @@ class PostTextField extends StatelessWidget {
             //   FocusScope.of(context).unfocus();
             // },
             minLines: 1,
-            maxLines: 7,
+            maxLines: 8,
             keyboardType: TextInputType.multiline,
             maxLength: 500,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
             decoration: InputDecoration(
               filled: true,
-              fillColor: Theme.of(context).scaffoldBackgroundColor,
+              fillColor: theme.colorScheme.surfaceContainerHighest,
               hintText: hintText,
               hintStyle: TextStyle(color: Theme.of(context).hintColor),
               prefixIcon: null,
@@ -75,9 +76,12 @@ class PostTextField extends StatelessWidget {
                 minWidth: 0,
                 minHeight: 0,
               ),
-              prefixStyle: TextStyle(color: Theme.of(context).primaryColor),
+              prefixStyle: TextStyle(color: theme.primaryColor),
               contentPadding: const EdgeInsets.all(15),
-              border: InputBorder.none,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
               hoverColor: Colors.transparent,
             ),
             contentInsertionConfiguration: ContentInsertionConfiguration(

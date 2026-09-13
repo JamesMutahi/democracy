@@ -7,7 +7,7 @@ import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
-import 'package:democracy/app/view/widgets/main_container.dart';
+import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
@@ -541,6 +541,7 @@ class _ProfilePopUpMenu extends StatelessWidget {
             user.isBlocked ? 'Unblock' : 'Block',
           ];
     return PopupMenuButton<String>(
+      useRootNavigator: true,
       menuPadding: EdgeInsets.zero,
       splashRadius: 50,
       borderRadius: BorderRadius.circular(50),

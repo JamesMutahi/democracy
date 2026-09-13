@@ -235,7 +235,9 @@ class _SidePanelCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 20, left: 20),
       padding: EdgeInsets.only(top: 15, bottom: 10),
       decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+        border: Border.all(
+          color: Theme.of(context).disabledColor.withAlpha(30),
+        ),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(

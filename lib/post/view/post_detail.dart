@@ -7,7 +7,7 @@ import 'package:democracy/app/shared/widgets/cached_link_preview.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
-import 'package:democracy/app/view/widgets/main_container.dart';
+import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';

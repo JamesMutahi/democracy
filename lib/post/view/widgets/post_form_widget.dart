@@ -175,6 +175,7 @@ class PostFormWidgetState extends State<PostFormWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const PostAuthor(),
+                  SizedBox(width: 8),
                   PostTextField(
                     controller: _controller,
                     focusNode: _focusNode,

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/app/view/widgets/explore_search_anchor.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
@@ -70,96 +71,98 @@ class _SearchResultsState extends State<SearchResults>
         ),
       child: DefaultTabController(
         length: 3,
-        child: Scaffold(
-          body: SafeArea(
-            child: BlocBuilder<PostFilterCubit, PostFilterState>(
-              buildWhen: (previous, current) {
-                return current.searchTerm == widget.searchTerm;
-              },
-              builder: (context, state) {
-                return NestedScrollView(
-                  headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                    final filterCubit = context.read<PostFilterCubit>();
-                    return [
-                      SliverAppBar(
-                        floating: true,
-                        snap: true,
-                        forceElevated: true,
-                        automaticallyImplyLeading: false,
-                        flexibleSpace: Builder(
-                          builder: (context) {
-                            return Row(
-                              children: [
-                                BackButton(),
-                                Expanded(
-                                  child: SizedBox(
-                                    height: 60,
-                                    child: ExploreSearchAnchor(
-                                      searchController: _searchController,
-                                      filterCubit: filterCubit,
-                                      filterState: state,
-                                      onSubmitted: () {
-                                        _searchController.text =
-                                            widget.searchTerm;
-                                      },
+        child: MainContainer(
+          child: Scaffold(
+            body: SafeArea(
+              child: BlocBuilder<PostFilterCubit, PostFilterState>(
+                buildWhen: (previous, current) {
+                  return current.searchTerm == widget.searchTerm;
+                },
+                builder: (context, state) {
+                  return NestedScrollView(
+                    headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                      final filterCubit = context.read<PostFilterCubit>();
+                      return [
+                        SliverAppBar(
+                          floating: true,
+                          snap: true,
+                          forceElevated: true,
+                          automaticallyImplyLeading: false,
+                          flexibleSpace: Builder(
+                            builder: (context) {
+                              return Row(
+                                children: [
+                                  BackButton(),
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 60,
+                                      child: ExploreSearchAnchor(
+                                        searchController: _searchController,
+                                        filterCubit: filterCubit,
+                                        filterState: state,
+                                        onSubmitted: () {
+                                          _searchController.text =
+                                              widget.searchTerm;
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            );
-                          },
+                                ],
+                              );
+                            },
+                          ),
+                          bottom: TabBar(
+                            dividerColor: Theme.of(
+                              context,
+                            ).colorScheme.outlineVariant,
+                            labelStyle: Theme.of(context).textTheme.titleMedium,
+                            tabs: [
+                              Tab(text: 'Top'),
+                              Tab(text: 'Recent'),
+                              Tab(text: 'Profiles'),
+                            ],
+                          ),
                         ),
-                        bottom: TabBar(
-                          dividerColor: Theme.of(
-                            context,
-                          ).colorScheme.outlineVariant,
-                          labelStyle: Theme.of(context).textTheme.titleMedium,
-                          tabs: [
-                            Tab(text: 'Top'),
-                            Tab(text: 'Recent'),
-                            Tab(text: 'Profiles'),
-                          ],
+                      ];
+                    },
+                    body: MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => PostsBloc(
+                            webSocketService: context.read<WebSocketService>(),
+                          ),
                         ),
-                      ),
-                    ];
-                  },
-                  body: MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => PostsBloc(
-                          webSocketService: context.read<WebSocketService>(),
+                        BlocProvider(
+                          create: (context) => RecentPostsBloc(
+                            webSocketService: context.read<WebSocketService>(),
+                          ),
                         ),
-                      ),
-                      BlocProvider(
-                        create: (context) => RecentPostsBloc(
-                          webSocketService: context.read<WebSocketService>(),
+                        BlocProvider(
+                          create: (context) => UsersBloc(
+                            webSocketService: context.read<WebSocketService>(),
+                          ),
                         ),
-                      ),
-                      BlocProvider(
-                        create: (context) => UsersBloc(
-                          webSocketService: context.read<WebSocketService>(),
-                        ),
-                      ),
-                    ],
-                    child: TabBarView(
-                      physics: NeverScrollableScrollPhysics(),
-                      children: [
-                        _TopPostsTab(
-                          searchTerm: widget.searchTerm,
-                          startDate: state.startDate,
-                          endDate: state.endDate,
-                        ),
-                        _RecentPostsTab(
-                          searchTerm: widget.searchTerm,
-                          startDate: state.startDate,
-                          endDate: state.endDate,
-                        ),
-                        _ProfilesTab(searchTerm: widget.searchTerm),
                       ],
+                      child: TabBarView(
+                        physics: NeverScrollableScrollPhysics(),
+                        children: [
+                          _TopPostsTab(
+                            searchTerm: widget.searchTerm,
+                            startDate: state.startDate,
+                            endDate: state.endDate,
+                          ),
+                          _RecentPostsTab(
+                            searchTerm: widget.searchTerm,
+                            startDate: state.startDate,
+                            endDate: state.endDate,
+                          ),
+                          _ProfilesTab(searchTerm: widget.searchTerm),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ),

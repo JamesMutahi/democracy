@@ -5,7 +5,7 @@ import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/explore_search_anchor.dart';
-import 'package:democracy/app/view/widgets/main_container.dart';
+import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/trending_posts/trending_posts_bloc.dart';
@@ -82,10 +82,16 @@ class _ExplorePageState extends State<ExplorePage> {
               automaticallyImplyLeading: false,
               flexibleSpace: Builder(
                 builder: (context) {
-                  return _buildSearchBar(cubit, state);
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: _buildSearchBar(cubit, state),
+                  );
                 },
               ),
-              bottom: _buildTabBar(),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(60.0),
+                child: _buildTabBar(),
+              ),
             ),
           ];
         },
@@ -127,7 +133,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
   PreferredSizeWidget _buildTabBar() {
     return TabBar(
-      dividerColor: Colors.transparent,
+      dividerColor: Theme.of(context).disabledColor.withAlpha(30),
       labelStyle: Theme.of(context).textTheme.titleMedium,
       tabs: [
         Tab(text: 'For You'),

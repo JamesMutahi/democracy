@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:democracy/app/view/widgets/main_container.dart';
+import 'package:democracy/app/shared/widgets/main_container.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
 
   PreferredSizeWidget _buildTabBar() {
     return TabBar(
-      dividerColor: Theme.of(context).colorScheme.outlineVariant,
+      dividerColor: Theme.of(context).disabledColor.withAlpha(30),
       labelStyle: Theme.of(context).textTheme.titleMedium,
       unselectedLabelStyle: Theme.of(context).textTheme.titleMedium,
       tabs: [

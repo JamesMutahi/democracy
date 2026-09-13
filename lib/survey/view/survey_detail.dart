@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
-import 'package:democracy/app/view/widgets/main_container.dart';
+import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/survey/bloc/survey/survey_bloc.dart';
 import 'package:democracy/survey/models/choice_answer.dart';

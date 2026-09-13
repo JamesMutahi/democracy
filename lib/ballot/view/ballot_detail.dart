@@ -6,6 +6,7 @@ import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/ballot/bloc/ballot/ballot_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
@@ -28,44 +29,47 @@ class BallotDetail extends StatelessWidget {
       create: (context) =>
           BallotBloc(webSocketService: context.read<WebSocketService>())
             ..add(BallotEvent.load(ballotId: ballotId)),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Ballot'),
-          centerTitle: true,
-          actions: [
-            BlocBuilder<BallotBloc, BallotState>(
-              buildWhen: (previous, current) => current.ballotId == ballotId,
-              builder: (context, state) {
-                if (state.ballot == null) return const SizedBox.shrink();
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: BallotPopUp(ballot: state.ballot!),
+      child: MainContainer(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Ballot'),
+            centerTitle: true,
+            actions: [
+              BlocBuilder<BallotBloc, BallotState>(
+                buildWhen: (previous, current) => current.ballotId == ballotId,
+                builder: (context, state) {
+                  if (state.ballot == null) return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: BallotPopUp(ballot: state.ballot!),
+                  );
+                },
+              ),
+            ],
+          ),
+          body: BlocBuilder<BallotBloc, BallotState>(
+            buildWhen: (previous, current) => current.ballotId == ballotId,
+            builder: (context, state) {
+              if (state.status == BallotStatus.initial ||
+                  (state.status == BallotStatus.loading &&
+                      state.ballot == null)) {
+                return const Center(child: BottomLoader());
+              }
+              if (state.status == BallotStatus.failure &&
+                  state.ballot == null) {
+                return Center(
+                  child: FailureRetryButton(
+                    onPressed: () {
+                      context.read<BallotBloc>().add(
+                        BallotEvent.load(ballotId: ballotId),
+                      );
+                    },
+                  ),
                 );
-              },
-            ),
-          ],
-        ),
-        body: BlocBuilder<BallotBloc, BallotState>(
-          buildWhen: (previous, current) => current.ballotId == ballotId,
-          builder: (context, state) {
-            if (state.status == BallotStatus.initial ||
-                (state.status == BallotStatus.loading &&
-                    state.ballot == null)) {
-              return const Center(child: BottomLoader());
-            }
-            if (state.status == BallotStatus.failure && state.ballot == null) {
-              return Center(
-                child: FailureRetryButton(
-                  onPressed: () {
-                    context.read<BallotBloc>().add(
-                      BallotEvent.load(ballotId: ballotId),
-                    );
-                  },
-                ),
-              );
-            }
-            return _BallotDetail(ballot: state.ballot!);
-          },
+              }
+              return _BallotDetail(ballot: state.ballot!);
+            },
+          ),
         ),
       ),
     );

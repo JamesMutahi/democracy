@@ -314,17 +314,16 @@
     }
 
     .showcase-img {
-      max-width: 240px;
-      /* Prevents them from getting too huge on desktop */
       width: 100%;
       height: auto;
-      /* Maintains correct aspect ratio */
+      /* Optional: Cap the absolute maximum size so they don't look gigantic on 4K monitors */
+      max-width: 310px;
       transition: transform 0.3s ease;
     }
 
     .showcase-img:hover {
       transform: translateY(-10px);
-      /* Nice hover effect */
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
     }
 
     /* Loading Overlay */
@@ -505,30 +504,30 @@
           <p class="text-muted">A glimpse into the tools of self-governance.</p>
         </div>
 
+        <!-- justify-content-center ensures the bottom row of 2 images is perfectly centered -->
         <div class="row justify-content-center align-items-center g-4">
 
-          <!-- Mobile: 1 per row, Tablet: 2 per row, lg-xl: 3 per row, xxl: 5 per row -->
-          <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 text-center">
+          <div class="col-12 col-sm-6 col-lg-4 text-center">
             <img src="images/ballot.png" alt="Direct Ballots Interface"
               class="img-fluid rounded-4 shadow-sm showcase-img">
           </div>
 
-          <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 text-center">
+          <div class="col-12 col-sm-6 col-lg-4 text-center">
             <img src="images/survey.png" alt="Public Surveys Interface"
               class="img-fluid rounded-4 shadow-sm showcase-img">
           </div>
 
-          <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 text-center">
+          <div class="col-12 col-sm-6 col-lg-4 text-center">
             <img src="images/meeting.png" alt="Live Meetings Interface"
               class="img-fluid rounded-4 shadow-sm showcase-img">
           </div>
 
-          <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 text-center">
+          <div class="col-12 col-sm-6 col-lg-4 text-center">
             <img src="images/petition.png" alt="Citizen Petitions Interface"
               class="img-fluid rounded-4 shadow-sm showcase-img">
           </div>
 
-          <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 text-center">
+          <div class="col-12 col-sm-6 col-lg-4 text-center">
             <img src="images/constitution.png" alt="Constitution Hub Interface"
               class="img-fluid rounded-4 shadow-sm showcase-img">
           </div>

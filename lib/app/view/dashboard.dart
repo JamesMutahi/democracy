@@ -156,30 +156,27 @@ class _Web extends StatelessWidget {
                 ),
               ),
             ),
-            Flexible(
-              flex: responsive.largerOrEqualTo(expandSideMenu) ? 8 : 9,
-              child: Container(
-                constraints: BoxConstraints(maxWidth: 1000),
-                child: Stack(
-                  children: [
-                    AutoRouter(),
-                    BlocBuilder<BroadcastViewCubit, BroadcastViewState>(
-                      builder: (context, state) {
-                        if (state.view == BroadcastView.minimized) {
-                          return Positioned(
-                            bottom: 24,
-                            left: 16,
-                            right: 16,
-                            child: MinimizedBroadcastBar(
-                              broadcast: state.broadcast!,
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  ],
-                ),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 1000),
+              child: Stack(
+                children: [
+                  AutoRouter(),
+                  BlocBuilder<BroadcastViewCubit, BroadcastViewState>(
+                    builder: (context, state) {
+                      if (state.view == BroadcastView.minimized) {
+                        return Positioned(
+                          bottom: 24,
+                          left: 16,
+                          right: 16,
+                          child: MinimizedBroadcastBar(
+                            broadcast: state.broadcast!,
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ],
               ),
             ),
           ],

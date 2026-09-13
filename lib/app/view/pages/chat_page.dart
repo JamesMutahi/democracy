@@ -49,6 +49,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildWeb(ResponsiveBreakpointsData responsive) {
+    final borderColor = Theme.of(context).disabledColor.withAlpha(30);
+
     return BlocProvider(
       create: (context) =>
           ChatBloc(webSocketService: context.read<WebSocketService>()),
@@ -61,12 +63,8 @@ class _ChatPageState extends State<ChatPage> {
               padding: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
                 border: Border(
-                  left: BorderSide(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                  right: BorderSide(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
+                  left: BorderSide(color: borderColor),
+                  right: BorderSide(color: borderColor),
                 ),
               ),
               child: Column(
@@ -90,11 +88,7 @@ class _ChatPageState extends State<ChatPage> {
                 flex: 4,
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Theme.of(context).colorScheme.outlineVariant,
-                      ),
-                    ),
+                    border: Border(right: BorderSide(color: borderColor)),
                   ),
                   child: BlocBuilder<ChatBloc, ChatState>(
                     builder: (context, state) {
