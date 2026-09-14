@@ -1,6 +1,5 @@
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/view/widgets/side_panel.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -14,12 +13,12 @@ class MainContainer extends StatelessWidget {
     final responsive = ResponsiveBreakpoints.of(context);
     final borderColor = Theme.of(context).disabledColor.withAlpha(30);
 
-    return kIsWeb && responsive.largerThan(MOBILE)
-        ? Row(
-            children: [
-              Flexible(
-                flex: responsive.largerOrEqualTo(expandSideMenu) ? 5 : 6,
-                child: Container(
+    return Row(
+      children: [
+        Flexible(
+          flex: responsive.largerOrEqualTo(expandSideMenu) ? 5 : 6,
+          child: responsive.largerThan(MOBILE)
+              ? Container(
                   constraints: BoxConstraints(maxWidth: 600),
                   padding: const EdgeInsets.only(top: 10),
                   decoration: BoxDecoration(
@@ -29,12 +28,12 @@ class MainContainer extends StatelessWidget {
                     ),
                   ),
                   child: child,
-                ),
-              ),
-              if (responsive.largerOrEqualTo(expandSidePanel))
-                Flexible(flex: 3, child: SidePanel()),
-            ],
-          )
-        : child;
+                )
+              : child,
+        ),
+        if (responsive.largerOrEqualTo(expandSidePanel))
+          Flexible(flex: 3, child: SidePanel()),
+      ],
+    );
   }
 }

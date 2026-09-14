@@ -1,10 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class Bookmarks extends StatefulWidget {
@@ -16,15 +19,31 @@ class Bookmarks extends StatefulWidget {
 
 class _BookmarksState extends State<Bookmarks> {
   final RefreshController _refreshController = RefreshController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    context.read<BookmarksBloc>().add(BookmarksEvent.get());
     super.initState();
+    context.read<BookmarksBloc>().add(BookmarksEvent.get());
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return MainContainer(
       child: Scaffold(
         appBar: AppBar(title: Text('Bookmarks')),
@@ -51,6 +70,8 @@ class _BookmarksState extends State<Bookmarks> {
             }
 
             return PostListView(
+              scrollController: isWebLayout ? _scrollController: null,
+              physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
               posts: posts,
               loading:
                   state.status == BookmarksStatus.initial ||

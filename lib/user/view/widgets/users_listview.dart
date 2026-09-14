@@ -27,6 +27,8 @@ class UsersListView extends StatelessWidget {
     this.onRefresh,
     required this.onLoading,
     required this.onFailure,
+    this.scrollController,
+    this.physics,
   });
 
   final List<User> users;
@@ -43,6 +45,8 @@ class UsersListView extends StatelessWidget {
   final VoidCallback? onRefresh;
   final VoidCallback onLoading;
   final VoidCallback onFailure;
+  final ScrollController? scrollController;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +87,8 @@ class UsersListView extends StatelessWidget {
                     child: users.isEmpty
                         ? NoResults(text: emptyListText)
                         : ListView.builder(
+                            controller: scrollController,
+                            physics: physics,
                             itemBuilder: (BuildContext context, int index) {
                               User user = users[index];
                               return UserTile(

@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class PreferencesPage extends StatefulWidget {
@@ -14,14 +17,31 @@ class PreferencesPage extends StatefulWidget {
 }
 
 class _PreferencesPageState extends State<PreferencesPage> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     context.read<PreferencesBloc>().add(PreferencesEvent.get());
     super.initState();
+    // Register the active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return MainContainer(
       child: Scaffold(
         appBar: AppBar(title: Text('Preferences')),
@@ -77,6 +97,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
                 : Container(
                     margin: const EdgeInsets.only(left: 15, right: 15),
                     child: SingleChildScrollView(
+                      controller: isWebLayout ? _scrollController: null,
+                      physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
                       padding: const EdgeInsets.only(top: 10, bottom: 20),
                       child: Column(
                         children: [

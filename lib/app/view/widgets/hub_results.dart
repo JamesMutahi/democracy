@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/hub_filter/hub_filter_cubit.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
@@ -19,6 +20,7 @@ import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -47,22 +49,64 @@ class HubResults extends StatefulWidget {
 }
 
 class _HubResultsState extends State<HubResults>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
 
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _ballotScrollController = ScrollController();
+  final ScrollController _surveyScrollController = ScrollController();
+  final ScrollController _meetingScrollController = ScrollController();
+  final ScrollController _petitionScrollController = ScrollController();
+
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _controller.text = widget.searchTerm;
+    _tabController = TabController(length: 4, vsync: this);
+    _tabController.addListener(_onTabChanged);
+
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_activeScrollController!);
+    });
+  }
+
+  void _onTabChanged() {
+    _deactivateTabScrollControllers();
+    ActiveScrollController.activate(_activeScrollController!);
+  }
+
+  void _deactivateTabScrollControllers() {
+    ActiveScrollController.deactivate(_ballotScrollController);
+    ActiveScrollController.deactivate(_surveyScrollController);
+    ActiveScrollController.deactivate(_meetingScrollController);
+    ActiveScrollController.deactivate(_petitionScrollController);
   }
 
   @override
   void dispose() {
+    _deactivateTabScrollControllers();
     _controller.dispose();
+    _tabController.removeListener(_onTabChanged);
+    _ballotScrollController.dispose();
+    _surveyScrollController.dispose();
+    _meetingScrollController.dispose();
+    _petitionScrollController.dispose();
+    _tabController.dispose();
     super.dispose();
+  }
+
+  ScrollController? get _activeScrollController {
+    return switch (_tabController.index) {
+      0 => _ballotScrollController,
+      1 => _surveyScrollController,
+      2 => _meetingScrollController,
+      3 => _petitionScrollController,
+      _ => _ballotScrollController,
+    };
   }
 
   @override
@@ -98,119 +142,122 @@ class _HubResultsState extends State<HubResults>
               PetitionsBloc(webSocketService: context.read<WebSocketService>()),
         ),
       ],
-      child: DefaultTabController(
-        length: 4,
-        child: Scaffold(
-          body: SafeArea(
-            child: BlocBuilder<HubFilterCubit, HubFilterState>(
-              buildWhen: (previous, current) {
-                return current.searchTerm == widget.searchTerm;
-              },
-              builder: (context, state) {
-                final cubit = context.read<HubFilterCubit>();
-                return NestedScrollView(
-                  headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                    return [
-                      SliverAppBar(
-                        floating: true,
-                        snap: true,
-                        forceElevated: true,
-                        automaticallyImplyLeading: false,
-                        flexibleSpace: Builder(
-                          builder: (context) {
-                            return SizedBox(
-                              height: 50,
-                              child: Row(
-                                children: [
-                                  BackButton(),
-                                  _buildSearchBar(
-                                    cubit: cubit,
-                                    filterByRegion: state.filterByRegion,
-                                    sortBy: state.sortBy,
-                                    startDate: state.startDate,
-                                    endDate: state.endDate,
-                                    filterCount: state.count,
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                        bottom: TabBar(
-                          dividerColor: Theme.of(
-                            context,
-                          ).colorScheme.outlineVariant,
-                          labelStyle: Theme.of(context).textTheme.titleMedium,
-                          tabs: [
-                            Tab(text: 'Ballots'),
-                            Tab(text: 'Surveys'),
-                            Tab(text: 'Meetings'),
-                            Tab(text: 'Petitions'),
-                          ],
-                        ),
+      child: Scaffold(
+        body: SafeArea(
+          child: BlocBuilder<HubFilterCubit, HubFilterState>(
+            buildWhen: (previous, current) {
+              return current.searchTerm == widget.searchTerm;
+            },
+            builder: (context, state) {
+              final cubit = context.read<HubFilterCubit>();
+              return NestedScrollView(
+                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                  return [
+                    SliverAppBar(
+                      floating: true,
+                      snap: true,
+                      forceElevated: true,
+                      automaticallyImplyLeading: false,
+                      flexibleSpace: Builder(
+                        builder: (context) {
+                          return SizedBox(
+                            height: 50,
+                            child: Row(
+                              children: [
+                                BackButton(),
+                                _buildSearchBar(
+                                  cubit: cubit,
+                                  filterByRegion: state.filterByRegion,
+                                  sortBy: state.sortBy,
+                                  startDate: state.startDate,
+                                  endDate: state.endDate,
+                                  filterCount: state.count,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                    ];
-                  },
-                  body: MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => BallotsBloc(
-                          webSocketService: context.read<WebSocketService>(),
-                        ),
+                      bottom: TabBar(
+                        controller: _tabController,
+                        dividerColor: Theme.of(
+                          context,
+                        ).colorScheme.outlineVariant,
+                        labelStyle: Theme.of(context).textTheme.titleMedium,
+                        tabs: [
+                          Tab(text: 'Ballots'),
+                          Tab(text: 'Surveys'),
+                          Tab(text: 'Meetings'),
+                          Tab(text: 'Petitions'),
+                        ],
                       ),
-                      BlocProvider(
-                        create: (context) => SurveysBloc(
-                          webSocketService: context.read<WebSocketService>(),
-                        ),
+                    ),
+                  ];
+                },
+                body: MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (context) => BallotsBloc(
+                        webSocketService: context.read<WebSocketService>(),
                       ),
-                      BlocProvider(
-                        create: (context) => MeetingsBloc(
-                          webSocketService: context.read<WebSocketService>(),
-                        ),
+                    ),
+                    BlocProvider(
+                      create: (context) => SurveysBloc(
+                        webSocketService: context.read<WebSocketService>(),
                       ),
-                      BlocProvider(
-                        create: (context) => PetitionsBloc(
-                          webSocketService: context.read<WebSocketService>(),
-                        ),
+                    ),
+                    BlocProvider(
+                      create: (context) => MeetingsBloc(
+                        webSocketService: context.read<WebSocketService>(),
+                      ),
+                    ),
+                    BlocProvider(
+                      create: (context) => PetitionsBloc(
+                        webSocketService: context.read<WebSocketService>(),
+                      ),
+                    ),
+                  ],
+                  child: TabBarView(
+                    controller: _tabController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      _BallotsTab(
+                        scrollController: _ballotScrollController,
+                        searchTerm: widget.searchTerm,
+                        filterByRegion: state.filterByRegion,
+                        sortBy: state.sortBy,
+                        startDate: state.startDate,
+                        endDate: state.endDate,
+                      ),
+                      _SurveysTab(
+                        scrollController: _surveyScrollController,
+                        searchTerm: widget.searchTerm,
+                        filterByRegion: state.filterByRegion,
+                        sortBy: state.sortBy,
+                        startDate: state.startDate,
+                        endDate: state.endDate,
+                      ),
+                      _MeetingsTab(
+                        scrollController: _meetingScrollController,
+                        searchTerm: widget.searchTerm,
+                        filterByRegion: state.filterByRegion,
+                        sortBy: state.sortBy,
+                        startDate: state.startDate,
+                        endDate: state.endDate,
+                      ),
+                      _PetitionsTab(
+                        scrollController: _petitionScrollController,
+                        searchTerm: widget.searchTerm,
+                        filterByRegion: state.filterByRegion,
+                        sortBy: state.sortBy,
+                        startDate: state.startDate,
+                        endDate: state.endDate,
                       ),
                     ],
-                    child: TabBarView(
-                      physics: NeverScrollableScrollPhysics(),
-                      children: [
-                        _BallotsTab(
-                          searchTerm: widget.searchTerm,
-                          filterByRegion: state.filterByRegion,
-                          sortBy: state.sortBy,
-                          startDate: state.startDate,
-                          endDate: state.endDate,
-                        ),
-                        _SurveysTab(
-                          searchTerm: widget.searchTerm,
-                          filterByRegion: state.filterByRegion,
-                          sortBy: state.sortBy,
-                          startDate: state.startDate,
-                          endDate: state.endDate,
-                        ),
-                        _MeetingsTab(
-                          searchTerm: widget.searchTerm,
-                          filterByRegion: state.filterByRegion,
-                          sortBy: state.sortBy,
-                          startDate: state.startDate,
-                          endDate: state.endDate,
-                        ),
-                        _PetitionsTab(
-                          searchTerm: widget.searchTerm,
-                          filterByRegion: state.filterByRegion,
-                          sortBy: state.sortBy,
-                          startDate: state.startDate,
-                          endDate: state.endDate,
-                        ),
-                      ],
-                    ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -260,6 +307,7 @@ class _HubResultsState extends State<HubResults>
 
 class _BallotsTab extends StatefulWidget {
   const _BallotsTab({
+    required this.scrollController,
     required this.searchTerm,
     required this.filterByRegion,
     required this.sortBy,
@@ -267,6 +315,7 @@ class _BallotsTab extends StatefulWidget {
     required this.endDate,
   });
 
+  final ScrollController scrollController;
   final String searchTerm;
   final bool filterByRegion;
   final String sortBy;
@@ -369,6 +418,9 @@ class _BallotsTabState extends State<_BallotsTab>
             child: ballots.isEmpty
                 ? NoResults(text: 'No ballots')
                 : ListView.builder(
+                    physics: kIsWeb
+                        ? const NeverScrollableScrollPhysics()
+                        : null,
                     padding: EdgeInsets.all(15),
                     itemBuilder: (BuildContext context, int index) {
                       Ballot ballot = ballots[index];
@@ -392,6 +444,7 @@ class _BallotsTabState extends State<_BallotsTab>
 
 class _SurveysTab extends StatefulWidget {
   const _SurveysTab({
+    required this.scrollController,
     required this.searchTerm,
     required this.filterByRegion,
     required this.sortBy,
@@ -399,6 +452,7 @@ class _SurveysTab extends StatefulWidget {
     required this.endDate,
   });
 
+  final ScrollController scrollController;
   final String searchTerm;
   final bool filterByRegion;
   final String sortBy;
@@ -501,6 +555,9 @@ class _SurveysTabState extends State<_SurveysTab>
             child: surveys.isEmpty
                 ? NoResults(text: 'No surveys')
                 : ListView.builder(
+                    physics: kIsWeb
+                        ? const NeverScrollableScrollPhysics()
+                        : null,
                     padding: EdgeInsets.all(15),
                     itemBuilder: (BuildContext context, int index) {
                       Survey survey = surveys[index];
@@ -524,6 +581,7 @@ class _SurveysTabState extends State<_SurveysTab>
 
 class _MeetingsTab extends StatefulWidget {
   const _MeetingsTab({
+    required this.scrollController,
     required this.searchTerm,
     required this.filterByRegion,
     required this.sortBy,
@@ -531,6 +589,7 @@ class _MeetingsTab extends StatefulWidget {
     required this.endDate,
   });
 
+  final ScrollController scrollController;
   final String searchTerm;
   final bool filterByRegion;
   final String sortBy;
@@ -633,6 +692,9 @@ class _MeetingsTabState extends State<_MeetingsTab>
             child: broadcasts.isEmpty
                 ? NoResults(text: 'No meetings')
                 : ListView.builder(
+                    physics: kIsWeb
+                        ? const NeverScrollableScrollPhysics()
+                        : null,
                     padding: EdgeInsets.all(15),
                     itemBuilder: (BuildContext context, int index) {
                       Broadcast broadcast = broadcasts[index];
@@ -656,6 +718,7 @@ class _MeetingsTabState extends State<_MeetingsTab>
 
 class _PetitionsTab extends StatefulWidget {
   const _PetitionsTab({
+    required this.scrollController,
     required this.searchTerm,
     required this.filterByRegion,
     required this.sortBy,
@@ -663,6 +726,7 @@ class _PetitionsTab extends StatefulWidget {
     required this.endDate,
   });
 
+  final ScrollController scrollController;
   final String searchTerm;
   final bool filterByRegion;
   final String sortBy;
@@ -765,6 +829,9 @@ class _PetitionsTabState extends State<_PetitionsTab>
             child: petitions.isEmpty
                 ? NoResults(text: 'No petitions')
                 : ListView.builder(
+                    physics: kIsWeb
+                        ? const NeverScrollableScrollPhysics()
+                        : null,
                     padding: EdgeInsets.all(15),
                     itemBuilder: (BuildContext context, int index) {
                       Petition petition = petitions[index];

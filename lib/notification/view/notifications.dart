@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
@@ -6,9 +7,11 @@ import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/notification/view/notification_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class Notifications extends StatefulWidget {
@@ -20,15 +23,31 @@ class Notifications extends StatefulWidget {
 
 class _NotificationsState extends State<Notifications> {
   final RefreshController _refreshController = RefreshController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    context.read<NotificationsBloc>().add(NotificationsEvent.get());
     super.initState();
+    context.read<NotificationsBloc>().add(NotificationsEvent.get());
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return MainContainer(
       child: Scaffold(
         appBar: AppBar(
@@ -89,6 +108,8 @@ class _NotificationsState extends State<Notifications> {
               },
               footer: ClassicFooter(),
               child: ListView.builder(
+                controller: isWebLayout ? _scrollController: null,
+                physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
                 padding: EdgeInsets.symmetric(horizontal: 15),
                 itemBuilder: (BuildContext context, int index) {
                   n_.Notification notification = notifications[index];

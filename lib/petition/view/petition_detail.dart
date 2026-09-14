@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus, WebSocketService;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
@@ -18,8 +19,10 @@ import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dar
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart'
     show PetitionAuthorInfo;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class PetitionDetail extends StatelessWidget {
@@ -78,6 +81,7 @@ class _PetitionDetail extends StatefulWidget {
 }
 
 class _PetitionDetailState extends State<_PetitionDetail> {
+  final ScrollController _scrollController = ScrollController();
   bool isDeleted = false;
 
   @override
@@ -86,11 +90,25 @@ class _PetitionDetailState extends State<_PetitionDetail> {
       PetitionDetailEvent.addClick(petition: widget.petition),
     );
     super.initState();
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final petition = widget.petition;
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
 
     return MultiBlocListener(
       listeners: [
@@ -169,6 +187,8 @@ class _PetitionDetailState extends State<_PetitionDetail> {
               )
             : Scaffold(
                 body: CustomScrollView(
+                  controller: isWebLayout ? _scrollController : null,
+                  physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
                   slivers: [
                     SliverAppBar(
                       expandedHeight: 240,

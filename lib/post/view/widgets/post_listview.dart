@@ -24,6 +24,8 @@ class PostListView extends StatelessWidget {
     required this.onLoading,
     required this.onFailure,
     required this.origin,
+    this.scrollController,
+    this.physics,
   });
 
   final List<Post> posts;
@@ -39,6 +41,8 @@ class PostListView extends StatelessWidget {
   final VoidCallback onLoading;
   final VoidCallback onFailure;
   final String? origin;
+  final ScrollController? scrollController;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -52,15 +56,17 @@ class PostListView extends StatelessWidget {
             child: SmartRefresher(
               enablePullDown: enablePullDown,
               enablePullUp: enablePullUp,
-              header: ClassicHeader(),
+              header: const ClassicHeader(),
               controller: refreshController,
               onRefresh: onRefresh,
               onLoading: onLoading,
-              footer: ClassicFooter(),
+              footer: const ClassicFooter(),
               child: posts.isEmpty
-                  ? NoResults(text: 'No results')
+                  ? const NoResults(text: 'No results')
                   : ListView.builder(
-                      padding: EdgeInsets.only(bottom: 20),
+                      controller: scrollController,
+                      physics: physics,
+                      padding: const EdgeInsets.only(bottom: 20),
                       itemBuilder: (BuildContext context, int index) {
                         Post post = posts[index];
                         return PostWidgetSelector(

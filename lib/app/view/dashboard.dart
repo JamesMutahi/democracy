@@ -6,9 +6,12 @@ import 'package:democracy/app/bloc/repository/database/database_repository.dart'
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
+import 'package:democracy/app/shared/widgets/scroll_forwarder.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
+import 'package:democracy/app/view/widgets/scroll_bar.dart';
 import 'package:democracy/app/view/widgets/side_menu.dart';
 import 'package:democracy/broadcast/bloc/broadcast_view/broadcast_view_cubit.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
@@ -75,11 +78,14 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
       ],
-      child: _Listeners(
-        scaffoldKey: _scaffoldKey,
-        child: kIsWeb
-            ? _Web(scaffoldKey: _scaffoldKey)
-            : _Mobile(scaffoldKey: _scaffoldKey),
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: _Listeners(
+          scaffoldKey: _scaffoldKey,
+          child: kIsWeb
+              ? _Web(scaffoldKey: _scaffoldKey)
+              : _Mobile(scaffoldKey: _scaffoldKey),
+        ),
       ),
     );
   }
@@ -143,27 +149,61 @@ class _Web extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            Row(
-              mainAxisAlignment: kIsWeb
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.start,
-              children: [
-                Visibility(
-                  visible: kIsWeb && !responsive.isMobile,
-                  child: Flexible(
-                    flex: responsive.largerOrEqualTo(expandSideMenu) ? 3 : 1,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 300),
-                      child: SideMenu(),
-                    ),
+            ScreenScrollForwarder(
+              getActiveController: () => ActiveScrollController.controller,
+              child: SelectionArea(
+                child: NotificationListener<ScrollMetricsNotification>(
+                  // Catch ScrollMetricsNotification from ANY scrollable in the app
+                  onNotification: (notification) {
+                    ActiveScrollController.notifyMetricsChanged();
+                    // Don't consume — let it bubble further if needed
+                    return false;
+                  },
+                  child: Row(
+                    mainAxisAlignment: kIsWeb
+                        ? MainAxisAlignment.center
+                        : MainAxisAlignment.start,
+                    children: [
+                      Visibility(
+                        visible: kIsWeb && !responsive.isMobile,
+                        child: Flexible(
+                          flex: responsive.largerOrEqualTo(expandSideMenu)
+                              ? 3
+                              : 1,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 300),
+                            child: SideMenu(),
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: responsive.largerOrEqualTo(expandSideMenu)
+                            ? 6
+                            : 7,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 1000),
+                          child: AutoRouter(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 1000),
-                  child: AutoRouter(),
-                ),
-              ],
+              ),
             ),
+            if (responsive.largerThan(MOBILE))
+              Align(
+                alignment: Alignment.centerRight,
+                child: CustomEdgeScrollbar(
+                  width: 12,
+                  thumbColor: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.6),
+                  trackColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.15),
+                  borderRadius: 6,
+                ),
+              ),
             BlocBuilder<BroadcastViewCubit, BroadcastViewState>(
               builder: (context, state) {
                 if (state.view == BroadcastView.minimized) {

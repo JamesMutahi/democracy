@@ -64,11 +64,11 @@ class PostFormWidget extends StatefulWidget {
   });
 
   @override
-  // ✅ Made public by removing the underscore
+  // Made public by removing the underscore
   PostFormWidgetState createState() => PostFormWidgetState();
 }
 
-// ✅ Made public by removing the underscore
+// Made public by removing the underscore
 class PostFormWidgetState extends State<PostFormWidget> {
   final _controller = CustomEditingController();
   final _focusNode = FocusNode();
@@ -80,7 +80,7 @@ class PostFormWidgetState extends State<PostFormWidget> {
   LatLng? _selectedLocation;
   Section? _selectedSection;
 
-  // ✅ Public getter for the parent to access form data
+  // Public getter for the parent to access form data
   PostFormData get formData => PostFormData(
     body: _controller.text,
     media: _media,

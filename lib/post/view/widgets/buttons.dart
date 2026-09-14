@@ -108,7 +108,7 @@ class PostPopUp extends StatelessWidget {
         break;
 
       case 'Reposts':
-        context.router.push(Reposts(postId: post.id));
+        context.router.push(RepostsAndQuotes(postId: post.id));
         break;
 
       case 'Delete':

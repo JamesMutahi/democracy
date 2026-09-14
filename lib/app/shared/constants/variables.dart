@@ -6,6 +6,8 @@ const int maxMediaAssetsAllowed = 4;
 
 const double borderRadius = 10;
 
+const String collapseSideMenu = 'COLLAPSE_SIDE_MENU';
+
 const String expandSideMenu = 'EXPAND_SIDE_MENU';
 
 const String expandSidePanel = 'EXPAND_SIDE_PANEL';

@@ -1,3 +1,4 @@
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
@@ -7,9 +8,11 @@ import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class Surveys extends StatefulWidget {
   const Surveys({super.key});
@@ -18,28 +21,37 @@ class Surveys extends StatefulWidget {
   State<Surveys> createState() => _SurveysState();
 }
 
-class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+class _SurveysState extends State<Surveys> {
+  final RefreshController _refreshController = RefreshController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
+    super.initState();
     context.read<SurveysBloc>().add(
       SurveysEvent.get(
         isOpen: defaultIsOpen,
         filterByRegion: defaultFilterByRegion,
       ),
     );
-    super.initState();
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
     return MultiBlocListener(
       listeners: [
         BlocListener<NotificationDetailBloc, NotificationDetailState>(
@@ -141,6 +153,8 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
                 },
                 footer: ClassicFooter(),
                 child: ListView.builder(
+                  controller: isWebLayout ? _scrollController : null,
+                  physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
                   padding: EdgeInsets.all(15),
                   itemBuilder: (BuildContext context, int index) {
                     Survey survey = surveys[index];

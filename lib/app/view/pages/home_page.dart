@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/logo.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
@@ -19,19 +20,61 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  final ScrollController _forYouScrollController = ScrollController();
+  final ScrollController _followingScrollController = ScrollController();
+
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_onTabChanged);
+
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_activeScrollController!);
+    });
+  }
+
+  void _onTabChanged() {
+    _deactivateTabScrollControllers();
+    ActiveScrollController.activate(_activeScrollController!);
+  }
+
+  void _deactivateTabScrollControllers() {
+    ActiveScrollController.deactivate(_forYouScrollController);
+    ActiveScrollController.deactivate(_followingScrollController);
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_onTabChanged);
+    // Clear the registry when leaving
+    _deactivateTabScrollControllers();
+    _forYouScrollController.dispose();
+    _followingScrollController.dispose();
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  ScrollController? get _activeScrollController {
+    return _tabController.index == 0
+        ? _forYouScrollController
+        : _followingScrollController;
+  }
+
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        body: SafeArea(
-          child: kIsWeb && responsive.largerThan(MOBILE)
-              ? _buildWeb(responsive)
-              : _buildMobile(),
-        ),
+    return Scaffold(
+      body: SafeArea(
+        child: kIsWeb && responsive.largerThan(MOBILE)
+            ? _buildWeb(responsive)
+            : _buildMobile(),
       ),
     );
   }
@@ -59,7 +102,6 @@ class _HomePageState extends State<HomePage> {
             flexibleSpace: Builder(
               builder: (context) {
                 return Stack(
-                  // Allows children to go outside bounds
                   clipBehavior: Clip.none,
                   alignment: Alignment.center,
                   children: [
@@ -68,10 +110,13 @@ class _HomePageState extends State<HomePage> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [DrawerOpener(), NotificationButton()],
+                        children: const [DrawerOpener(), NotificationButton()],
                       ),
                     ),
-                    Positioned(top: 5, child: Logo(width: 60, height: 60)),
+                    const Positioned(
+                      top: 5,
+                      child: Logo(width: 60, height: 60),
+                    ),
                   ],
                 );
               },
@@ -86,10 +131,11 @@ class _HomePageState extends State<HomePage> {
 
   PreferredSizeWidget _buildTabBar() {
     return TabBar(
+      controller: _tabController,
       dividerColor: Theme.of(context).disabledColor.withAlpha(30),
       labelStyle: Theme.of(context).textTheme.titleMedium,
       unselectedLabelStyle: Theme.of(context).textTheme.titleMedium,
-      tabs: [
+      tabs: const [
         Tab(text: 'For You'),
         Tab(text: 'Following'),
       ],
@@ -97,15 +143,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildTabBarView() {
-    return const TabBarView(
-      physics: NeverScrollableScrollPhysics(),
-      children: [ForYouTab(), FollowingTab()],
+    return TabBarView(
+      controller: _tabController,
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        ForYouTab(scrollController: _forYouScrollController),
+        FollowingTab(scrollController: _followingScrollController),
+      ],
     );
   }
 }
 
 class ForYouTab extends StatefulWidget {
-  const ForYouTab({super.key});
+  const ForYouTab({super.key, required this.scrollController});
+
+  final ScrollController scrollController;
 
   @override
   State<ForYouTab> createState() => _ForYouTabState();
@@ -138,6 +190,10 @@ class _ForYouTabState extends State<ForYouTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return BlocBuilder<ForYouBloc, ForYouState>(
       builder: (context, state) {
         final posts = state.posts.toList();
@@ -159,6 +215,8 @@ class _ForYouTabState extends State<ForYouTab>
         }
 
         return PostListView(
+          scrollController: isWebLayout ? widget.scrollController : null,
+          physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
           posts: posts,
           loading:
               state.status == ForYouStatus.initial ||
@@ -186,7 +244,9 @@ class _ForYouTabState extends State<ForYouTab>
 }
 
 class FollowingTab extends StatefulWidget {
-  const FollowingTab({super.key});
+  const FollowingTab({super.key, required this.scrollController});
+
+  final ScrollController scrollController;
 
   @override
   State<FollowingTab> createState() => _FollowingTabState();
@@ -219,6 +279,10 @@ class _FollowingTabState extends State<FollowingTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return BlocBuilder<FollowingPostsBloc, FollowingPostsState>(
       builder: (context, state) {
         final posts = state.posts.toList();
@@ -240,6 +304,8 @@ class _FollowingTabState extends State<FollowingTab>
         }
 
         return PostListView(
+          scrollController: isWebLayout ? widget.scrollController : null,
+          physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
           posts: posts,
           loading:
               state.status == FollowingPostsStatus.initial ||

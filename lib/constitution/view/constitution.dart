@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
-import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/main_container.dart';
+import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/bloc/section/section_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
@@ -99,12 +100,24 @@ class ConstitutionView extends StatefulWidget {
 
 class _ConstitutionState extends State<ConstitutionView> {
   final GlobalKey _centerKey = GlobalKey();
+  final ScrollController _scrollController = ScrollController();
   Section? _selectedSection;
 
   @override
   void initState() {
     context.read<ConstitutionBloc>().add(ConstitutionEvent.get());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void onSelection(Section section) {
@@ -221,6 +234,7 @@ class _ConstitutionState extends State<ConstitutionView> {
               }
 
               return CustomScrollView(
+                controller: _scrollController,
                 center: widget.centeredSection != null ? _centerKey : null,
                 slivers: [
                   SliverPadding(

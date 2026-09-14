@@ -1,15 +1,18 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class CommunityNotes extends StatefulWidget {
@@ -24,17 +27,33 @@ class CommunityNotes extends StatefulWidget {
 class _CommunityNotesState extends State<CommunityNotes> {
   final RefreshController _refreshController = RefreshController();
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   String? sortBy;
 
   @override
+  void initState() {
+    super.initState();
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
+  }
+
+  @override
   void dispose() {
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
     _searchController.dispose();
     _refreshController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return BlocProvider(
       create: (context) => CommunityNotesBloc(
         webSocketService: context.read<WebSocketService>(),
@@ -94,6 +113,8 @@ class _CommunityNotesState extends State<CommunityNotes> {
                   }
 
                   return PostListView(
+                    scrollController: isWebLayout ? _scrollController: null,
+                    physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
                     posts: posts,
                     loading:
                         state.status == CommunityNotesStatus.initial ||

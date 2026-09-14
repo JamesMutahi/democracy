@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
@@ -31,13 +32,51 @@ class ExplorePage extends StatefulWidget {
   State<ExplorePage> createState() => _ExplorePageState();
 }
 
-class _ExplorePageState extends State<ExplorePage> {
+class _ExplorePageState extends State<ExplorePage>
+    with SingleTickerProviderStateMixin {
   final SearchController _searchController = SearchController();
+  final ScrollController _forYouScrollController = ScrollController();
+  final ScrollController _trendingScrollController = ScrollController();
+
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_onTabChanged);
+
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_activeScrollController!);
+    });
+  }
+
+  void _onTabChanged() {
+    _deactivateTabScrollControllers();
+    ActiveScrollController.activate(_activeScrollController!);
+  }
+
+  void _deactivateTabScrollControllers() {
+    ActiveScrollController.deactivate(_forYouScrollController);
+    ActiveScrollController.deactivate(_trendingScrollController);
+  }
 
   @override
   void dispose() {
+    _deactivateTabScrollControllers();
     _searchController.dispose();
+    _tabController.removeListener(_onTabChanged);
+    _forYouScrollController.dispose();
+    _trendingScrollController.dispose();
+    _tabController.dispose();
     super.dispose();
+  }
+
+  ScrollController? get _activeScrollController {
+    return _tabController.index == 0
+        ? _forYouScrollController
+        : _trendingScrollController;
   }
 
   @override
@@ -48,18 +87,15 @@ class _ExplorePageState extends State<ExplorePage> {
       create: (context) => PostFilterCubit(),
       child: Scaffold(
         body: SafeArea(
-          child: DefaultTabController(
-            length: 2,
-            child: BlocBuilder<PostFilterCubit, PostFilterState>(
-              buildWhen: (previous, current) => current.onExplorePage,
-              builder: (context, state) {
-                final filterCubit = context.read<PostFilterCubit>();
+          child: BlocBuilder<PostFilterCubit, PostFilterState>(
+            buildWhen: (previous, current) => current.onExplorePage,
+            builder: (context, state) {
+              final filterCubit = context.read<PostFilterCubit>();
 
-                return kIsWeb && responsive.largerThan(MOBILE)
-                    ? _buildWeb(responsive, filterCubit, state)
-                    : _buildMobile(filterCubit, state);
-              },
-            ),
+              return kIsWeb && responsive.largerThan(MOBILE)
+                  ? _buildWeb(responsive, filterCubit, state)
+                  : _buildMobile(filterCubit, state);
+            },
           ),
         ),
       ),
@@ -133,6 +169,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
   PreferredSizeWidget _buildTabBar() {
     return TabBar(
+      controller: _tabController,
       dividerColor: Theme.of(context).disabledColor.withAlpha(30),
       labelStyle: Theme.of(context).textTheme.titleMedium,
       tabs: [
@@ -143,15 +180,21 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 
   Widget _buildTabBarView() {
-    return const TabBarView(
+    return TabBarView(
+      controller: _tabController,
       physics: NeverScrollableScrollPhysics(),
-      children: [_ForYouTab(), _TrendingTab()],
+      children: [
+        _ForYouTab(scrollController: _forYouScrollController),
+        _TrendingTab(scrollController: _trendingScrollController),
+      ],
     );
   }
 }
 
 class _ForYouTab extends StatefulWidget {
-  const _ForYouTab();
+  const _ForYouTab({required this.scrollController});
+
+  final ScrollController scrollController;
 
   @override
   State<_ForYouTab> createState() => _ForYouTabState();
@@ -307,7 +350,9 @@ class _ForYouTabState extends State<_ForYouTab>
 }
 
 class _TrendingTab extends StatefulWidget {
-  const _TrendingTab();
+  const _TrendingTab({required this.scrollController});
+
+  final ScrollController scrollController;
 
   @override
   State<_TrendingTab> createState() => _TrendingTabState();
@@ -335,6 +380,10 @@ class _TrendingTabState extends State<_TrendingTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return BlocBuilder<TrendingTopicsBloc, TrendingTopicsState>(
       builder: (context, state) {
         final topics = state.topics.toList();
@@ -377,6 +426,8 @@ class _TrendingTabState extends State<_TrendingTab>
           child: topics.isEmpty
               ? const NoResults(text: 'No trending topics right now')
               : ListView.separated(
+                  controller: isWebLayout ? widget.scrollController : null,
+                  physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
                   itemCount: topics.length,
                   separatorBuilder: (_, _) =>
                       const Divider(height: 1, indent: 64),

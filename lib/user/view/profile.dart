@@ -2,12 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
-import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/shared/widgets/main_container.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
@@ -21,10 +22,12 @@ import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_buttons.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/tabs.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 const List<Tab> tabs = <Tab>[
   Tab(text: 'Posts'),
@@ -61,13 +64,13 @@ class ProfilePage extends StatelessWidget {
               if (state.status == ProfileStatus.initial ||
                   (state.status == ProfileStatus.loading &&
                       state.user == null)) {
-                return BottomLoader();
+                return const BottomLoader();
               }
               if (state.status == ProfileStatus.failure && state.user == null) {
                 return Scaffold(
                   appBar: AppBar(
-                    leading: AutoLeadingButton(),
-                    title: Text('Profile'),
+                    leading: const AutoLeadingButton(),
+                    title: const Text('Profile'),
                   ),
                   body: FailureRetryButton(
                     onPressed: () {
@@ -81,10 +84,12 @@ class ProfilePage extends StatelessWidget {
               if (state.status == ProfileStatus.notFound) {
                 return Scaffold(
                   appBar: AppBar(
-                    leading: AutoLeadingButton(),
-                    title: Text('Profile'),
+                    leading: const AutoLeadingButton(),
+                    title: const Text('Profile'),
                   ),
-                  body: Center(child: Text('This account does not exist')),
+                  body: const Center(
+                    child: Text('This account does not exist'),
+                  ),
                 );
               }
               return _Profile(user: state.user!);
@@ -121,6 +126,13 @@ class _ProfilePageState extends State<_Profile> {
       );
     }
     _scrollController.addListener(_handleScrolling);
+
+    // Tell the edge scrollbar to use this controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ActiveScrollController.activate(_scrollController);
+      }
+    });
   }
 
   void _loadUser() {
@@ -133,6 +145,8 @@ class _ProfilePageState extends State<_Profile> {
   @override
   void dispose() {
     super.dispose();
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
     _scrollController.dispose();
   }
 
@@ -150,6 +164,9 @@ class _ProfilePageState extends State<_Profile> {
   Widget build(BuildContext context) {
     User currentUser = context.read<AuthBloc>().state.user!;
     bool isCurrentUser = currentUser.id == widget.user.id;
+
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
 
     return MultiBlocProvider(
       providers: [
@@ -181,53 +198,29 @@ class _ProfilePageState extends State<_Profile> {
         listeners: [
           BlocListener<UserDetailBloc, UserDetailState>(
             listener: (context, state) {
-              if (state is UserSubscribed) {
-                if (widget.user.id == state.user.id) {
-                  context.read<ProfileBloc>().add(
-                    ProfileEvent.updated(user: state.user),
-                  );
-                  setState(() {
-                    if (state.user.isBlocked) {
-                      if (_hideTabs == false) {
-                        _hideTabs = true;
-                      }
-                    } else {
-                      _hideTabs = false;
-                    }
-                  });
-                }
+              if (state is UserSubscribed && widget.user.id == state.user.id) {
+                context.read<ProfileBloc>().add(
+                  ProfileEvent.updated(user: state.user),
+                );
+                setState(() => _hideTabs = state.user.isBlocked);
               }
-              if (state is UserUpdated) {
-                if (widget.user.id == state.user.id) {
-                  context.read<ProfileBloc>().add(
-                    ProfileEvent.updated(user: state.user),
-                  );
-                  setState(() {
-                    if (state.user.isBlocked) {
-                      if (_hideTabs == false) {
-                        _hideTabs = true;
-                      }
-                    } else {
-                      _hideTabs = false;
-                    }
-                  });
-                }
+              if (state is UserUpdated && widget.user.id == state.user.id) {
+                context.read<ProfileBloc>().add(
+                  ProfileEvent.updated(user: state.user),
+                );
+                setState(() => _hideTabs = state.user.isBlocked);
               }
             },
           ),
           BlocListener<WebsocketBloc, WebsocketState>(
             listener: (context, state) {
-              if (state.status == WebsocketStatus.connected) {
-                _loadUser();
-              }
+              if (state.status == WebsocketStatus.connected) _loadUser();
             },
           ),
           BlocListener<ChatDetailBloc, ChatDetailState>(
             listener: (context, state) {
-              if (state is ChatCreated) {
-                if (state.userId == widget.user.id) {
-                  context.router.push(ChatDetail(chatId: state.chat.id));
-                }
+              if (state is ChatCreated && state.userId == widget.user.id) {
+                context.router.push(ChatDetail(chatId: state.chat.id));
               }
             },
           ),
@@ -239,97 +232,277 @@ class _ProfilePageState extends State<_Profile> {
               UserDetailEvent.unsubscribe(user: widget.user),
             );
           },
-          child: SafeArea(
-            bottom: false,
-            child: DefaultTabController(
-              length: isCurrentUser ? userTabs.length : tabs.length,
-              child: NestedScrollView(
-                controller: _scrollController,
-                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                  return [
-                    SliverPersistentHeader(
-                      pinned: true,
-                      floating: true,
-                      delegate: ProfileAppBarDelegate(
-                        user: widget.user,
-                        isCurrentUser: isCurrentUser,
-                        nameIsScrolled: _nameIsScrolled,
-                        expandedHeight: _expandedHeight,
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: _UserDetails(widget.user, isCurrentUser),
-                    ),
-                    if (!_hideTabs || !widget.user.isBlocked)
-                      SliverPersistentHeader(
-                        delegate: _TabBarAppBarDelegate(
-                          TabBar(
-                            isScrollable: true,
-                            tabAlignment: TabAlignment.center,
-                            labelStyle: Theme.of(context).textTheme.titleMedium,
-                            dividerColor: Theme.of(
-                              context,
-                            ).colorScheme.outlineVariant,
-                            tabs: isCurrentUser ? userTabs : tabs,
-                          ),
-                        ),
-                        pinned: true,
-                      ),
-                  ];
-                },
-                body: _buildProfile(isCurrentUser),
-              ),
-            ),
-          ),
+          child: isWebLayout
+              ? _buildWebLayout()
+              : _buildMobileLayout(isCurrentUser),
         ),
       ),
     );
   }
 
-  Widget _buildProfile(bool isCurrentUser) {
-    return (_hideTabs && widget.user.isBlocked)
-        ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  '@${widget.user.username} is blocked',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                SizedBox(height: 10),
-                OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      _hideTabs = false;
-                    });
+  // ──────────────────────────────────────────────
+  // WEB: Fixed header + TabBar + AutoRouter
+  // ──────────────────────────────────────────────
+  Widget _buildWebLayout() {
+    User currentUser = context.read<AuthBloc>().state.user!;
+    bool isCurrentUser = currentUser.id == widget.user.id;
+
+    final activeRoutes = isCurrentUser
+        ? const [
+            ProfilePostsTab(),
+            ProfileRepliesTab(),
+            ProfileLikesTab(),
+            ProfileNotesTab(),
+            ProfilePetitionsTab(),
+          ]
+        : const [
+            ProfilePostsTab(),
+            ProfileRepliesTab(),
+            ProfileNotesTab(),
+            ProfilePetitionsTab(),
+          ];
+
+    final activeTabs = isCurrentUser ? userTabs : tabs;
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: const AutoLeadingButton(),
+        title: Text(
+          widget.user.name,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        actions: [
+          _ProfilePopUpMenu(
+            user: widget.user,
+            isCurrentUser: isCurrentUser,
+            nameIsScrolled: true,
+          ),
+        ],
+      ),
+      body: !_hideTabs || !widget.user.isBlocked
+          ? AutoTabsRouter.tabBar(
+              routes: activeRoutes,
+              builder: (context, child, controller) {
+                return NestedScrollView(
+                  controller: _scrollController,
+                  headerSliverBuilder: (context, innerBoxIsScrolled) {
+                    return [
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            _ProfileHeader(
+                              user: widget.user,
+                              isCurrentUser: isCurrentUser,
+                            ),
+                            _UserDetails(widget.user, isCurrentUser),
+                          ],
+                        ),
+                      ),
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: _SliverAppBarDelegate(
+                          child: Container(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            child: TabBar(
+                              controller: controller,
+                              isScrollable: true,
+                              tabAlignment: TabAlignment.center,
+                              labelStyle: Theme.of(
+                                context,
+                              ).textTheme.titleMedium,
+                              dividerColor: Theme.of(
+                                context,
+                              ).colorScheme.outlineVariant,
+                              tabs: activeTabs,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ];
                   },
-                  child: Text('View posts'),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Will not unblock them',
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-                ),
+                  body: child,
+                );
+              },
+            )
+          : Column(
+              // Fallback UI if tabs are hidden or user is blocked
+              children: [
+                _ProfileHeader(user: widget.user, isCurrentUser: isCurrentUser),
+                _UserDetails(widget.user, isCurrentUser),
               ],
             ),
-          )
-        : TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              UserPosts(key: ValueKey(widget.user.id), user: widget.user),
-              UserReplies(key: ValueKey(widget.user.id), user: widget.user),
-              if (isCurrentUser)
-                Likes(key: ValueKey(widget.user.id), user: widget.user),
-              UserCommunityNotes(
-                key: ValueKey(widget.user.id),
-                user: widget.user,
+    );
+  }
+
+  // ─────────────────────────
+  // MOBILE: NestedScrollView
+  // ─────────────────────────
+  Widget _buildMobileLayout(bool isCurrentUser) {
+    return SafeArea(
+      bottom: false,
+      child: DefaultTabController(
+        length: isCurrentUser ? userTabs.length : tabs.length,
+        child: NestedScrollView(
+          controller: _scrollController,
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverPersistentHeader(
+                pinned: true,
+                floating: true,
+                delegate: ProfileAppBarDelegate(
+                  user: widget.user,
+                  isCurrentUser: isCurrentUser,
+                  nameIsScrolled: _nameIsScrolled,
+                  expandedHeight: _expandedHeight,
+                ),
               ),
-              UserPetitions(key: ValueKey(widget.user.id), user: widget.user),
-            ],
-          );
+              SliverToBoxAdapter(
+                child: _UserDetails(widget.user, isCurrentUser),
+              ),
+              if (!_hideTabs || !widget.user.isBlocked)
+                SliverPersistentHeader(
+                  delegate: _TabBarAppBarDelegate(
+                    TabBar(
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.center,
+                      labelStyle: Theme.of(context).textTheme.titleMedium,
+                      dividerColor: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant,
+                      tabs: isCurrentUser ? userTabs : tabs,
+                    ),
+                  ),
+                  pinned: true,
+                ),
+            ];
+          },
+          body: _buildTabBarView(isCurrentUser),
+        ),
+      ),
+    );
+  }
+
+  // ──────────────────────────────────────────────
+  // Shared TabBarView with per-tab controllers
+  // ──────────────────────────────────────────────
+  Widget _buildTabBarView(bool isCurrentUser) {
+    if (_hideTabs && widget.user.isBlocked) {
+      return _buildBlockedView();
+    }
+
+    return TabBarView(
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        UserPosts(key: ValueKey(widget.user.id), user: widget.user),
+        UserReplies(key: ValueKey(widget.user.id), user: widget.user),
+        if (isCurrentUser)
+          Likes(key: ValueKey(widget.user.id), user: widget.user),
+        UserCommunityNotes(key: ValueKey(widget.user.id), user: widget.user),
+        UserPetitions(key: ValueKey(widget.user.id), user: widget.user),
+      ],
+    );
+  }
+
+  Widget _buildBlockedView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '@${widget.user.username} is blocked',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 10),
+          OutlinedButton(
+            onPressed: () => setState(() => _hideTabs = false),
+            child: const Text('View posts'),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Will not unblock them',
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.outline,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+
+  _SliverAppBarDelegate({required this.child});
+
+  @override
+  double get minExtent => 48.0; // Standard TabBar height
+  @override
+  double get maxExtent => 48.0;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return SizedBox.expand(child: child);
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return oldDelegate.child != child;
+  }
+}
+
+// ──────────────────────────────────────────────
+// Profile Header Widget (for web)
+// ──────────────────────────────────────────────
+class _ProfileHeader extends StatelessWidget {
+  final User user;
+  final bool isCurrentUser;
+
+  const _ProfileHeader({required this.user, required this.isCurrentUser});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 250,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            height: 200,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(
+                  user.coverPhoto,
+                  cacheKey: 'cover ${user.id}',
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -5,
+            left: 16,
+            child: CircleAvatar(
+              radius: 54,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: CachedNetworkImageProvider(
+                  user.image,
+                  cacheKey: 'profile ${user.id}',
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -376,7 +549,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                           context,
                         ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
                 ),
-                child: AutoLeadingButton(),
+                child: const AutoLeadingButton(),
               ),
               actions: [
                 _ProfilePopUpMenu(
@@ -389,7 +562,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                 currentExtent: 0.0,
                 child: FlexibleSpaceBar(
                   title: AnimatedOpacity(
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     opacity: nameIsScrolled ? 1.0 : 0.0,
                     child: Text(user.name),
                   ),
@@ -411,69 +584,69 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
               ),
             ),
           ),
-          Positioned(
-            left: 15.0,
-            // right: 0.0,
-            top: cardTopPosition > 0 ? cardTopPosition : 0,
-            bottom: -50.0,
-            child: Opacity(
-              opacity: percent,
-              child: CircleAvatar(
-                radius: 50,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                child: ProfileImage(
-                  userId: user.id,
-                  username: user.username,
-                  imageUrl: user.image,
-                  radius: 47,
+          if (!nameIsScrolled)
+            Positioned(
+              left: 15.0,
+              top: cardTopPosition > 0 ? cardTopPosition : 0,
+              bottom: -50.0,
+              child: Opacity(
+                opacity: percent,
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  child: ProfileImage(
+                    userId: user.id,
+                    username: user.username,
+                    imageUrl: user.image,
+                    radius: 47,
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            // left: 0.0,
-            right: 15.0,
-            top: cardTopPosition > 0 ? cardTopPosition : 0,
-            bottom: -110.0,
-            child: Opacity(
-              opacity: percent,
-              child: Row(
-                children: [
-                  isCurrentUser
-                      ? OutlinedButton.icon(
-                          onPressed: () =>
-                              context.router.push(const EditProfile()),
-                          icon: const Icon(Symbols.edit_rounded, size: 18),
-                          label: const Text('Edit Profile'),
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Theme.of(
-                              context,
-                            ).scaffoldBackgroundColor,
-                          ),
-                        )
-                      : Row(
-                          children: [
-                            if (user.isBlocked)
-                              BlockedButton(user: user)
-                            else ...[
-                              if (user.isMuted) ...[
-                                MutedButton(user: user),
+          if (!nameIsScrolled)
+            Positioned(
+              right: 15.0,
+              top: cardTopPosition > 0 ? cardTopPosition : 0,
+              bottom: -110.0,
+              child: Opacity(
+                opacity: percent,
+                child: Row(
+                  children: [
+                    isCurrentUser
+                        ? OutlinedButton.icon(
+                            onPressed: () =>
+                                context.router.push(const EditProfile()),
+                            icon: const Icon(Symbols.edit_rounded, size: 18),
+                            label: const Text('Edit Profile'),
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Theme.of(
+                                context,
+                              ).scaffoldBackgroundColor,
+                            ),
+                          )
+                        : Row(
+                            children: [
+                              if (user.isBlocked)
+                                BlockedButton(user: user)
+                              else ...[
+                                if (user.isMuted) ...[
+                                  MutedButton(user: user),
+                                  const SizedBox(width: 8),
+                                ],
+                                MessageButton(user: user),
                                 const SizedBox(width: 8),
+                                if (user.isFollowed) ...[
+                                  NotificationButton(user: user),
+                                  const SizedBox(width: 8),
+                                ],
+                                FollowButton(user: user),
                               ],
-                              MessageButton(user: user),
-                              const SizedBox(width: 8),
-                              if (user.isFollowed) ...[
-                                NotificationButton(user: user),
-                                const SizedBox(width: 8),
-                              ],
-                              FollowButton(user: user),
                             ],
-                          ],
-                        ),
-                ],
+                          ),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -486,9 +659,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => kToolbarHeight;
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
-  }
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
 
 class _TabBarAppBarDelegate extends SliverPersistentHeaderDelegate {
@@ -515,9 +686,7 @@ class _TabBarAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(_TabBarAppBarDelegate oldDelegate) {
-    return false;
-  }
+  bool shouldRebuild(_TabBarAppBarDelegate oldDelegate) => false;
 }
 
 class _ProfilePopUpMenu extends StatelessWidget {
@@ -533,7 +702,7 @@ class _ProfilePopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List texts = isCurrentUser
+    List<String> texts = isCurrentUser
         ? ['Share', 'Drafts']
         : [
             'Share',
@@ -548,10 +717,9 @@ class _ProfilePopUpMenu extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Share':
-            //   TODO: Create link for sharing
             break;
           case 'Drafts':
-            context.router.push(DraftPosts());
+            context.router.push(const DraftPosts());
           case 'Mute':
             showDialog(
               context: context,
@@ -581,7 +749,7 @@ class _ProfilePopUpMenu extends StatelessWidget {
         }),
       ],
       child: Container(
-        padding: EdgeInsetsGeometry.all(15),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
           color: nameIsScrolled
@@ -590,7 +758,7 @@ class _ProfilePopUpMenu extends StatelessWidget {
                   context,
                 ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
         ),
-        child: Icon(Icons.more_vert_rounded, size: 25),
+        child: const Icon(Icons.more_vert_rounded, size: 25),
       ),
     );
   }
@@ -606,19 +774,19 @@ class _UserDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     var dateFormat = DateFormat('dd/MM/yyyy');
     return Container(
-      margin: EdgeInsets.only(left: 15, right: 15, bottom: 10),
+      margin: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Text(user.name, style: Theme.of(context).textTheme.titleLarge),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Text(
             '@${user.username}',
             style: TextStyle(color: Theme.of(context).disabledColor),
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Row(
             children: [
               Icon(
@@ -626,7 +794,7 @@ class _UserDetails extends StatelessWidget {
                 size: 17,
                 color: Theme.of(context).disabledColor,
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               Text(
                 'Joined ',
                 style: TextStyle(color: Theme.of(context).disabledColor),
@@ -637,18 +805,14 @@ class _UserDetails extends StatelessWidget {
               ),
             ],
           ),
-          (user.bio.isNotEmpty)
-              ? Column(
-                  children: [
-                    SizedBox(height: 5),
-                    CustomText(
-                      text: user.bio,
-                      style: Theme.of(context).textTheme.bodyMedium!,
-                    ),
-                  ],
-                )
-              : SizedBox.shrink(),
-          SizedBox(height: 5),
+          if (user.bio.isNotEmpty) ...[
+            const SizedBox(height: 5),
+            CustomText(
+              text: user.bio,
+              style: Theme.of(context).textTheme.bodyMedium!,
+            ),
+          ],
+          const SizedBox(height: 5),
           InkWell(
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
@@ -662,7 +826,7 @@ class _UserDetails extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text('${user.following} Following'),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Text(
                   '${user.followers} ${(user.followers == 1) ? 'Follower' : 'Followers'}',
                 ),

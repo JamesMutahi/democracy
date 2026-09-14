@@ -4,6 +4,7 @@ import 'package:democracy/app/bloc/services/websocket_service.dart'
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/utils/link_extractor.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/cached_link_preview.dart';
@@ -21,6 +22,7 @@ import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -39,22 +41,33 @@ class Messages extends StatefulWidget {
 
 class _MessagesState extends State<Messages> {
   final RefreshController _refreshController = RefreshController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     context.read<MessagesBloc>().add(MessagesEvent.get(chat: widget.chat));
+
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
   }
 
   @override
   void dispose() {
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
     _refreshController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
 
     return MultiBlocListener(
       listeners: [
@@ -181,6 +194,8 @@ class _MessagesState extends State<Messages> {
             footer: const ClassicFooter(),
             child: ListView.builder(
               reverse: true,
+              controller: isWebLayout ? _scrollController : null,
+              physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
               padding: const EdgeInsets.symmetric(
                 horizontal: 12.0,
                 vertical: 16.0,

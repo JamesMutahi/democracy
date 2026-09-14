@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/main_container.dart';
@@ -12,9 +13,11 @@ import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/models/text_answer.dart';
 import 'package:democracy/survey/view/widgets/summary.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class SurveyDetail extends StatelessWidget {
@@ -77,86 +80,138 @@ class SurveyDetail extends StatelessWidget {
   }
 }
 
-class _SurveyDetail extends StatelessWidget {
+class _SurveyDetail extends StatefulWidget {
   final Survey survey;
 
   const _SurveyDetail({required this.survey});
 
   @override
+  State<_SurveyDetail> createState() => _SurveyDetailState();
+}
+
+class _SurveyDetailState extends State<_SurveyDetail>
+    with SingleTickerProviderStateMixin {
+  final ScrollController _summaryScrollController = ScrollController();
+  final ScrollController _responseScrollController = ScrollController();
+
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_onTabChanged);
+
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_activeScrollController!);
+    });
+  }
+
+  void _onTabChanged() {
+    _deactivateTabScrollControllers();
+    ActiveScrollController.activate(_activeScrollController!);
+  }
+
+  void _deactivateTabScrollControllers() {
+    ActiveScrollController.deactivate(_summaryScrollController);
+    ActiveScrollController.deactivate(_responseScrollController);
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_onTabChanged);
+    // Clear the registry when leaving
+    _deactivateTabScrollControllers();
+    _summaryScrollController.dispose();
+    _responseScrollController.dispose();
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  ScrollController? get _activeScrollController {
+    return _tabController.index == 0
+        ? _summaryScrollController
+        : _responseScrollController;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).primaryColor;
 
-    return DefaultTabController(
-      length: 2,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-          return [
-            SliverToBoxAdapter(
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Visibility(
-                      visible: survey.county != null,
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: GeoChipRow(
-                          county: survey.county,
-                          constituency: survey.constituency,
-                          ward: survey.ward,
-                        ),
+    return NestedScrollView(
+      headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+        return [
+          SliverToBoxAdapter(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Visibility(
+                    visible: widget.survey.county != null,
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: GeoChipRow(
+                        county: widget.survey.county,
+                        constituency: widget.survey.constituency,
+                        ward: widget.survey.ward,
                       ),
                     ),
-                    Text(
-                      survey.title,
-                      style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Text(
+                    widget.survey.title,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Visibility(
+                    visible: widget.survey.description.isNotEmpty,
+                    child: Container(
+                      margin: EdgeInsets.only(top: 5, bottom: 10),
+                      child: Text(widget.survey.description),
                     ),
-                    Visibility(
-                      visible: survey.description.isNotEmpty,
-                      child: Container(
-                        margin: EdgeInsets.only(top: 5, bottom: 10),
-                        child: Text(survey.description),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            SliverPersistentHeader(
-              delegate: _TabBarAppBarDelegate(
-                TabBar(
-                  tabs: [
-                    Tab(text: 'Summary'),
-                    Tab(text: 'My Response'),
-                  ],
-                ),
+          ),
+          SliverPersistentHeader(
+            delegate: _TabBarAppBarDelegate(
+              TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(text: 'Summary'),
+                  Tab(text: 'My Response'),
+                ],
               ),
-              pinned: true,
             ),
-          ];
-        },
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            // TAB 1: SUMMARY
-            survey.summary != null &&
-                    survey.summary!.status == SummaryStatus.completed
-                ? SurveySummaryTab(survey: survey)
-                : _buildSummaryPlaceholder(color),
+            pinned: true,
+          ),
+        ];
+      },
+      body: TabBarView(
+        controller: _tabController,
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          // TAB 1: SUMMARY
+          widget.survey.summary != null &&
+                  widget.survey.summary!.status == SummaryStatus.completed
+              ? SurveySummaryTab(
+                  scrollController: _summaryScrollController,
+                  survey: widget.survey,
+                )
+              : _buildSummaryPlaceholder(color),
 
-            // TAB 2: MY RESPONSE
-            survey.response != null
-                ? _buildMyResponseTab(color)
-                : _buildNoResponsePlaceholder(),
-          ],
-        ),
+          // TAB 2: MY RESPONSE
+          widget.survey.response != null
+              ? _buildMyResponseTab(_responseScrollController, color)
+              : _buildNoResponsePlaceholder(),
+        ],
       ),
     );
   }
 
   Widget _buildSummaryPlaceholder(Color color) {
-    final summary = survey.summary;
+    final summary = widget.survey.summary;
     String message;
     IconData icon;
 
@@ -198,7 +253,7 @@ class _SurveyDetail extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Total responses: ${survey.totalResponses}',
+              'Total responses: ${widget.survey.totalResponses}',
               style: TextStyle(fontSize: 14, color: Colors.grey[500]),
             ),
           ],
@@ -223,8 +278,12 @@ class _SurveyDetail extends StatelessWidget {
     );
   }
 
-  Widget _buildMyResponseTab(Color color) {
-    final response = survey.response!;
+  Widget _buildMyResponseTab(ScrollController scrollController, Color color) {
+    final response = widget.survey.response!;
+
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     Set<Question> questionsSet = {};
     for (TextAnswer textAnswer in response.textAnswers) {
       questionsSet.add(textAnswer.question);
@@ -235,7 +294,9 @@ class _SurveyDetail extends StatelessWidget {
     List<Question> questions = questionsSet.toList();
     questions.sort((a, b) => a.number.compareTo(b.number));
     return SingleChildScrollView(
-      key: PageStorageKey<String>('my_response_${survey.id}'),
+      key: PageStorageKey<String>('my_response_${widget.survey.id}'),
+      controller: isWebLayout ? scrollController : null,
+      physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

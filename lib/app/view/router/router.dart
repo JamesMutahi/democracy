@@ -154,12 +154,23 @@ final otherRoutes = [
   AutoRoute(path: 'post/:id', page: PostDetail.page),
   AutoRoute(path: 'post/:id/community-notes', page: CommunityNotes.page),
   AutoRoute(path: 'community-note/:id', page: CommunityNoteDetail.page),
-  AutoRoute(path: 'post/:id/reposts', page: Reposts.page),
+  AutoRoute(path: 'post/:id/reposts', page: RepostsAndQuotes.page),
   AutoRoute(path: 'drafts', page: DraftPosts.page),
   AutoRoute(path: 'draft/:id', page: PostUpdate.page),
 
   // PROFILE
-  AutoRoute(path: 'profile/:username', page: ProfileRoute.page),
+  AutoRoute(
+    path: 'profile/:username',
+    page: ProfileRoute.page,
+    children: [
+      AutoRoute(path: '', page: ProfilePostsTab.page),
+      AutoRoute(path: 'replies', page: ProfileRepliesTab.page),
+      AutoRoute(path: 'likes', page: ProfileLikesTab.page),
+      AutoRoute(path: 'notes', page: ProfileNotesTab.page),
+      AutoRoute(path: 'petitions', page: ProfilePetitionsTab.page),
+      RedirectRoute(path: '', redirectTo: 'posts'), // Default tab
+    ],
+  ),
   AutoRoute(path: 'profile/edit', page: EditProfile.page),
   AutoRoute(path: 'profile/:username/following', page: FollowingRoute.page),
 

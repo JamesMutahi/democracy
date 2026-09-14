@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/cached_link_preview.dart';
@@ -34,11 +35,13 @@ import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class PostDetail extends StatelessWidget {
@@ -119,6 +122,7 @@ class _PostDetail extends StatefulWidget {
 }
 
 class _PostDetailState extends State<_PostDetail> {
+  final ScrollController _scrollController = ScrollController();
   final RefreshController _refreshController = RefreshController();
   final ValueKey _centerKey = ValueKey('Center');
   bool _isDeleted = false;
@@ -130,10 +134,17 @@ class _PostDetailState extends State<_PostDetail> {
     context.read<PostDetailBloc>().add(
       PostDetailEvent.addClick(post: widget.post),
     );
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -449,6 +460,8 @@ class _PostDetailState extends State<_PostDetail> {
                 },
                 child: CustomScrollView(
                   center: _centerKey,
+                  controller: isWebLayout ? _scrollController : null,
+                  physics: isWebLayout ? NeverScrollableScrollPhysics(): null,
                   slivers: <Widget>[
                     if (widget.post.replyTo != null)
                       ReplyTos(postId: widget.post.replyTo!.id),

@@ -1,16 +1,22 @@
 import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/summary.dart';
 import 'package:democracy/survey/models/survey.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class SurveySummaryTab extends StatelessWidget {
+  final ScrollController scrollController;
   final Survey survey;
 
-  const SurveySummaryTab({super.key, required this.survey});
+  const SurveySummaryTab({super.key,required this.scrollController,  required this.survey});
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     final color = Theme.of(context).primaryColor;
     final summary = survey.summary!;
     List<Question> questions = [];
@@ -21,6 +27,8 @@ class SurveySummaryTab extends StatelessWidget {
     questions.sort((a, b) => a.number.compareTo(b.number));
     return SingleChildScrollView(
       key: PageStorageKey<String>('summary_${survey.id}'),
+      controller: isWebLayout ? scrollController : null,
+      physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

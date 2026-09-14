@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -32,16 +33,32 @@ class Chats extends StatefulWidget {
 
 class _ChatsState extends State<Chats> {
   final RefreshController _refreshController = RefreshController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    context.read<ChatsBloc>().add(const ChatsEvent.get());
     super.initState();
+    context.read<ChatsBloc>().add(const ChatsEvent.get());
+
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
 
     return MultiBlocListener(
       listeners: [
@@ -187,6 +204,8 @@ class _ChatsState extends State<Chats> {
                   }
                 },
                 child: ListView.separated(
+                  controller: isWebLayout ? _scrollController: null,
+                  physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
                   padding: const EdgeInsets.only(
                     top: 8,
                     bottom: 80,

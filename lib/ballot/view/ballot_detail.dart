@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus, WebSocketService;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
@@ -14,8 +15,10 @@ import 'package:democracy/ballot/models/option.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/ballot/view/widgets/summary.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class BallotDetail extends StatelessWidget {
@@ -86,6 +89,7 @@ class _BallotDetail extends StatefulWidget {
 }
 
 class _BallotDetailState extends State<_BallotDetail> {
+  final ScrollController _scrollController = ScrollController();
   bool _changingVote = false;
   late final TextEditingController _textEditingController;
 
@@ -95,6 +99,10 @@ class _BallotDetailState extends State<_BallotDetail> {
     _textEditingController = TextEditingController(
       text: widget.ballot.reason ?? '',
     );
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
   }
 
   @override
@@ -111,6 +119,9 @@ class _BallotDetailState extends State<_BallotDetail> {
   @override
   void dispose() {
     _textEditingController.dispose();
+    // Clear the registry when leaving
+    ActiveScrollController.deactivate(_scrollController);
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -119,6 +130,8 @@ class _BallotDetailState extends State<_BallotDetail> {
     final colorScheme = Theme.of(context).colorScheme;
     final userHasVoted = widget.ballot.votedOption != null;
     final isVotingActive = widget.ballot.isActive && !widget.ballot.hasEnded;
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
 
     return MultiBlocListener(
       listeners: [
@@ -204,6 +217,7 @@ class _BallotDetailState extends State<_BallotDetail> {
           );
         },
         child: SingleChildScrollView(
+          controller: _scrollController,
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

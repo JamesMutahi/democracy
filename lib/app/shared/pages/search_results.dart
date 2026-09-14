@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/app/view/widgets/explore_search_anchor.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
@@ -12,10 +13,12 @@ import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:democracy/app/view/router/router.gr.dart' as router_gr;
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class SearchResults extends StatefulWidget {
@@ -37,11 +40,16 @@ class SearchResults extends StatefulWidget {
 }
 
 class _SearchResultsState extends State<SearchResults>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
 
   final SearchController _searchController = SearchController();
+  final ScrollController _topScrollController = ScrollController();
+  final ScrollController _recentScrollController = ScrollController();
+  final ScrollController _profileScrollController = ScrollController();
+
+  late TabController _tabController;
 
   @override
   void initState() {
@@ -50,17 +58,51 @@ class _SearchResultsState extends State<SearchResults>
     context.read<PostDetailBloc>().add(
       PostDetailEvent.saveSearchedTerm(searchTerm: widget.searchTerm),
     );
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(_onTabChanged);
+
+    // Register the initial active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_activeScrollController!);
+    });
+  }
+
+  void _onTabChanged() {
+    _deactivateTabScrollControllers();
+    ActiveScrollController.activate(_activeScrollController!);
+  }
+
+  void _deactivateTabScrollControllers() {
+    ActiveScrollController.deactivate(_topScrollController);
+    ActiveScrollController.deactivate(_recentScrollController);
+    ActiveScrollController.deactivate(_profileScrollController);
   }
 
   @override
   void dispose() {
+    _deactivateTabScrollControllers();
     _searchController.dispose();
+    _tabController.removeListener(_onTabChanged);
+    _topScrollController.dispose();
+    _recentScrollController.dispose();
+    _profileScrollController.dispose();
+    _tabController.dispose();
     super.dispose();
+  }
+
+  ScrollController? get _activeScrollController {
+    return switch (_tabController.index) {
+      0 => _topScrollController,
+      1 => _recentScrollController,
+      2 => _profileScrollController,
+      _ => _topScrollController,
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return BlocProvider(
       create: (context) => PostFilterCubit()
         ..initialize(
@@ -69,100 +111,104 @@ class _SearchResultsState extends State<SearchResults>
           startDate: widget.startDate,
           endDate: widget.endDate,
         ),
-      child: DefaultTabController(
-        length: 3,
-        child: MainContainer(
-          child: Scaffold(
-            body: SafeArea(
-              child: BlocBuilder<PostFilterCubit, PostFilterState>(
-                buildWhen: (previous, current) {
-                  return current.searchTerm == widget.searchTerm;
-                },
-                builder: (context, state) {
-                  return NestedScrollView(
-                    headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                      final filterCubit = context.read<PostFilterCubit>();
-                      return [
-                        SliverAppBar(
-                          floating: true,
-                          snap: true,
-                          forceElevated: true,
-                          automaticallyImplyLeading: false,
-                          flexibleSpace: Builder(
-                            builder: (context) {
-                              return Row(
-                                children: [
-                                  BackButton(),
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: 60,
-                                      child: ExploreSearchAnchor(
-                                        searchController: _searchController,
-                                        filterCubit: filterCubit,
-                                        filterState: state,
-                                        onSubmitted: () {
-                                          _searchController.text =
-                                              widget.searchTerm;
-                                        },
-                                      ),
+      child: MainContainer(
+        child: Scaffold(
+          body: SafeArea(
+            child: BlocBuilder<PostFilterCubit, PostFilterState>(
+              buildWhen: (previous, current) {
+                return current.searchTerm == widget.searchTerm;
+              },
+              builder: (context, state) {
+                return NestedScrollView(
+                  headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                    final filterCubit = context.read<PostFilterCubit>();
+                    return [
+                      SliverAppBar(
+                        floating: true,
+                        snap: true,
+                        forceElevated: true,
+                        automaticallyImplyLeading: false,
+                        flexibleSpace: Builder(
+                          builder: (context) {
+                            return Row(
+                              children: [
+                                BackButton(),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 60,
+                                    child: ExploreSearchAnchor(
+                                      searchController: _searchController,
+                                      filterCubit: filterCubit,
+                                      filterState: state,
+                                      onSubmitted: () {
+                                        _searchController.text =
+                                            widget.searchTerm;
+                                      },
                                     ),
                                   ),
-                                ],
-                              );
-                            },
-                          ),
-                          bottom: TabBar(
-                            dividerColor: Theme.of(
-                              context,
-                            ).colorScheme.outlineVariant,
-                            labelStyle: Theme.of(context).textTheme.titleMedium,
-                            tabs: [
-                              Tab(text: 'Top'),
-                              Tab(text: 'Recent'),
-                              Tab(text: 'Profiles'),
-                            ],
-                          ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
-                      ];
-                    },
-                    body: MultiBlocProvider(
-                      providers: [
-                        BlocProvider(
-                          create: (context) => PostsBloc(
-                            webSocketService: context.read<WebSocketService>(),
-                          ),
+                        bottom: TabBar(
+                          controller: _tabController,
+                          dividerColor: Theme.of(
+                            context,
+                          ).colorScheme.outlineVariant,
+                          labelStyle: Theme.of(context).textTheme.titleMedium,
+                          tabs: [
+                            Tab(text: 'Top'),
+                            Tab(text: 'Recent'),
+                            Tab(text: 'Profiles'),
+                          ],
                         ),
-                        BlocProvider(
-                          create: (context) => RecentPostsBloc(
-                            webSocketService: context.read<WebSocketService>(),
-                          ),
+                      ),
+                    ];
+                  },
+                  body: MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => PostsBloc(
+                          webSocketService: context.read<WebSocketService>(),
                         ),
-                        BlocProvider(
-                          create: (context) => UsersBloc(
-                            webSocketService: context.read<WebSocketService>(),
-                          ),
+                      ),
+                      BlocProvider(
+                        create: (context) => RecentPostsBloc(
+                          webSocketService: context.read<WebSocketService>(),
+                        ),
+                      ),
+                      BlocProvider(
+                        create: (context) => UsersBloc(
+                          webSocketService: context.read<WebSocketService>(),
+                        ),
+                      ),
+                    ],
+                    child: TabBarView(
+                      controller: _tabController,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        _TopPostsTab(
+                          scrollController: _topScrollController,
+                          searchTerm: widget.searchTerm,
+                          startDate: state.startDate,
+                          endDate: state.endDate,
+                        ),
+                        _RecentPostsTab(
+                          scrollController: _recentScrollController,
+                          searchTerm: widget.searchTerm,
+                          startDate: state.startDate,
+                          endDate: state.endDate,
+                        ),
+                        _ProfilesTab(
+                          scrollController: _profileScrollController,
+                          searchTerm: widget.searchTerm,
                         ),
                       ],
-                      child: TabBarView(
-                        physics: NeverScrollableScrollPhysics(),
-                        children: [
-                          _TopPostsTab(
-                            searchTerm: widget.searchTerm,
-                            startDate: state.startDate,
-                            endDate: state.endDate,
-                          ),
-                          _RecentPostsTab(
-                            searchTerm: widget.searchTerm,
-                            startDate: state.startDate,
-                            endDate: state.endDate,
-                          ),
-                          _ProfilesTab(searchTerm: widget.searchTerm),
-                        ],
-                      ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -173,11 +219,13 @@ class _SearchResultsState extends State<SearchResults>
 
 class _TopPostsTab extends StatefulWidget {
   const _TopPostsTab({
+    required this.scrollController,
     required this.searchTerm,
     required this.startDate,
     required this.endDate,
   });
 
+  final ScrollController scrollController;
   final String searchTerm;
   final DateTime? startDate;
   final DateTime? endDate;
@@ -213,6 +261,10 @@ class _TopPostsState extends State<_TopPostsTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return BlocListener<PostFilterCubit, PostFilterState>(
       listener: (context, state) {
         if (state.searchTerm == widget.searchTerm) {
@@ -251,6 +303,8 @@ class _TopPostsState extends State<_TopPostsTab>
           }
 
           return PostListView(
+            scrollController: isWebLayout ? widget.scrollController : null,
+            physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
             posts: posts,
             loading: state.status == PostsStatus.initial,
             failure: posts.isNotEmpty
@@ -278,11 +332,13 @@ class _TopPostsState extends State<_TopPostsTab>
 
 class _RecentPostsTab extends StatefulWidget {
   const _RecentPostsTab({
+    required this.scrollController,
     required this.searchTerm,
     this.startDate,
     this.endDate,
   });
 
+  final ScrollController scrollController;
   final String searchTerm;
   final DateTime? startDate;
   final DateTime? endDate;
@@ -319,6 +375,10 @@ class _RecentPostsState extends State<_RecentPostsTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return BlocListener<PostFilterCubit, PostFilterState>(
       listener: (context, state) {
         if (state.searchTerm == widget.searchTerm) {
@@ -357,6 +417,8 @@ class _RecentPostsState extends State<_RecentPostsTab>
           }
 
           return PostListView(
+            scrollController: isWebLayout ? widget.scrollController : null,
+            physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
             posts: posts,
             loading: state.status == RecentPostsStatus.initial,
             failure: state.posts.isNotEmpty
@@ -385,8 +447,12 @@ class _RecentPostsState extends State<_RecentPostsTab>
 }
 
 class _ProfilesTab extends StatefulWidget {
-  const _ProfilesTab({required this.searchTerm});
+  const _ProfilesTab({
+    required this.scrollController,
+    required this.searchTerm,
+  });
 
+  final ScrollController scrollController;
   final String searchTerm;
 
   @override
@@ -417,6 +483,10 @@ class _ProfilesTabState extends State<_ProfilesTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return BlocBuilder<UsersBloc, UsersState>(
       buildWhen: (previous, current) {
         return widget.searchTerm == current.searchTerm;
@@ -443,6 +513,8 @@ class _ProfilesTabState extends State<_ProfilesTab>
         }
 
         return UsersListView(
+          scrollController: isWebLayout ? widget.scrollController : null,
+          physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
           users: users,
           loading: state.status == UsersStatus.initial,
           failure: state.users.isNotEmpty

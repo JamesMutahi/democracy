@@ -1,3 +1,4 @@
+import 'package:democracy/app/shared/widgets/active_scroll_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
@@ -6,9 +7,11 @@ import 'package:democracy/broadcast/bloc/meetings/meetings_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/broadcast/view/widgets/broadcast_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class Meetings extends StatefulWidget {
   const Meetings({super.key});
@@ -18,23 +21,35 @@ class Meetings extends StatefulWidget {
 }
 
 class _MeetingsState extends State<Meetings> {
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
+    super.initState();
     context.read<MeetingsBloc>().add(
       MeetingsEvent.get(
         isOpen: defaultIsOpen,
         filterByRegion: defaultFilterByRegion,
       ),
     );
-    super.initState();
+    // Register the active controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ActiveScrollController.activate(_scrollController);
+    });
+  }
+
+  @override
+  void dispose() {
+    ActiveScrollController.deactivate(_scrollController);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return MultiBlocListener(
       listeners: [
         BlocListener<NotificationDetailBloc, NotificationDetailState>(
@@ -139,6 +154,8 @@ class _MeetingsState extends State<Meetings> {
                 },
                 footer: ClassicFooter(),
                 child: ListView.builder(
+                  controller: isWebLayout ? _scrollController : null,
+                  physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
                   padding: EdgeInsets.all(15),
                   itemBuilder: (BuildContext context, int index) {
                     Broadcast broadcast = broadcasts[index];

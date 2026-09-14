@@ -22,9 +22,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class UserPosts extends StatefulWidget {
-  const UserPosts({super.key, required this.user});
+  const UserPosts({super.key, required this.user, this.scrollController});
 
   final User user;
+  final ScrollController? scrollController;
 
   @override
   State<UserPosts> createState() => _UserPostsState();
@@ -77,6 +78,7 @@ class _UserPostsState extends State<UserPosts> {
         }
 
         return PostListView(
+          scrollController: widget.scrollController,
           posts: posts,
           loading: state.status == UserPostsStatus.initial,
           failure: state.posts.isNotEmpty
@@ -115,9 +117,10 @@ class _UserPostsState extends State<UserPosts> {
 }
 
 class UserReplies extends StatefulWidget {
-  const UserReplies({super.key, required this.user});
+  const UserReplies({super.key, required this.user, this.scrollController});
 
   final User user;
+  final ScrollController? scrollController;
 
   @override
   State<UserReplies> createState() => _UserRepliesState();
@@ -200,6 +203,7 @@ class _UserRepliesState extends State<UserReplies> {
               );
             },
             child: ListView.builder(
+              controller: widget.scrollController,
               padding: EdgeInsets.only(bottom: 20),
               itemBuilder: (BuildContext context, int index) {
                 Post post = posts[index];
@@ -237,9 +241,10 @@ class _UserRepliesState extends State<UserReplies> {
 }
 
 class Likes extends StatefulWidget {
-  const Likes({super.key, required this.user});
+  const Likes({super.key, required this.user, this.scrollController});
 
   final User user;
+  final ScrollController? scrollController;
 
   @override
   State<Likes> createState() => _LikesState();
@@ -286,6 +291,7 @@ class _LikesState extends State<Likes> {
         }
 
         return PostListView(
+          scrollController: widget.scrollController,
           posts: posts,
           loading:
               state.status == LikesStatus.initial ||
@@ -319,9 +325,14 @@ class _LikesState extends State<Likes> {
 }
 
 class UserCommunityNotes extends StatefulWidget {
-  const UserCommunityNotes({super.key, required this.user});
+  const UserCommunityNotes({
+    super.key,
+    required this.user,
+    this.scrollController,
+  });
 
   final User user;
+  final ScrollController? scrollController;
 
   @override
   State<UserCommunityNotes> createState() => _UserCommunityNotesState();
@@ -390,39 +401,40 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
           child: posts.isEmpty
               ? NoResults(text: 'No community notes')
               : SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: state.hasNext,
-            header: ClassicHeader(),
-            footer: ClassicFooter(),
-            controller: _refreshController,
-            onRefresh: () {
-              context.read<UserCommunityNotesBloc>().add(
-                UserCommunityNotesEvent.get(user: widget.user),
-              );
-            },
-            onLoading: () {
-              context.read<UserCommunityNotesBloc>().add(
-                UserCommunityNotesEvent.get(
-                  user: widget.user,
-                  previousPosts: posts,
-                ),
-              );
-            },
-            child: ListView.builder(
-              padding: EdgeInsets.only(bottom: 20),
-              itemBuilder: (BuildContext context, int index) {
-                Post post = posts[index];
-                return CommunityNoteTile(
-                  key: ValueKey(post.id),
-                  communityNote: post,
-                  onViewed: () {
-                    addPostView(context, 'User Comm. notes', post);
+                  enablePullDown: true,
+                  enablePullUp: state.hasNext,
+                  header: ClassicHeader(),
+                  footer: ClassicFooter(),
+                  controller: _refreshController,
+                  onRefresh: () {
+                    context.read<UserCommunityNotesBloc>().add(
+                      UserCommunityNotesEvent.get(user: widget.user),
+                    );
                   },
-                );
-              },
-              itemCount: posts.length,
-            ),
-          ),
+                  onLoading: () {
+                    context.read<UserCommunityNotesBloc>().add(
+                      UserCommunityNotesEvent.get(
+                        user: widget.user,
+                        previousPosts: posts,
+                      ),
+                    );
+                  },
+                  child: ListView.builder(
+                    controller: widget.scrollController,
+                    padding: EdgeInsets.only(bottom: 20),
+                    itemBuilder: (BuildContext context, int index) {
+                      Post post = posts[index];
+                      return CommunityNoteTile(
+                        key: ValueKey(post.id),
+                        communityNote: post,
+                        onViewed: () {
+                          addPostView(context, 'User Comm. notes', post);
+                        },
+                      );
+                    },
+                    itemCount: posts.length,
+                  ),
+                ),
         );
       },
     );
@@ -430,9 +442,10 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
 }
 
 class UserPetitions extends StatefulWidget {
-  const UserPetitions({super.key, required this.user});
+  const UserPetitions({super.key, required this.user, this.scrollController});
 
   final User user;
+  final ScrollController? scrollController;
 
   @override
   State<UserPetitions> createState() => _UserPetitionsState();
@@ -531,6 +544,7 @@ class _UserPetitionsState extends State<UserPetitions> {
                   },
                   footer: ClassicFooter(),
                   child: ListView.builder(
+                    controller: widget.scrollController,
                     padding: EdgeInsets.all(15),
                     itemBuilder: (BuildContext context, int index) {
                       Petition petition = petitions[index];
