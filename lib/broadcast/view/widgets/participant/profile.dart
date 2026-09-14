@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebSocketService;
 import 'package:democracy/app/core/app_logger.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:democracy/user/bloc/profile/profile_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -25,24 +27,39 @@ void showParticipantProfile({
   required Broadcast broadcast,
   required User user,
 }) {
-  showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
-    builder: (_) => MultiBlocProvider(
+  final broadcastBloc = context.read<BroadcastBloc>();
+  final webSocketService = context.read<WebSocketService>();
+
+  Widget buildProfileContent(BuildContext overlayContext) {
+    return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: context.read<BroadcastBloc>()),
+        BlocProvider.value(value: broadcastBloc),
         BlocProvider(
-          create: (context) =>
-              ProfileBloc(webSocketService: context.read<WebSocketService>())
+          create: (_) =>
+              ProfileBloc(webSocketService: webSocketService)
                 ..add(ProfileEvent.load(username: user.username)),
         ),
       ],
       child: ParticipantProfile(broadcast: broadcast, user: user),
-    ),
-  );
+    );
+  }
+
+  if (kIsWeb) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) =>
+          DialogContainer(children: [buildProfileContent(dialogContext)]),
+    );
+  } else {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) => buildProfileContent(sheetContext),
+    );
+  }
 }
 
 class ParticipantProfile extends StatefulWidget {
@@ -160,9 +177,14 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
                           ),
                         ),
                         OutlinedButton(
-                          onPressed: () => context.router.push(
-                            ProfileRoute(username: widget.user.username),
-                          ),
+                          onPressed: () {
+                            if (kIsWeb) {
+                              Navigator.pop(context);
+                            }
+                            context.router.push(
+                              ProfileRoute(username: widget.user.username),
+                            );
+                          },
                           child: const Text('View Profile'),
                         ),
                       ],

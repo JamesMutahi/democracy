@@ -129,6 +129,7 @@ class CustomDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      constraints: const BoxConstraints(maxWidth: 600, maxHeight: 800),
       title: Text(title),
       content: Text(content),
       actions: <Widget>[

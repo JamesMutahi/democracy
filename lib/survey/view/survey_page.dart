@@ -44,8 +44,9 @@ class _SurveyPageState extends State<SurveyPage> {
             headerSliverBuilder: (context, bool innerBoxIsScrolled) {
               return [
                 SliverAppBar(
-                  floating: true,
-                  snap: true,
+                  pinned: kIsWeb,
+                  floating: !kIsWeb,
+                  snap: !kIsWeb,
                   forceElevated: true,
                   title: Text('Surveys'),
                   bottom: PreferredSize(

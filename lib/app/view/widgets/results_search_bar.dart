@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -35,15 +36,20 @@ class ResultsSearchBar extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: const BeveledRectangleBorder(),
-                      useSafeArea: true,
-                      builder: (context) {
-                        return filterModal;
-                      },
-                    );
+                    kIsWeb
+                        ? showDialog(
+                            context: context,
+                            builder: (context) => filterModal,
+                          )
+                        : showGeneralDialog(
+                            context: context,
+                            transitionDuration: const Duration(
+                              milliseconds: 300,
+                            ),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    filterModal,
+                          );
                   },
                   icon: Icon(Symbols.tune_rounded, color: color),
                 ),

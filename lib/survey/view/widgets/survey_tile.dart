@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart' show TimeLeft;
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/survey/models/survey.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:material_symbols_icons/symbols.dart';
@@ -28,15 +30,7 @@ class SurveyTile extends StatelessWidget {
         if (survey.hasEnded) {
           context.router.push(SurveyDetail(surveyId: survey.id));
         } else {
-          showModalBottomSheet<void>(
-            context: context,
-            isScrollControlled: true,
-            showDragHandle: true,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            builder: (context) => SurveyBottomSheet(survey: survey),
-          );
+          showSurveyInfo(context, survey);
         }
       },
       child: Stack(
@@ -229,13 +223,7 @@ class SurveyPopUpMenu extends StatelessWidget {
           case 'Post':
             context.router.push(PostCreate(survey: survey));
           case 'Share':
-            showModalBottomSheet<void>(
-              context: context,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              builder: (context) => ShareBottomSheet(survey: survey),
-            );
+            showShare(context, survey: survey);
         }
       },
       texts: const ['Post', 'Share'],
@@ -243,8 +231,28 @@ class SurveyPopUpMenu extends StatelessWidget {
   }
 }
 
-class SurveyBottomSheet extends StatelessWidget {
-  const SurveyBottomSheet({super.key, required this.survey});
+void showSurveyInfo(BuildContext context, Survey survey) {
+  if (kIsWeb) {
+    showDialog(
+      context: context,
+      builder: (context) =>
+          DialogContainer(children: [SurveyInfo(survey: survey)]),
+    );
+  } else {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SurveyInfo(survey: survey),
+    );
+  }
+}
+
+class SurveyInfo extends StatelessWidget {
+  const SurveyInfo({super.key, required this.survey});
 
   final Survey survey;
 
@@ -254,7 +262,7 @@ class SurveyBottomSheet extends StatelessWidget {
     final alreadyResponded = survey.response != null;
 
     return Container(
-      padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+      padding: EdgeInsets.all(15),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

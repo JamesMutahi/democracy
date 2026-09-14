@@ -25,7 +25,10 @@ class _MeetingsState extends State<Meetings> {
   @override
   void initState() {
     context.read<MeetingsBloc>().add(
-      MeetingsEvent.get(isOpen: null, filterByRegion: true),
+      MeetingsEvent.get(
+        isOpen: defaultIsOpen,
+        filterByRegion: defaultFilterByRegion,
+      ),
     );
     super.initState();
   }

@@ -29,7 +29,10 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     context.read<SurveysBloc>().add(
-      SurveysEvent.get(isOpen: null, filterByRegion: true),
+      SurveysEvent.get(
+        isOpen: defaultIsOpen,
+        filterByRegion: defaultFilterByRegion,
+      ),
     );
     super.initState();
   }

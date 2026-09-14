@@ -46,10 +46,10 @@ class _PetitionPageState extends State<PetitionPage> {
             headerSliverBuilder: (context, bool innerBoxIsScrolled) {
               return [
                 SliverAppBar(
-                  floating: true,
-                  snap: true,
+                  pinned: kIsWeb,
+                  floating: !kIsWeb,
+                  snap: !kIsWeb,
                   forceElevated: true,
-                  leading: AutoLeadingButton(),
                   title: Text('Petitions'),
                   bottom: PreferredSize(
                     preferredSize: Size.fromHeight(60.0),

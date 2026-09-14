@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -68,110 +70,145 @@ class _ReportModalState extends State<ReportModal> {
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Row(
+      child: kIsWeb ? _buildWeb() : _buildMobile(),
+    );
+  }
+
+  Widget _buildWeb() {
+    return DialogContainer(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Report'),
+              Text('Report', style: Theme.of(context).textTheme.titleLarge),
               IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Symbols.close_rounded),
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () => context.router.popTop(),
+                tooltip: 'Close',
               ),
             ],
           ),
         ),
-        body: RadioGroup<Issue>(
-          groupValue: _issue,
-          onChanged: setIssue,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 20.0),
-            child: Column(
-              children: [
-                Text(
-                  "What type of issue are you reporting?",
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                _buildOption(
-                  value: Issue.spam,
-                  title: 'Spam',
-                  subtitle:
-                      'Fake engagement, scams, fake accounts, malicious links',
-                ),
-                _buildOption(
-                  value: Issue.hate,
-                  title: 'Hate',
-                  subtitle:
-                      'Slurs, racist or sexist stereotypes, dehumanization, '
-                      'incitement of fear or discrimination, hateful symbols & logos',
-                  isThreeLine: true,
-                ),
-                _buildOption(
-                  value: Issue.abuseAndHarassment,
-                  title: 'Abuse & Harassment',
-                  subtitle:
-                      'Insults, targeted harassment and inciting harassment',
-                ),
-                _buildOption(
-                  value: Issue.violentSpeech,
-                  title: 'Violent Speech',
-                  subtitle:
-                      'Violent threats, wish of harm, glorification of violence, '
-                      'incitement of violence, coded incitement of violence',
-                ),
-                _buildOption(
-                  value: Issue.childSafety,
-                  title: 'Child Safety',
-                  subtitle:
-                      'Child sexual exploitation, grooming, physical child abuse',
-                ),
-                _buildOption(
-                  value: Issue.privacy,
-                  title: 'Privacy',
-                  subtitle:
-                      'Sharing private information, threatening to share/expose '
-                      'private information',
-                ),
-                _buildOption(
-                  value: Issue.suicideOrSelfHarm,
-                  title: 'Suicide or self-harm',
-                  subtitle:
-                      'Encouraging, promoting, providing instructions or sharing '
-                      'strategies for self-harm',
-                ),
-              ],
+        const Divider(height: 1),
+
+        Expanded(child: _buildBody()),
+
+        SizedBox(width: double.infinity, child: _buildButton()),
+      ],
+    );
+  }
+
+  Widget _buildMobile() {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Report'),
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Symbols.close_rounded),
             ),
+          ],
+        ),
+      ),
+      body: _buildBody(),
+      bottomNavigationBar: _buildButton(),
+    );
+  }
+
+  Widget _buildButton() {
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: FilledButton(
+        style: ButtonStyle(
+          padding: WidgetStateProperty.all(
+            const EdgeInsets.symmetric(vertical: 15),
+          ),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           ),
         ),
-        bottomNavigationBar: Container(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: OutlinedButton(
-            style: ButtonStyle(
-              padding: WidgetStateProperty.all(
-                const EdgeInsets.symmetric(vertical: 15),
-              ),
-              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
+        onPressed: _disabled
+            ? null
+            : () {
+                context.read<PostDetailBloc>().add(
+                  PostDetailEvent.report(
+                    issue: issues[_issue]!,
+                    post: widget.post,
+                  ),
+                );
+              },
+        child: const Text('Report'),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    return RadioGroup<Issue>(
+      groupValue: _issue,
+      onChanged: setIssue,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 20.0),
+        child: Column(
+          children: [
+            Text(
+              "What type of issue are you reporting?",
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-            onPressed: _disabled
-                ? null
-                : () {
-                    context.read<PostDetailBloc>().add(
-                      PostDetailEvent.report(
-                        issue: issues[_issue]!,
-                        post: widget.post,
-                      ),
-                    );
-                  },
-            child: const Text('Report'),
-          ),
+            const SizedBox(height: 8),
+            _buildOption(
+              value: Issue.spam,
+              title: 'Spam',
+              subtitle:
+                  'Fake engagement, scams, fake accounts, malicious links',
+            ),
+            _buildOption(
+              value: Issue.hate,
+              title: 'Hate',
+              subtitle:
+                  'Slurs, racist or sexist stereotypes, dehumanization, '
+                  'incitement of fear or discrimination, hateful symbols & logos',
+              isThreeLine: true,
+            ),
+            _buildOption(
+              value: Issue.abuseAndHarassment,
+              title: 'Abuse & Harassment',
+              subtitle: 'Insults, targeted harassment and inciting harassment',
+            ),
+            _buildOption(
+              value: Issue.violentSpeech,
+              title: 'Violent Speech',
+              subtitle:
+                  'Violent threats, wish of harm, glorification of violence, '
+                  'incitement of violence, coded incitement of violence',
+            ),
+            _buildOption(
+              value: Issue.childSafety,
+              title: 'Child Safety',
+              subtitle:
+                  'Child sexual exploitation, grooming, physical child abuse',
+            ),
+            _buildOption(
+              value: Issue.privacy,
+              title: 'Privacy',
+              subtitle:
+                  'Sharing private information, threatening to share/expose '
+                  'private information',
+            ),
+            _buildOption(
+              value: Issue.suicideOrSelfHarm,
+              title: 'Suicide or self-harm',
+              subtitle:
+                  'Encouraging, promoting, providing instructions or sharing '
+                  'strategies for self-harm',
+            ),
+          ],
         ),
       ),
     );

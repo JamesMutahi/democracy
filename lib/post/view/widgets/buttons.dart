@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/pages/report.dart';
@@ -14,6 +15,7 @@ import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -63,7 +65,7 @@ class PostPopUp extends StatelessWidget {
         final List<String> menuItems = _buildMenuItems(currentUser, post);
 
         return Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.all(9),
           child: MorePopUp(
             onSelected: (selected) =>
                 _handleMenuSelection(context, selected, post, currentUser),
@@ -102,11 +104,7 @@ class PostPopUp extends StatelessWidget {
   ) {
     switch (selected) {
       case 'Share':
-        showModalBottomSheet<void>(
-          context: context,
-          shape: const BeveledRectangleBorder(),
-          builder: (_) => ShareBottomSheet(post: post),
-        );
+        showShare(context, post: post);
         break;
 
       case 'Reposts':
@@ -163,15 +161,20 @@ class PostPopUp extends StatelessWidget {
         break;
 
       case 'Report':
-        showModalBottomSheet(
-          context: context,
-          showDragHandle: true,
-          isScrollControlled: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          shape: const BeveledRectangleBorder(),
-          builder: (_) => ReportModal(post: post),
-        );
+        kIsWeb
+            ? showDialog(
+                context: context,
+                builder: (context) => ReportModal(post: post),
+              )
+            : showModalBottomSheet(
+                context: context,
+                showDragHandle: true,
+                isScrollControlled: true,
+                useSafeArea: true,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                shape: const BeveledRectangleBorder(),
+                builder: (_) => ReportModal(post: post),
+              );
         break;
 
       case 'Community notes':
@@ -257,43 +260,36 @@ class RepostButton extends StatelessWidget {
   }
 
   void _showRepostBottomSheet(BuildContext context, Post post) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      shape: const BeveledRectangleBorder(),
-      builder: (context) => CustomBottomSheet(
+    Widget buildSheetContent(BuildContext sheetContext) {
+      return CustomBottomSheet(
         title: 'Repost',
         children: [
-          // Post Preview Card
           Container(
             margin: const EdgeInsets.only(bottom: 15, left: 15, right: 15),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: Theme.of(sheetContext).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
             ),
             child: IgnorePointer(
               child: PostWidgetSelector(post: post, isDependency: true),
             ),
           ),
-
           BottomSheetActionTile(
             text: 'Quote Post',
             iconData: Icons.format_quote_rounded,
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pop(sheetContext);
               context.router.push(PostCreate(repostOf: post));
             },
           ),
-
           if (post.isReposted)
             BottomSheetActionTile(
               text: 'Undo Repost',
               iconData: Icons.repeat_rounded,
               isDestructive: true,
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(sheetContext);
                 context.read<PostDetailBloc>().add(
                   PostDetailEvent.deleteRepost(post: post),
                 );
@@ -304,7 +300,7 @@ class RepostButton extends StatelessWidget {
               text: 'Repost',
               iconData: Icons.repeat_rounded,
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(sheetContext);
                 context.read<PostCreateBloc>().add(
                   PostCreateEvent.create(
                     body: '',
@@ -320,8 +316,24 @@ class RepostButton extends StatelessWidget {
               },
             ),
         ],
-      ),
-    );
+      );
+    }
+
+    if (kIsWeb) {
+      showDialog(
+        context: context,
+        builder: (dialogContext) =>
+            DialogContainer(children: [buildSheetContent(dialogContext)]),
+      );
+    } else {
+      showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        shape: const BeveledRectangleBorder(),
+        builder: (modalContext) => buildSheetContent(modalContext),
+      );
+    }
   }
 }
 

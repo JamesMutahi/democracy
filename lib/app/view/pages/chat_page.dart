@@ -115,10 +115,7 @@ class _ChatPageState extends State<ChatPage> {
                               const SizedBox(height: 16),
                               ElevatedButton(
                                 onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => const CreateMessage(),
-                                  );
+                                  showCreateMessage(context);
                                 },
                                 child: Text(
                                   'New chat',
@@ -209,17 +206,7 @@ class _ChatPageState extends State<ChatPage> {
               heroTag: 'new_message',
               elevation: 4,
               onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  useSafeArea: true,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20),
-                    ),
-                  ),
-                  builder: (context) => const CreateMessage(),
-                );
+                showCreateMessage(context);
               },
               child: const Icon(Icons.edit_rounded, size: 28),
             ),
@@ -236,6 +223,22 @@ class _ChatPageState extends State<ChatPage> {
       onChanged: (value) {
         context.read<ChatFilterCubit>().searchTermChanged(searchTerm: value);
       },
+    );
+  }
+}
+
+void showCreateMessage(BuildContext context) {
+  if (kIsWeb) {
+    showDialog(context: context, builder: (context) => CreateMessage());
+  } else {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => const CreateMessage(),
     );
   }
 }

@@ -44,8 +44,9 @@ class _BallotPageState extends State<BallotPage> {
             headerSliverBuilder: (context, bool innerBoxIsScrolled) {
               return [
                 SliverAppBar(
-                  floating: true,
-                  snap: true,
+                  pinned: kIsWeb,
+                  floating: !kIsWeb,
+                  snap: !kIsWeb,
                   forceElevated: true,
                   title: Text('Ballots'),
                   bottom: PreferredSize(

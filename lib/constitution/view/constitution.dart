@@ -46,14 +46,20 @@ class ConstitutionPage extends StatelessWidget {
                       (state.status == SectionStatus.loading &&
                           state.section == null)) {
                     return Scaffold(
-                      appBar: AppBar(title: const Text('Constitution')),
+                      appBar: AppBar(
+                        centerTitle: true,
+                        title: const Text('Constitution'),
+                      ),
                       body: const Center(child: BottomLoader()),
                     );
                   }
                   if (state.status == SectionStatus.failure &&
                       state.section == null) {
                     return Scaffold(
-                      appBar: AppBar(title: const Text('Constitution')),
+                      appBar: AppBar(
+                        centerTitle: true,
+                        title: const Text('Constitution'),
+                      ),
                       body: Center(
                         child: FailureRetryButton(
                           onPressed: () {
@@ -136,16 +142,7 @@ class _ConstitutionState extends State<ConstitutionView> {
                     )
                   : FilledButton.tonalIcon(
                       onPressed: () {
-                        showModalBottomSheet<void>(
-                          context: context,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20),
-                            ),
-                          ),
-                          builder: (context) =>
-                              ShareBottomSheet(section: _selectedSection),
-                        );
+                        showShare(context, section: _selectedSection);
                       },
                       icon: const Icon(Icons.share_rounded, size: 18),
                       label: const Text('Share'),

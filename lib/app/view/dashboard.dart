@@ -141,43 +141,41 @@ class _Web extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       drawer: responsive.isMobile ? Drawer(child: SideMenu()) : null,
       body: SafeArea(
-        child: Row(
-          mainAxisAlignment: kIsWeb
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.start,
+        child: Stack(
           children: [
-            Visibility(
-              visible: kIsWeb && !responsive.isMobile,
-              child: Flexible(
-                flex: responsive.largerOrEqualTo(expandSideMenu) ? 3 : 1,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 300),
-                  child: SideMenu(),
-                ),
-              ),
-            ),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 1000),
-              child: Stack(
-                children: [
-                  AutoRouter(),
-                  BlocBuilder<BroadcastViewCubit, BroadcastViewState>(
-                    builder: (context, state) {
-                      if (state.view == BroadcastView.minimized) {
-                        return Positioned(
-                          bottom: 24,
-                          left: 16,
-                          right: 16,
-                          child: MinimizedBroadcastBar(
-                            broadcast: state.broadcast!,
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
+            Row(
+              mainAxisAlignment: kIsWeb
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.start,
+              children: [
+                Visibility(
+                  visible: kIsWeb && !responsive.isMobile,
+                  child: Flexible(
+                    flex: responsive.largerOrEqualTo(expandSideMenu) ? 3 : 1,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 300),
+                      child: SideMenu(),
+                    ),
                   ),
-                ],
-              ),
+                ),
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 1000),
+                  child: AutoRouter(),
+                ),
+              ],
+            ),
+            BlocBuilder<BroadcastViewCubit, BroadcastViewState>(
+              builder: (context, state) {
+                if (state.view == BroadcastView.minimized) {
+                  return Positioned(
+                    bottom: 24,
+                    left: 16,
+                    right: 16,
+                    child: MinimizedBroadcastBar(broadcast: state.broadcast!),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
           ],
         ),

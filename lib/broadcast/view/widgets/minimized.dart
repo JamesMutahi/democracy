@@ -111,7 +111,8 @@ class MinimizedBroadcastBar extends StatelessWidget {
         ),
       ],
       child: SafeArea(
-        child: Padding(
+        child: Container(
+          width: 200,
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Material(
             elevation: 8,

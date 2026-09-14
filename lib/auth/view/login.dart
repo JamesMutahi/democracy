@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/app_logo.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -218,17 +220,27 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       TextButton(
                         onPressed: () {
-                          showModalBottomSheet<void>(
-                            context: context,
-                            isScrollControlled: true,
-                            showDragHandle: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(20),
-                              ),
-                            ),
-                            builder: (context) => const _TermsAndConditions(),
-                          );
+                          kIsWeb
+                              ? showDialog(
+                                  context: context,
+                                  builder: (context) => DialogContainer(
+                                    children: [
+                                      Expanded(child: _TermsAndConditions()),
+                                    ],
+                                  ),
+                                )
+                              : showModalBottomSheet<void>(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  showDragHandle: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20),
+                                    ),
+                                  ),
+                                  builder: (context) =>
+                                      const _TermsAndConditions(),
+                                );
                         },
                         child: Text(
                           'Terms & Conditions',

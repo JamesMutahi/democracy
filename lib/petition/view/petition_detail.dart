@@ -425,11 +425,7 @@ class PetitionPopUpMenu extends StatelessWidget {
               case 'Post':
                 context.router.push(PostCreate(petition: petition));
               case 'Share':
-                showModalBottomSheet<void>(
-                  context: context,
-                  shape: const BeveledRectangleBorder(),
-                  builder: (context) => ShareBottomSheet(petition: petition),
-                );
+                showShare(context, petition: petition);
               case 'Close':
               case 'Open':
                 _showStatusChangeDialog(context, selected == 'Close');

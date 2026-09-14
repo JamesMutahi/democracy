@@ -35,7 +35,7 @@ class BallotTile extends StatelessWidget {
           color: isDependency
               ? colorScheme.surfaceContainerLow
               : colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           border: isDependency
               ? Border.all(
                   color: colorScheme.outlineVariant.withValues(alpha: 0.5),
@@ -415,13 +415,7 @@ class BallotPopUp extends StatelessWidget {
           case 'Post':
             context.router.push(PostCreate(ballot: ballot));
           case 'Share':
-            showModalBottomSheet<void>(
-              context: context,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              builder: (context) => ShareBottomSheet(ballot: ballot),
-            );
+            showShare(context, ballot: ballot);
         }
       },
       texts: const ['Post', 'Share'],

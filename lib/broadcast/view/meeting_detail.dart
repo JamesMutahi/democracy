@@ -4,6 +4,7 @@ import 'package:democracy/app/bloc/services/agora_service.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
@@ -26,6 +27,7 @@ import 'package:democracy/broadcast/view/widgets/comments.dart';
 import 'package:democracy/broadcast/view/widgets/participant/tabs/index.dart';
 import 'package:democracy/broadcast/view/widgets/participant/tile.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -514,37 +516,44 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                       tooltip: 'Participants',
                       onPressed: () {
                         final broadcastBloc = context.read<BroadcastBloc>();
-                        showModalBottomSheet<void>(
-                          context: context,
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            ),
-                          ),
-                          builder: (_) => MultiBlocProvider(
-                            providers: [
-                              BlocProvider.value(value: broadcastBloc),
-                              BlocProvider(
-                                create: (context) => ParticipantsBloc(
-                                  webSocketService: context
-                                      .read<WebSocketService>(),
-                                ),
+                        final child = MultiBlocProvider(
+                          providers: [
+                            BlocProvider.value(value: broadcastBloc),
+                            BlocProvider(
+                              create: (context) => ParticipantsBloc(
+                                webSocketService: context
+                                    .read<WebSocketService>(),
                               ),
-                              BlocProvider(
-                                create: (context) => ListenersBloc(
-                                  webSocketService: context
-                                      .read<WebSocketService>(),
-                                ),
-                              ),
-                            ],
-                            child: _ParticipantsBottomSheet(
-                              broadcast: widget.broadcast,
-                              isHost: _isHost || _isCoHost,
                             ),
+                            BlocProvider(
+                              create: (context) => ListenersBloc(
+                                webSocketService: context
+                                    .read<WebSocketService>(),
+                              ),
+                            ),
+                          ],
+                          child: _ParticipantsBottomSheet(
+                            broadcast: widget.broadcast,
+                            isHost: _isHost || _isCoHost,
                           ),
                         );
+                        kIsWeb
+                            ? showDialog(
+                                context: context,
+                                builder: (context) =>
+                                    DialogContainer(children: [child]),
+                              )
+                            : showModalBottomSheet<void>(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                ),
+                                builder: (_) => child,
+                              );
                       },
                     ),
                     SizedBox(width: 10),
@@ -553,18 +562,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                       icon: Icon(Symbols.share_rounded),
                       tooltip: 'Share',
                       onPressed: () {
-                        showModalBottomSheet<void>(
-                          context: context,
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              topRight: Radius.circular(15),
-                            ),
-                          ),
-                          builder: (_) =>
-                              ShareBottomSheet(broadcast: widget.broadcast),
-                        );
+                        showShare(context, broadcast: widget.broadcast);
                       },
                     ),
                   ],

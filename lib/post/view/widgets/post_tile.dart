@@ -291,10 +291,7 @@ class _PostContainer extends StatelessWidget {
                                 ),
                               ),
                             if (post.communityNote.isNotEmpty)
-                              Container(
-                                margin: EdgeInsets.only(top: 10),
-                                child: CommunityNote(post: post),
-                              ),
+                              CommunityNote(post: post),
                             if (!isDependency)
                               Container(
                                 margin: EdgeInsets.only(top: 5),
@@ -388,7 +385,7 @@ class _CommunityNoteState extends State<CommunityNote> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.only(top: 10, bottom: 5),
       decoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).disabledColor.withAlpha(30),
@@ -396,6 +393,7 @@ class _CommunityNoteState extends State<CommunityNote> {
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       child: InkWell(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
         onTap: () {
           context.router.push(CommunityNotes(postId: widget.post.id));
         },

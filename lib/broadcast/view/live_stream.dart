@@ -473,19 +473,8 @@ class _LiveStreamState extends State<_LiveStream> {
                     icon: Icons.share,
                     label: 'Share',
                     isActive: true,
-                    onPressed: () {
-                      showModalBottomSheet<void>(
-                        context: context,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(15),
-                          ),
-                        ),
-                        builder: (_) =>
-                            ShareBottomSheet(broadcast: widget.broadcast),
-                      );
-                    },
+                    onPressed: () =>
+                        showShare(context, broadcast: widget.broadcast),
                   ),
                 ],
               ),

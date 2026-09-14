@@ -11,6 +11,7 @@ SnackBar getSnackBar({
   VoidCallback? onActionPressed,
 }) {
   final snackBar = SnackBar(
+    width: 400.0,
     behavior: SnackBarBehavior.floating,
     content: SnackBarContent(message: message, status: status),
     action:

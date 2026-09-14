@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/utils/copy.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/chat/view/direct_message.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
@@ -11,9 +12,53 @@ import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+
+void showShare(
+  BuildContext context, {
+  Post? post,
+  Ballot? ballot,
+  Survey? survey,
+  Petition? petition,
+  Broadcast? broadcast,
+  Section? section,
+}) {
+  if (kIsWeb) {
+    showDialog(
+      context: context,
+      builder: (context) => DialogContainer(
+        children: [
+          ShareBottomSheet(
+            post: post,
+            ballot: ballot,
+            survey: survey,
+            petition: petition,
+            broadcast: broadcast,
+            section: section,
+          ),
+        ],
+      ),
+    );
+  } else {
+    showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => ShareBottomSheet(
+        post: post,
+        ballot: ballot,
+        survey: survey,
+        petition: petition,
+        broadcast: broadcast,
+        section: section,
+      ),
+    );
+  }
+}
 
 class ShareBottomSheet extends StatelessWidget {
   const ShareBottomSheet({
@@ -50,27 +95,46 @@ class ShareBottomSheet extends StatelessWidget {
           subtitle: 'Share privately with someone',
           onTap: () {
             context.router.popTop();
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              useSafeArea: true,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              builder: (context) => BlocProvider(
-                create: (context) => UsersBloc(
-                  webSocketService: context.read<WebSocketService>(),
+            if (kIsWeb) {
+              showDialog(
+                context: context,
+                builder: (context) => BlocProvider(
+                  create: (context) => UsersBloc(
+                    webSocketService: context.read<WebSocketService>(),
+                  ),
+                  child: DirectMessage(
+                    post: post,
+                    ballot: ballot,
+                    survey: survey,
+                    petition: petition,
+                    broadcast: broadcast,
+                    section: section,
+                  ),
                 ),
-                child: DirectMessage(
-                  post: post,
-                  ballot: ballot,
-                  survey: survey,
-                  petition: petition,
-                  broadcast: broadcast,
-                  section: section,
+              );
+            } else {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                useSafeArea: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
-              ),
-            );
+                builder: (context) => BlocProvider(
+                  create: (context) => UsersBloc(
+                    webSocketService: context.read<WebSocketService>(),
+                  ),
+                  child: DirectMessage(
+                    post: post,
+                    ballot: ballot,
+                    survey: survey,
+                    petition: petition,
+                    broadcast: broadcast,
+                    section: section,
+                  ),
+                ),
+              );
+            }
           },
         ),
 

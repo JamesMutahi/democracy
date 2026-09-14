@@ -23,7 +23,7 @@ class MorePopUp extends StatelessWidget {
         }),
       ],
       child: Padding(
-        padding: EdgeInsetsGeometry.all(10),
+        padding: EdgeInsetsGeometry.all(9),
         child: Icon(
           Symbols.more_vert_rounded,
           color: Theme.of(context).colorScheme.outline,

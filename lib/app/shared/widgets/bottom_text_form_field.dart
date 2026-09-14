@@ -159,6 +159,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                   ),
                 ),
               ),
+              if (widget.showExtrasButton) SizedBox(width: 8),
               Expanded(
                 child: TextFormField(
                   focusNode: widget.focusNode,

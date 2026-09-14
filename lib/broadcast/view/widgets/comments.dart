@@ -5,6 +5,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/utils/custom_editing_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -17,6 +18,7 @@ import 'package:democracy/broadcast/models/comment.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -28,28 +30,33 @@ void showComments({
   required Broadcast broadcast,
 }) {
   final broadcastBloc = context.read<BroadcastBloc>();
-  showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(15),
-        topRight: Radius.circular(15),
+  final child = MultiBlocProvider(
+    providers: [
+      BlocProvider.value(value: broadcastBloc),
+      BlocProvider(
+        create: (context) =>
+            CommentsBloc(webSocketService: context.read<WebSocketService>())
+              ..add(CommentsEvent.get(broadcastId: broadcast.id)),
       ),
-    ),
-    builder: (_) => MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: broadcastBloc),
-        BlocProvider(
-          create: (context) =>
-              CommentsBloc(webSocketService: context.read<WebSocketService>())
-                ..add(CommentsEvent.get(broadcastId: broadcast.id)),
-        ),
-      ],
-      child: Comments(broadcastId: broadcast.id),
-    ),
+    ],
+    child: Comments(broadcastId: broadcast.id),
   );
+  if (kIsWeb) {
+    showDialog(context: context, builder: (context) => child);
+  } else {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15),
+          topRight: Radius.circular(15),
+        ),
+      ),
+      builder: (_) => child,
+    );
+  }
 }
 
 class Comments extends StatefulWidget {
@@ -77,196 +84,253 @@ class _CommentsState extends State<Comments> {
 
   @override
   Widget build(BuildContext context) {
-    final me = context.read<AuthBloc>().state.user!;
-    final colorScheme = Theme.of(context).colorScheme;
-    var timeFormat = DateFormat('hh:mm a');
+    return kIsWeb ? _buildWeb(context) : _buildMobile(context);
+  }
 
+  Widget _buildMobile(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Comments')),
-      body: BlocListener<CommentDetailBloc, CommentDetailState>(
-        listener: (context, state) {
-          if (state is CommentCreated) {
-            if (me.id == state.comment.author.id &&
-                _controller.text == state.comment.text) {
-              _controller.clear();
-              _disableSendButton = false;
-              setState(() {});
-            }
-            context.read<CommentsBloc>().add(
-              CommentsEvent.add(comment: state.comment),
-            );
-          }
-          if (state is CommentUpdated) {
-            context.read<CommentsBloc>().add(
-              CommentsEvent.update(comment: state.comment),
-            );
-          }
-          if (state is CommentDeleted) {
-            context.read<CommentsBloc>().add(
-              CommentsEvent.remove(commentId: state.commentId),
-            );
-          }
-          if (state is CommentDetailFailure) {
-            if (_disableSendButton && _controller.text.isNotEmpty) {
-              setState(() => _disableSendButton = false);
-            }
-            final snackBar = getSnackBar(
-              context: context,
-              message: state.error,
-              status: SnackBarStatus.failure,
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
-        },
-        child: BlocBuilder<BroadcastBloc, BroadcastState>(
-          buildWhen: (previous, current) =>
-              current.broadcastId == widget.broadcastId,
-          builder: (context, broadcastState) {
-            bool canManageSpeakers =
-                broadcastState.broadcast!.host.id == me.id ||
-                broadcastState.broadcast!.coHosts.any((c) => c.id == me.id);
-            return BlocBuilder<CommentsBloc, CommentsState>(
-              buildWhen: (previous, current) {
-                return current.broadcastId == widget.broadcastId;
-              },
-              builder: (context, state) {
-                if (state.status == CommentsStatus.initial ||
-                    state.status == CommentsStatus.loading &&
-                        state.comments.isEmpty) {
-                  return const BottomLoader();
-                }
+      body: _buildBody(context),
+      bottomNavigationBar: _buildBottomTextFormField(),
+    );
+  }
 
-                if (state.status == CommentsStatus.success) {
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
-                }
-
-                if (state.status == CommentsStatus.failure) {
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshFailed();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadFailed();
-                  }
-
-                  if (state.comments.isEmpty) {
-                    return FailureRetryButton(
-                      onPressed: () => context.read<CommentsBloc>().add(
-                        CommentsEvent.get(broadcastId: widget.broadcastId),
-                      ),
-                    );
-                  }
-                }
-
-                return MultiBlocListener(
-                  listeners: [
-                    BlocListener<WebsocketBloc, WebsocketState>(
-                      listener: (context, websocketState) {
-                        if (websocketState.status ==
-                            WebsocketStatus.connected) {
-                          context.read<CommentsBloc>().add(
-                            CommentsEvent.get(
-                              broadcastId: widget.broadcastId,
-                              newestComment: state.comments.first,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                  child: SmartRefresher(
-                    enablePullDown: false,
-                    enablePullUp: state.hasNext,
-                    controller: _refreshController,
-                    onLoading: () {
-                      context.read<CommentsBloc>().add(
-                        CommentsEvent.get(
-                          broadcastId: widget.broadcastId,
-                          oldestComment: state.comments.last,
-                        ),
-                      );
-                    },
-                    footer: ClassicFooter(),
-                    child: ListView.builder(
-                      reverse: true,
-                      itemCount: state.comments.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final comment = state.comments[index];
-                        return CommentTile(
-                          me: me,
-                          comment: comment,
-                          timeFormat: timeFormat,
-                          canManageSpeakers: canManageSpeakers,
-                        );
-                      },
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child: SafeArea(
+  Widget _buildWeb(BuildContext context) {
+    return DialogContainer(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: TextField(
-                  focusNode: _focusNode,
-                  controller: _controller,
-                  autofocus: true,
-                  maxLines: 5,
-                  minLines: 1,
-                  textInputAction: TextInputAction.newline,
-                  onChanged: (_) => setState(() {}),
-                  decoration: InputDecoration(
-                    hintText: 'Comment...',
-                    filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              IconButton.filled(
-                onPressed: _controller.text.trim().isEmpty || _disableSendButton
-                    ? null
-                    : _createComment,
-                icon: const Icon(Icons.check_rounded),
-                style: IconButton.styleFrom(
-                  backgroundColor: colorScheme.primary,
-                  foregroundColor: colorScheme.onPrimary,
-                ),
-                tooltip: 'Save changes',
+              Text('Comments', style: Theme.of(context).textTheme.titleLarge),
+              IconButton(
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () => context.router.popTop(),
+                tooltip: 'Close',
               ),
             ],
           ),
+        ),
+        const Divider(height: 1),
+
+        Expanded(child: _buildBody(context)),
+
+        Container(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -5),
+              ),
+            ],
+          ),
+          child: _buildBottomTextFormField(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    final me = context.read<AuthBloc>().state.user!;
+
+    var timeFormat = DateFormat('hh:mm a');
+
+    return BlocListener<CommentDetailBloc, CommentDetailState>(
+      listener: (context, state) {
+        if (state is CommentCreated) {
+          if (me.id == state.comment.author.id &&
+              _controller.text == state.comment.text) {
+            _controller.clear();
+            _disableSendButton = false;
+            setState(() {});
+          }
+          context.read<CommentsBloc>().add(
+            CommentsEvent.add(comment: state.comment),
+          );
+        }
+        if (state is CommentUpdated) {
+          context.read<CommentsBloc>().add(
+            CommentsEvent.update(comment: state.comment),
+          );
+        }
+        if (state is CommentDeleted) {
+          context.read<CommentsBloc>().add(
+            CommentsEvent.remove(commentId: state.commentId),
+          );
+        }
+        if (state is CommentDetailFailure) {
+          if (_disableSendButton && _controller.text.isNotEmpty) {
+            setState(() => _disableSendButton = false);
+          }
+          final snackBar = getSnackBar(
+            context: context,
+            message: state.error,
+            status: SnackBarStatus.failure,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
+      child: BlocBuilder<BroadcastBloc, BroadcastState>(
+        buildWhen: (previous, current) =>
+            current.broadcastId == widget.broadcastId,
+        builder: (context, broadcastState) {
+          bool canManageSpeakers =
+              broadcastState.broadcast!.host.id == me.id ||
+              broadcastState.broadcast!.coHosts.any((c) => c.id == me.id);
+          return BlocBuilder<CommentsBloc, CommentsState>(
+            buildWhen: (previous, current) {
+              return current.broadcastId == widget.broadcastId;
+            },
+            builder: (context, state) {
+              if (state.status == CommentsStatus.initial ||
+                  state.status == CommentsStatus.loading &&
+                      state.comments.isEmpty) {
+                return const BottomLoader();
+              }
+
+              if (state.status == CommentsStatus.success) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+              }
+
+              if (state.status == CommentsStatus.failure) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+
+                if (state.comments.isEmpty) {
+                  return FailureRetryButton(
+                    onPressed: () => context.read<CommentsBloc>().add(
+                      CommentsEvent.get(broadcastId: widget.broadcastId),
+                    ),
+                  );
+                }
+              }
+
+              return MultiBlocListener(
+                listeners: [
+                  BlocListener<WebsocketBloc, WebsocketState>(
+                    listener: (context, websocketState) {
+                      if (websocketState.status == WebsocketStatus.connected) {
+                        context.read<CommentsBloc>().add(
+                          CommentsEvent.get(
+                            broadcastId: widget.broadcastId,
+                            newestComment: state.comments.first,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ],
+                child: SmartRefresher(
+                  enablePullDown: false,
+                  enablePullUp: state.hasNext,
+                  controller: _refreshController,
+                  onLoading: () {
+                    context.read<CommentsBloc>().add(
+                      CommentsEvent.get(
+                        broadcastId: widget.broadcastId,
+                        oldestComment: state.comments.last,
+                      ),
+                    );
+                  },
+                  footer: ClassicFooter(),
+                  child: ListView.builder(
+                    reverse: true,
+                    itemCount: state.comments.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final comment = state.comments[index];
+                      return CommentTile(
+                        me: me,
+                        comment: comment,
+                        timeFormat: timeFormat,
+                        canManageSpeakers: canManageSpeakers,
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildBottomTextFormField() {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: TextField(
+                focusNode: _focusNode,
+                controller: _controller,
+                autofocus: true,
+                maxLines: 5,
+                minLines: 1,
+                textInputAction: TextInputAction.newline,
+                onChanged: (_) => setState(() {}),
+                decoration: InputDecoration(
+                  hintText: 'Comment...',
+                  filled: true,
+                  fillColor: colorScheme.surfaceContainerHighest,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton.filled(
+              onPressed: _controller.text.trim().isEmpty || _disableSendButton
+                  ? null
+                  : _createComment,
+              icon: const Icon(Icons.check_rounded),
+              style: IconButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
+              ),
+              tooltip: 'Save changes',
+            ),
+          ],
         ),
       ),
     );

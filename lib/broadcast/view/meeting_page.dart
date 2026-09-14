@@ -44,8 +44,9 @@ class _MeetingsPageState extends State<MeetingPage> {
             headerSliverBuilder: (context, bool innerBoxIsScrolled) {
               return [
                 SliverAppBar(
-                  floating: true,
-                  snap: true,
+                  pinned: kIsWeb,
+                  floating: !kIsWeb,
+                  snap: !kIsWeb,
                   forceElevated: true,
                   title: Text('Meetings'),
                   bottom: PreferredSize(

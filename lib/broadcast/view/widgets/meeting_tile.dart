@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/audio_player.dart';
+import 'package:democracy/app/shared/widgets/dialog_container.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -10,6 +11,7 @@ import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -31,17 +33,7 @@ class MeetingTile extends StatelessWidget {
     final isEnded = broadcast.hasEnded;
 
     return GestureDetector(
-      onTap: () {
-        showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          showDragHandle: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          builder: (context) => MeetingBottomSheet(broadcast: broadcast),
-        );
-      },
+      onTap: () => showMeetingInfo(context, broadcast),
       child: Stack(
         children: [
           Card.filled(
@@ -162,13 +154,7 @@ class MeetingPopUp extends StatelessWidget {
           case 'Post':
             context.router.push(PostCreate(broadcast: broadcast));
           case 'Share':
-            showModalBottomSheet<void>(
-              context: context,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              builder: (context) => ShareBottomSheet(broadcast: broadcast),
-            );
+            showShare(context, broadcast: broadcast);
         }
       },
       texts: const ['Post', 'Share'],
@@ -255,8 +241,28 @@ class _HostInfo extends StatelessWidget {
   }
 }
 
-class MeetingBottomSheet extends StatelessWidget {
-  const MeetingBottomSheet({super.key, required this.broadcast});
+void showMeetingInfo(BuildContext context, Broadcast broadcast) {
+  if (kIsWeb) {
+    showDialog(
+      context: context,
+      builder: (context) =>
+          DialogContainer(children: [MeetingInfo(broadcast: broadcast)]),
+    );
+  } else {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => MeetingInfo(broadcast: broadcast),
+    );
+  }
+}
+
+class MeetingInfo extends StatelessWidget {
+  const MeetingInfo({super.key, required this.broadcast});
 
   final Broadcast broadcast;
 
@@ -289,7 +295,7 @@ class MeetingBottomSheet extends StatelessWidget {
         }
       },
       child: Container(
-        padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+        padding: EdgeInsets.all(15),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
