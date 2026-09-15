@@ -108,30 +108,12 @@ class _ExplorePageState extends State<ExplorePage>
     PostFilterState state,
   ) {
     return MainContainer(
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              pinned: true,
-              floating: false,
-              snap: false,
-              automaticallyImplyLeading: false,
-              flexibleSpace: Builder(
-                builder: (context) {
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 20),
-                    child: _buildSearchBar(cubit, state),
-                  );
-                },
-              ),
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(60.0),
-                child: _buildTabBar(),
-              ),
-            ),
-          ];
-        },
-        body: _buildTabBarView(),
+      child: Column(
+        children: [
+          _buildSearchBar(cubit, state),
+          _buildTabBar(),
+          Expanded(child: _buildTabBarView()),
+        ],
       ),
     );
   }
@@ -230,6 +212,9 @@ class _ForYouTabState extends State<_ForYouTab>
   Widget build(BuildContext context) {
     super.build(context);
 
+    final responsive = ResponsiveBreakpoints.of(context);
+    final isWebLayout = kIsWeb && responsive.largerThan(MOBILE);
+
     return BlocListener<UserDetailBloc, UserDetailState>(
       listener: (context, state) {
         if (state is UserUpdated) {
@@ -282,6 +267,8 @@ class _ForYouTabState extends State<_ForYouTab>
               TrendingPostsEvent.get(previousPosts: posts),
             ),
             child: CustomScrollView(
+              controller: isWebLayout ? widget.scrollController : null,
+              physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
               slivers: [
                 SliverToBoxAdapter(
                   child: _SectionHeader(

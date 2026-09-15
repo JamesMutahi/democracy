@@ -33,10 +33,7 @@ class _ProfilePostsTabState extends State<ProfilePostsTab> {
 
   @override
   Widget build(BuildContext context) {
-    return UserPosts(
-      user: context.read<ProfileBloc>().state.user!,
-      scrollController: PrimaryScrollController.of(context),
-    );
+    return UserPosts(user: context.read<ProfileBloc>().state.user!);
   }
 }
 
@@ -68,10 +65,7 @@ class _ProfileRepliesTabState extends State<ProfileRepliesTab> {
 
   @override
   Widget build(BuildContext context) {
-    return UserReplies(
-      user: context.read<ProfileBloc>().state.user!,
-      scrollController:  PrimaryScrollController.of(context),
-    );
+    return UserReplies(user: context.read<ProfileBloc>().state.user!);
   }
 }
 
@@ -103,10 +97,7 @@ class _ProfileLikesTabState extends State<ProfileLikesTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Likes(
-      user: context.read<ProfileBloc>().state.user!,
-      scrollController:  PrimaryScrollController.of(context),
-    );
+    return Likes(user: context.read<ProfileBloc>().state.user!);
   }
 }
 
@@ -138,10 +129,7 @@ class _ProfileNotesTabState extends State<ProfileNotesTab> {
 
   @override
   Widget build(BuildContext context) {
-    return UserCommunityNotes(
-      user: context.read<ProfileBloc>().state.user!,
-      scrollController:  PrimaryScrollController.of(context),
-    );
+    return UserCommunityNotes(user: context.read<ProfileBloc>().state.user!);
   }
 }
 
@@ -175,7 +163,7 @@ class _ProfilePetitionsTabState extends State<ProfilePetitionsTab> {
   Widget build(BuildContext context) {
     return UserPetitions(
       user: context.read<ProfileBloc>().state.user!,
-      scrollController:  PrimaryScrollController.of(context),
+      // scrollController:  PrimaryScrollController.of(context),
     );
   }
 }

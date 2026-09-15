@@ -151,42 +151,38 @@ class _Web extends StatelessWidget {
           children: [
             ScreenScrollForwarder(
               getActiveController: () => ActiveScrollController.controller,
-              child: SelectionArea(
-                child: NotificationListener<ScrollMetricsNotification>(
-                  // Catch ScrollMetricsNotification from ANY scrollable in the app
-                  onNotification: (notification) {
-                    ActiveScrollController.notifyMetricsChanged();
-                    // Don't consume — let it bubble further if needed
-                    return false;
-                  },
-                  child: Row(
-                    mainAxisAlignment: kIsWeb
-                        ? MainAxisAlignment.center
-                        : MainAxisAlignment.start,
-                    children: [
-                      Visibility(
-                        visible: kIsWeb && !responsive.isMobile,
-                        child: Flexible(
-                          flex: responsive.largerOrEqualTo(expandSideMenu)
-                              ? 3
-                              : 1,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 300),
-                            child: SideMenu(),
-                          ),
-                        ),
-                      ),
-                      Flexible(
+              child: NotificationListener<ScrollMetricsNotification>(
+                // Catch ScrollMetricsNotification from ANY scrollable in the app
+                onNotification: (notification) {
+                  ActiveScrollController.notifyMetricsChanged();
+                  // Don't consume — let it bubble further if needed
+                  return false;
+                },
+                child: Row(
+                  mainAxisAlignment: kIsWeb
+                      ? MainAxisAlignment.center
+                      : MainAxisAlignment.start,
+                  children: [
+                    Visibility(
+                      visible: kIsWeb && !responsive.isMobile,
+                      child: Flexible(
                         flex: responsive.largerOrEqualTo(expandSideMenu)
-                            ? 6
-                            : 7,
+                            ? 3
+                            : 1,
                         child: ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: 1000),
-                          child: AutoRouter(),
+                          constraints: BoxConstraints(maxWidth: 300),
+                          child: SideMenu(),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    Flexible(
+                      flex: responsive.largerOrEqualTo(expandSideMenu) ? 6 : 7,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 1000),
+                        child: SelectionArea(child: AutoRouter()),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

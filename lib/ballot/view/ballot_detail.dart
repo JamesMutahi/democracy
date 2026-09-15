@@ -217,7 +217,8 @@ class _BallotDetailState extends State<_BallotDetail> {
           );
         },
         child: SingleChildScrollView(
-          controller: _scrollController,
+          controller: isWebLayout ? _scrollController: null,
+          physics: isWebLayout ? NeverScrollableScrollPhysics(): null,
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -22,10 +22,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class UserPosts extends StatefulWidget {
-  const UserPosts({super.key, required this.user, this.scrollController});
+  const UserPosts({super.key, required this.user});
 
   final User user;
-  final ScrollController? scrollController;
 
   @override
   State<UserPosts> createState() => _UserPostsState();
@@ -78,7 +77,6 @@ class _UserPostsState extends State<UserPosts> {
         }
 
         return PostListView(
-          scrollController: widget.scrollController,
           posts: posts,
           loading: state.status == UserPostsStatus.initial,
           failure: state.posts.isNotEmpty
@@ -117,10 +115,9 @@ class _UserPostsState extends State<UserPosts> {
 }
 
 class UserReplies extends StatefulWidget {
-  const UserReplies({super.key, required this.user, this.scrollController});
+  const UserReplies({super.key, required this.user});
 
   final User user;
-  final ScrollController? scrollController;
 
   @override
   State<UserReplies> createState() => _UserRepliesState();
@@ -203,7 +200,6 @@ class _UserRepliesState extends State<UserReplies> {
               );
             },
             child: ListView.builder(
-              controller: widget.scrollController,
               padding: EdgeInsets.only(bottom: 20),
               itemBuilder: (BuildContext context, int index) {
                 Post post = posts[index];
@@ -241,10 +237,9 @@ class _UserRepliesState extends State<UserReplies> {
 }
 
 class Likes extends StatefulWidget {
-  const Likes({super.key, required this.user, this.scrollController});
+  const Likes({super.key, required this.user});
 
   final User user;
-  final ScrollController? scrollController;
 
   @override
   State<Likes> createState() => _LikesState();
@@ -291,7 +286,6 @@ class _LikesState extends State<Likes> {
         }
 
         return PostListView(
-          scrollController: widget.scrollController,
           posts: posts,
           loading:
               state.status == LikesStatus.initial ||
@@ -325,14 +319,9 @@ class _LikesState extends State<Likes> {
 }
 
 class UserCommunityNotes extends StatefulWidget {
-  const UserCommunityNotes({
-    super.key,
-    required this.user,
-    this.scrollController,
-  });
+  const UserCommunityNotes({super.key, required this.user});
 
   final User user;
-  final ScrollController? scrollController;
 
   @override
   State<UserCommunityNotes> createState() => _UserCommunityNotesState();
@@ -420,7 +409,6 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
                     );
                   },
                   child: ListView.builder(
-                    controller: widget.scrollController,
                     padding: EdgeInsets.only(bottom: 20),
                     itemBuilder: (BuildContext context, int index) {
                       Post post = posts[index];
@@ -442,10 +430,9 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
 }
 
 class UserPetitions extends StatefulWidget {
-  const UserPetitions({super.key, required this.user, this.scrollController});
+  const UserPetitions({super.key, required this.user});
 
   final User user;
-  final ScrollController? scrollController;
 
   @override
   State<UserPetitions> createState() => _UserPetitionsState();
@@ -544,7 +531,6 @@ class _UserPetitionsState extends State<UserPetitions> {
                   },
                   footer: ClassicFooter(),
                   child: ListView.builder(
-                    controller: widget.scrollController,
                     padding: EdgeInsets.all(15),
                     itemBuilder: (BuildContext context, int index) {
                       Petition petition = petitions[index];

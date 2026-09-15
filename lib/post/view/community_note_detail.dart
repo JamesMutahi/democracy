@@ -325,7 +325,10 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
                       },
                       child: CustomScrollView(
                         center: _centerKey,
-                        controller: _scrollController,
+                        controller: isWebLayout ? _scrollController : null,
+                        physics: isWebLayout
+                            ? NeverScrollableScrollPhysics()
+                            : null,
                         slivers: <Widget>[
                           ReplyTos(postId: widget.post.communityNoteOf!.id),
                           SliverToBoxAdapter(

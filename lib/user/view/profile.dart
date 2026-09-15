@@ -110,8 +110,11 @@ class _Profile extends StatefulWidget {
   State<_Profile> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<_Profile> {
-  final ScrollController _scrollController = ScrollController();
+class _ProfilePageState extends State<_Profile>
+    with SingleTickerProviderStateMixin {
+  final ScrollController _mobileScrollController = ScrollController();
+  final ScrollController _webScrollController = ScrollController();
+
   bool _nameIsScrolled = false;
   final double _expandedHeight = 200;
   bool _hideTabs = true;
@@ -125,18 +128,21 @@ class _ProfilePageState extends State<_Profile> {
         UserDetailEvent.addVisit(user: widget.user),
       );
     }
-    _scrollController.addListener(_handleScrolling);
 
-    // Tell the edge scrollbar to use this controller
+    _mobileScrollController.addListener(_handleScrolling);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        ActiveScrollController.activate(_scrollController);
+        final isWebLayout =
+            kIsWeb && ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+        if (isWebLayout) {
+          ActiveScrollController.activate(_webScrollController);
+        }
       }
     });
   }
 
   void _loadUser() {
-    // subscribe and get user
     context.read<ProfileBloc>().add(
       ProfileEvent.load(username: widget.user.username),
     );
@@ -144,18 +150,21 @@ class _ProfilePageState extends State<_Profile> {
 
   @override
   void dispose() {
+    ActiveScrollController.deactivate(_webScrollController);
+    _mobileScrollController.removeListener(_handleScrolling);
+    _webScrollController.dispose();
+    _mobileScrollController.dispose();
     super.dispose();
-    // Clear the registry when leaving
-    ActiveScrollController.deactivate(_scrollController);
-    _scrollController.dispose();
   }
 
   void _handleScrolling() {
-    if (_scrollController.offset > _expandedHeight &&
+    if (!_mobileScrollController.hasClients) return;
+    if (_mobileScrollController.offset > _expandedHeight &&
         _nameIsScrolled == false) {
       setState(() => _nameIsScrolled = true);
     }
-    if (_scrollController.offset < _expandedHeight && _nameIsScrolled == true) {
+    if (_mobileScrollController.offset < _expandedHeight &&
+        _nameIsScrolled == true) {
       setState(() => _nameIsScrolled = false);
     }
   }
@@ -171,25 +180,25 @@ class _ProfilePageState extends State<_Profile> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
+          create: (_) =>
               UserPostsBloc(webSocketService: context.read<WebSocketService>()),
         ),
         BlocProvider(
-          create: (context) => UserRepliesBloc(
+          create: (_) => UserRepliesBloc(
             webSocketService: context.read<WebSocketService>(),
           ),
         ),
         BlocProvider(
-          create: (context) =>
+          create: (_) =>
               LikesBloc(webSocketService: context.read<WebSocketService>()),
         ),
         BlocProvider(
-          create: (context) => UserCommunityNotesBloc(
+          create: (_) => UserCommunityNotesBloc(
             webSocketService: context.read<WebSocketService>(),
           ),
         ),
         BlocProvider(
-          create: (context) => UserPetitionsBloc(
+          create: (_) => UserPetitionsBloc(
             webSocketService: context.read<WebSocketService>(),
           ),
         ),
@@ -240,9 +249,6 @@ class _ProfilePageState extends State<_Profile> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // WEB: Fixed header + TabBar + AutoRouter
-  // ──────────────────────────────────────────────
   Widget _buildWebLayout() {
     User currentUser = context.read<AuthBloc>().state.user!;
     bool isCurrentUser = currentUser.id == widget.user.id;
@@ -284,7 +290,7 @@ class _ProfilePageState extends State<_Profile> {
               routes: activeRoutes,
               builder: (context, child, controller) {
                 return NestedScrollView(
-                  controller: _scrollController,
+                  controller: _webScrollController,
                   headerSliverBuilder: (context, innerBoxIsScrolled) {
                     return [
                       SliverToBoxAdapter(
@@ -325,25 +331,22 @@ class _ProfilePageState extends State<_Profile> {
               },
             )
           : Column(
-              // Fallback UI if tabs are hidden or user is blocked
               children: [
                 _ProfileHeader(user: widget.user, isCurrentUser: isCurrentUser),
                 _UserDetails(widget.user, isCurrentUser),
+                Expanded(child: _buildBlockedView()),
               ],
             ),
     );
   }
 
-  // ─────────────────────────
-  // MOBILE: NestedScrollView
-  // ─────────────────────────
   Widget _buildMobileLayout(bool isCurrentUser) {
     return SafeArea(
       bottom: false,
       child: DefaultTabController(
         length: isCurrentUser ? userTabs.length : tabs.length,
         child: NestedScrollView(
-          controller: _scrollController,
+          controller: _mobileScrollController,
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
@@ -383,13 +386,8 @@ class _ProfilePageState extends State<_Profile> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // Shared TabBarView with per-tab controllers
-  // ──────────────────────────────────────────────
   Widget _buildTabBarView(bool isCurrentUser) {
-    if (_hideTabs && widget.user.isBlocked) {
-      return _buildBlockedView();
-    }
+    if (_hideTabs && widget.user.isBlocked) return _buildBlockedView();
 
     return TabBarView(
       physics: const NeverScrollableScrollPhysics(),
@@ -421,9 +419,7 @@ class _ProfilePageState extends State<_Profile> {
           const SizedBox(height: 10),
           Text(
             'Will not unblock them',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
-            ),
+            style: Theme.of(context).textTheme.labelMedium,
           ),
         ],
       ),

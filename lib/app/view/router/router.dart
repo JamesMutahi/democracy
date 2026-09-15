@@ -168,7 +168,7 @@ final otherRoutes = [
       AutoRoute(path: 'likes', page: ProfileLikesTab.page),
       AutoRoute(path: 'notes', page: ProfileNotesTab.page),
       AutoRoute(path: 'petitions', page: ProfilePetitionsTab.page),
-      RedirectRoute(path: '', redirectTo: 'posts'), // Default tab
+      RedirectRoute(path: '', redirectTo: ''), // Default tab
     ],
   ),
   AutoRoute(path: 'profile/edit', page: EditProfile.page),
