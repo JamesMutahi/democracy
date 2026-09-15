@@ -2,19 +2,19 @@
 
 A true democracy means that the power lies solely with the people and that the people alone are entitled to it and thus, parties, rulers, the powerful, the hierarchical and other rulers are not allowed to decide on any matters independently or even to make propaganda for their ideas.
 
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/8a171fed-1e62-43f9-82f7-85a1061df0aa" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/6c0cbe79-bac6-471f-87f8-c6d4191aedf7" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/6f94e5a0-783f-44ef-8b35-5da9b5e8ed84" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/688cbd1a-ffe4-4ee3-b8ce-af9429405d3c" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/b15cb2b6-7477-4fd3-a628-ed7ae6dd0571" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/abb732a3-0d7c-45ae-aeee-c41f29f90be1" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/7030cff7-b179-43d9-a4a4-4b5c1b8077a6" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/283adf75-4cd0-4dd9-af1d-03332bce8f13" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/355d52c4-d23d-4510-83bd-e1b5c5d0b37d" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/6ee4afd2-dd63-41eb-8ef5-6161f945a7e7" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/722653f2-2ea0-418b-92e7-f8d83a4329a6" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/8e1c562a-c5eb-4a8e-b3e5-7c142565f520" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/9e12e78c-45c6-4804-b2b9-e7281c14b17b" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/c9904191-e740-478c-b478-1d63099f92dc" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/ba0b12dc-23b4-4487-9664-48f13c7ffc9c" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/da92015a-6372-46c8-8382-5816e197d582" />
 <img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/eda87443-2717-4fe0-bd22-65967a80f1b2" />
 <img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/8a4863f4-cc56-4264-b61f-71bfff6ff330" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/8b5a5856-c7a1-4bfd-b6cc-dc024f372ede" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/4f914d57-ca30-4dcc-8926-1708d395c04a" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/08f9303f-9783-4235-9d1d-2713fbb54556" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/bcec9a43-a645-4140-b3bf-d58af893d024" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/ca25b4ff-5060-45a5-a43a-541220144eb6" />
+<img width="352" height="743" alt="Image" src="https://github.com/user-attachments/assets/63598613-74f4-48cc-8915-858c1b8b9c62" />
 
 
 
