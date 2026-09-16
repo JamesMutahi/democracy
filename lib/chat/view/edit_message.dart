@@ -56,53 +56,19 @@ class _EditMessageState extends State<EditMessage> {
           onPressed: () => context.router.popTop(),
           tooltip: 'Cancel',
         ),
-        actions: [
-          TextButton(
-            onPressed: _isChanged ? _saveEdit : null,
-            child: const Text('Save'),
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
       body: Column(
         children: [
-          // Scrollable Content Area
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Original Message',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Read-only preview of the original message
-                  _OriginalMessageBubble(message: widget.message),
-
-                  const SizedBox(height: 32),
-
-                  Text(
-                    'Edit',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                ],
+                children: [_OriginalMessageBubble(message: widget.message)],
               ),
             ),
           ),
 
-          // Clean, Dedicated Input Area
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
@@ -175,10 +141,6 @@ class _EditMessageState extends State<EditMessage> {
     }
   }
 }
-
-// -----------------------------------------------------------------------------
-// Read-Only Original Message Bubble
-// -----------------------------------------------------------------------------
 
 class _OriginalMessageBubble extends StatelessWidget {
   const _OriginalMessageBubble({required this.message});

@@ -50,20 +50,20 @@ class MessageButton extends StatelessWidget {
       icon: user.hasBlocked
           ? Icon(Symbols.email_rounded, color: Theme.of(context).disabledColor)
           : Icon(Symbols.email_rounded),
-      onTap: user.hasBlocked
-          ? () {
-              final snackBar = getSnackBar(
-                context: context,
-                message: 'Blocked',
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          : () {
-              context.read<ChatDetailBloc>().add(
-                ChatDetailEvent.create(user: user),
-              );
-            },
+      onTap: () {
+        if (user.hasBlocked) {
+          final snackBar = getSnackBar(
+            context: context,
+            message: 'Blocked',
+            status: SnackBarStatus.failure,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          context.read<ChatDetailBloc>().add(
+            ChatDetailEvent.create(user: user),
+          );
+        }
+      },
     );
   }
 }
@@ -97,9 +97,25 @@ class FollowButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: () {
-        context.read<UserDetailBloc>().add(UserDetailEvent.follow(user: user));
+        if (user.hasBlocked) {
+          final snackBar = getSnackBar(
+            context: context,
+            message: 'Blocked',
+            status: SnackBarStatus.failure,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          context.read<UserDetailBloc>().add(
+            UserDetailEvent.follow(user: user),
+          );
+        }
       },
-      child: Text(user.isFollowed ? 'Unfollow' : 'Follow'),
+      child: Text(
+        user.isFollowed ? 'Unfollow' : 'Follow',
+        style: TextStyle(
+          color: user.hasBlocked ? Theme.of(context).disabledColor : null,
+        ),
+      ),
     );
   }
 }

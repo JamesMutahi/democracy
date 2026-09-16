@@ -246,6 +246,9 @@ class _MessagesState extends State<Messages> {
     final bool isMe = me.id == message.author.id;
     final colorScheme = Theme.of(context).colorScheme;
 
+    // Check if this chat is a pending request AND the message is from someone else
+    final bool isPendingRequest = widget.chat.isMessageRequest && !isMe;
+
     if (message.isDeleted) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -282,7 +285,91 @@ class _MessagesState extends State<Messages> {
 
     final List<Widget> bubbleContent = [];
 
-    // 1. Text Content
+    // Attachments & Linked Objects
+    void addAttachment(Widget child) {
+      if (bubbleContent.isNotEmpty) {
+        bubbleContent.add(const SizedBox(height: 8));
+      }
+      bubbleContent.add(child);
+    }
+
+    if (isPendingRequest) {
+      final hasMedia =
+          message.assets.isNotEmpty ||
+          message.location != null ||
+          message.post != null ||
+          message.ballot != null ||
+          message.survey != null ||
+          message.petition != null ||
+          message.broadcast != null ||
+          message.section != null;
+
+      if (hasMedia) {
+        addAttachment(
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: colorScheme.outlineVariant),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.lock_outline_rounded,
+                  size: 18,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Accept request to view media',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    } else {
+      if (message.assets.isNotEmpty) {
+        addAttachment(AssetViewer(assets: message.assets));
+      }
+      if (message.location != null) {
+        addAttachment(MapWidget(mapCenter: message.location!));
+      }
+      if (message.post != null) {
+        addAttachment(
+          PostWidgetSelector(post: message.post!, isDependency: true),
+        );
+      }
+      if (message.ballot != null) {
+        addAttachment(BallotTile(ballot: message.ballot!, isDependency: true));
+      }
+      if (message.survey != null) {
+        addAttachment(SurveyTile(survey: message.survey!, isDependency: true));
+      }
+      if (message.petition != null) {
+        addAttachment(
+          PetitionTile(petition: message.petition!, isDependency: true),
+        );
+      }
+      if (message.broadcast != null) {
+        addAttachment(
+          BroadcastTile(broadcast: message.broadcast!, isDependency: true),
+        );
+      }
+      if (message.section != null) {
+        addAttachment(
+          SectionTile(section: message.section!, isDependency: true),
+        );
+      }
+    }
+
+    // Text Content (Always visible, even in requests)
     final String text = extractLink(
       text: message.text,
       post: message.post,
@@ -297,53 +384,14 @@ class _MessagesState extends State<Messages> {
       bubbleContent.add(MessageCard(text: text));
     }
 
-    // 2. Link Preview
-    if (message.text.isNotEmpty) {
+    // Link Preview (Hidden if pending request)
+    if (message.text.isNotEmpty && !isPendingRequest) {
       bubbleContent.add(
         CachedLinkPreview(
           text: message.text,
           cacheKey: 'message: ${message.id}',
         ),
       );
-    }
-
-    // 3. Attachments (Grouped inside the same bubble)
-    void addAttachment(Widget child) {
-      if (bubbleContent.isNotEmpty) {
-        bubbleContent.add(const SizedBox(height: 8));
-      }
-      bubbleContent.add(child);
-    }
-
-    if (message.assets.isNotEmpty) {
-      addAttachment(AssetViewer(assets: message.assets));
-    }
-    if (message.location != null) {
-      addAttachment(MapWidget(mapCenter: message.location!));
-    }
-    if (message.post != null) {
-      addAttachment(
-        PostWidgetSelector(post: message.post!, isDependency: true),
-      );
-    }
-    if (message.ballot != null) {
-      addAttachment(BallotTile(ballot: message.ballot!, isDependency: true));
-    }
-    if (message.survey != null) {
-      addAttachment(SurveyTile(survey: message.survey!, isDependency: true));
-    }
-    if (message.petition != null) {
-      addAttachment(
-        PetitionTile(petition: message.petition!, isDependency: true),
-      );
-    }
-    if (message.broadcast != null) {
-      addAttachment(
-        BroadcastTile(broadcast: message.broadcast!, isDependency: true),
-      );
-    }
-    if (message.section != null) {
-      addAttachment(SectionTile(section: message.section!, isDependency: true));
     }
 
     return _MessageBubble(
@@ -394,20 +442,20 @@ class _MessageBubbleState extends State<_MessageBubble> {
             state.status == MessageActionsStatus.actionButtonsOpened &&
             state.messages.contains(widget.message);
 
+        final cubit = context.read<MessageActionsCubit>();
+
         return GestureDetector(
           onTap: widget.message.isDeleted
               ? null
               : () {
-                  context.read<MessageActionsCubit>().messageHighlighted(
-                    message: widget.message,
-                  );
+                  if (cubit.state.messages.isNotEmpty) {
+                    cubit.messageHighlighted(message: widget.message);
+                  }
                 },
           onLongPress: widget.message.isDeleted
               ? null
               : () {
-                  context.read<MessageActionsCubit>().messageHighlighted(
-                    message: widget.message,
-                  );
+                  cubit.messageHighlighted(message: widget.message);
                 },
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 2.0),

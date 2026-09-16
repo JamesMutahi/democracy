@@ -253,6 +253,7 @@ void main() {
                   BlocProvider(
                     create: (context) => DirectMessageBloc(
                       apiRepository: context.read<APIRepository>(),
+                      databaseRepository: context.read<DatabaseRepository>(),
                     ),
                   ),
                   BlocProvider(create: (context) => MessageActionsCubit()),

@@ -20,13 +20,15 @@ class ChatAdapter extends TypeAdapter<Chat> {
       id: (fields[0] as num).toInt(),
       unreadMessages: (fields[2] as num).toInt(),
       lastMessage: fields[3] as Message?,
+      isMessageRequest: fields[4] == null ? false : fields[4] as bool,
+      requestStatus: fields[5] as String?,
     )..usersJson = fields[1] as String?;
   }
 
   @override
   void write(BinaryWriter writer, Chat obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -34,7 +36,11 @@ class ChatAdapter extends TypeAdapter<Chat> {
       ..writeByte(2)
       ..write(obj.unreadMessages)
       ..writeByte(3)
-      ..write(obj.lastMessage);
+      ..write(obj.lastMessage)
+      ..writeByte(4)
+      ..write(obj.isMessageRequest)
+      ..writeByte(5)
+      ..write(obj.requestStatus);
   }
 
   @override

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
+import 'package:democracy/app/bloc/route/route_cubit.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus, WebSocketService;
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
@@ -12,12 +13,13 @@ import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/utils/copy.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat/chat_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
-import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
+import 'package:democracy/chat/bloc/inbox/inbox_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
@@ -43,43 +45,48 @@ class ChatDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          ChatBloc(webSocketService: context.read<WebSocketService>())
-            ..add(ChatEvent.load(chatId: chatId)),
-      child: BlocBuilder<ChatBloc, ChatState>(
-        buildWhen: (previous, current) => current.chatId == chatId,
-        builder: (context, state) {
-          if (state.status == ChatStatus.initial ||
-              (state.status == ChatStatus.loading && state.chat == null)) {
-            return const Scaffold(body: Center(child: BottomLoader()));
-          }
-          if (state.status == ChatStatus.failure && state.chat == null) {
-            return Scaffold(
-              appBar: AppBar(leading: const AutoLeadingButton()),
-              body: Center(
-                child: FailureRetryButton(
-                  onPressed: () {
-                    context.read<ChatBloc>().add(
-                      ChatEvent.load(chatId: chatId),
-                    );
-                  },
+    return MainContainer(
+      child: BlocProvider(
+        create: (context) =>
+            ChatBloc(webSocketService: context.read<WebSocketService>())
+              ..add(ChatEvent.load(chatId: chatId)),
+        child: BlocBuilder<ChatBloc, ChatState>(
+          buildWhen: (previous, current) => current.chatId == chatId,
+          builder: (context, state) {
+            if (state.status == ChatStatus.initial ||
+                (state.status == ChatStatus.loading && state.chat == null)) {
+              return Scaffold(
+                appBar: AppBar(leading: const AutoLeadingButton()),
+                body: Center(child: BottomLoader()),
+              );
+            }
+            if (state.status == ChatStatus.failure && state.chat == null) {
+              return Scaffold(
+                appBar: AppBar(leading: const AutoLeadingButton()),
+                body: Center(
+                  child: FailureRetryButton(
+                    onPressed: () {
+                      context.read<ChatBloc>().add(
+                        ChatEvent.load(chatId: chatId),
+                      );
+                    },
+                  ),
                 ),
-              ),
+              );
+            }
+
+            final me = context.read<AuthBloc>().state.user!;
+            final otherUser = state.chat!.users.length > 1
+                ? state.chat!.users.firstWhere((u) => u.id != me.id)
+                : me;
+
+            return ChatDetailView(
+              chat: state.chat!,
+              me: me,
+              otherUser: otherUser,
             );
-          }
-
-          final me = context.read<AuthBloc>().state.user!;
-          final otherUser = state.chat!.users.length > 1
-              ? state.chat!.users.firstWhere((u) => u.id != me.id)
-              : me;
-
-          return ChatDetailView(
-            chat: state.chat!,
-            me: me,
-            otherUser: otherUser,
-          );
-        },
+          },
+        ),
       ),
     );
   }
@@ -150,7 +157,11 @@ class _ChatDetailViewState extends State<ChatDetailView> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final responsive = ResponsiveBreakpoints.of(context);
-    bool hideLeading = kIsWeb && responsive.largerOrEqualTo(expandSidePanel);
+    String currentRoute = context.read<RouteCubit>().state;
+    bool hideLeading =
+        kIsWeb &&
+        responsive.largerOrEqualTo(expandSidePanel) &&
+        currentRoute == ChatRoute.name;
 
     return BlocProvider(
       create: (context) => MessagesBloc(
@@ -168,6 +179,13 @@ class _ChatDetailViewState extends State<ChatDetailView> {
                   );
                 }
               }
+              if (state is ChatUpdated) {
+                if (state.chat.id == widget.chat.id) {
+                  context.read<ChatBloc>().add(
+                    ChatEvent.updated(chat: state.chat),
+                  );
+                }
+              }
             },
           ),
           BlocListener<MessageDetailBloc, MessageDetailState>(
@@ -177,7 +195,7 @@ class _ChatDetailViewState extends State<ChatDetailView> {
                 context.read<MessagesBloc>().add(
                   MessagesEvent.update(message: state.message),
                 );
-                context.read<ChatsBloc>().add(const ChatsEvent.update());
+                context.read<InboxBloc>().add(const InboxEvent.update());
                 if (widget.me.id != state.message.author.id) {
                   context.read<ChatDetailBloc>().add(
                     ChatDetailEvent.markAsRead(chat: widget.chat),
@@ -313,6 +331,14 @@ class _ChatDetailViewState extends State<ChatDetailView> {
                                 style: Theme.of(context).textTheme.titleMedium
                                     ?.copyWith(fontWeight: FontWeight.w600),
                               ),
+                              if (widget.chat.isMessageRequest)
+                                Text(
+                                  'Message Request',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.labelSmall
+                                      ?.copyWith(color: colorScheme.primary),
+                                ),
                             ],
                           ),
                         ),
@@ -334,55 +360,196 @@ class _ChatDetailViewState extends State<ChatDetailView> {
                 const SizedBox(width: 8),
               ],
             ),
-            body: (hideChat && _otherUser.isBlocked)
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: colorScheme.errorContainer,
-                              shape: BoxShape.circle,
+            body: Column(
+              children: [
+                if (widget.chat.isMessageRequest) _buildMessageRequestBanner(),
+                Expanded(
+                  child: (hideChat && _otherUser.isBlocked)
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.errorContainer,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.block_rounded,
+                                    size: 48,
+                                    color: colorScheme.onErrorContainer,
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                Text(
+                                  'Chat is hidden',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'You have blocked @${_otherUser.username}. '
+                                  '\nYou will not receive messages from them.',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 32),
+                                FilledButton.tonal(
+                                  onPressed: () =>
+                                      setState(() => hideChat = false),
+                                  child: const Text('View Messages'),
+                                ),
+                              ],
                             ),
-                            child: Icon(
-                              Icons.block_rounded,
-                              size: 48,
-                              color: colorScheme.onErrorContainer,
-                            ),
                           ),
-                          const SizedBox(height: 24),
-                          Text(
-                            'Chat is hidden',
-                            style: Theme.of(context).textTheme.headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'You have blocked @${_otherUser.username}. You will not receive messages from them.',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: colorScheme.onSurfaceVariant),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 32),
-                          FilledButton.tonal(
-                            onPressed: () => setState(() => hideChat = false),
-                            child: const Text('View Messages'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : Messages(chat: widget.chat, me: widget.me),
+                        )
+                      : Messages(chat: widget.chat, me: widget.me),
+                ),
+              ],
+            ),
             bottomNavigationBar: hideChat
                 ? const SizedBox.shrink()
-                : _otherUser.isBlocked || _otherUser.hasBlocked
-                ? _buildBlockedWidget()
-                : _buildBottomNavigationBar(),
+                : widget.chat.isMessageRequest
+                ? _buildLockedBottomBar()
+                : (_otherUser.isBlocked || _otherUser.hasBlocked
+                      ? _buildBlockedWidget()
+                      : _buildBottomNavigationBar()),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildMessageRequestBanner() {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      color: colorScheme.surfaceContainerHighest,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.mark_email_unread_rounded,
+                color: colorScheme.primary,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Message Request',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Messages from @${_otherUser.username} are hidden until you accept.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => CustomDialog(
+                        title: 'Accept',
+                        content: 'Are you sure you want to accept?',
+                        textButtonText: 'No',
+                        onTextButtonPressed: () {
+                          Navigator.pop(context);
+                        },
+                        elevatedButtonText: 'Yes',
+                        onElevatedButtonPressed: () {
+                          Navigator.pop(context);
+                          context.read<ChatDetailBloc>().add(
+                            ChatDetailEvent.acceptRequest(chat: widget.chat),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: const Text('Accept'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: FilledButton.tonal(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => CustomDialog(
+                        title: 'Decline',
+                        content: 'Are you sure you want to decline?',
+                        textButtonText: 'No',
+                        onTextButtonPressed: () {
+                          Navigator.pop(context);
+                        },
+                        elevatedButtonText: 'Yes',
+                        onElevatedButtonPressed: () {
+                          Navigator.pop(context);
+                          context.read<ChatDetailBloc>().add(
+                            ChatDetailEvent.declineRequest(chat: widget.chat),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: colorScheme.errorContainer,
+                  ),
+                  child: const Text('Decline'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLockedBottomBar() {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        border: Border(top: BorderSide(color: colorScheme.outlineVariant)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.lock_outline_rounded,
+            size: 20,
+            color: colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Accept the request to send messages',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -408,7 +575,7 @@ class _ChatDetailViewState extends State<ChatDetailView> {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'You cannot send messages because this user has blocked you.',
+                'You cannot send messages because this account has blocked you.',
                 style: TextStyle(color: colorScheme.onErrorContainer),
               ),
             ),
@@ -428,7 +595,7 @@ class _ChatDetailViewState extends State<ChatDetailView> {
         children: [
           Expanded(
             child: Text(
-              'You have blocked this user. Unblock them to send messages.',
+              'You have blocked this account. Unblock them to send messages.',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
@@ -600,23 +767,24 @@ class ChatPopUpMenu extends StatelessWidget {
           return MenuItemButton(
             leadingIcon: Icon(
               otherUser.isBlocked ? Icons.block : Icons.block_rounded,
-              color: colorScheme.error,
+              color: Colors.red,
             ),
             onPressed: () {
-              menuController.close(); // 🚨 FIX: Now this works perfectly!
+              menuController.close();
               context.read<UserDetailBloc>().add(
                 UserDetailEvent.block(user: otherUser),
               );
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 16.0,
+              padding: const EdgeInsets.only(
+                top: 12.0,
+                bottom: 12.0,
+                right: 10.0,
               ),
               child: Text(
-                otherUser.isBlocked ? 'Unblock User' : 'Block User',
+                otherUser.isBlocked ? 'Unblock' : 'Block',
                 style: TextStyle(
-                  color: colorScheme.error,
+                  color: Colors.red,
                   fontWeight: FontWeight.w500,
                 ),
               ),

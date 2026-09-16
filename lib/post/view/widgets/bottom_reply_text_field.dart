@@ -77,6 +77,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField> {
       child: Tagging(
         controller: _controller,
         focusNode: _focusNode,
+        position: TagPosition.top,
         child: BottomTextFormField(
           focusNode: _focusNode,
           showCursor: true,

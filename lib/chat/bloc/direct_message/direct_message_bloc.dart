@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/chat/models/chat.dart';
@@ -17,8 +18,10 @@ part 'direct_message_state.dart';
 part 'direct_message_bloc.freezed.dart';
 
 class DirectMessageBloc extends Bloc<DirectMessageEvent, DirectMessageState> {
-  DirectMessageBloc({required this.apiRepository})
-    : super(const DirectMessageState()) {
+  DirectMessageBloc({
+    required this.apiRepository,
+    required this.databaseRepository,
+  }) : super(const DirectMessageState()) {
     on<_Send>((event, emit) async => await _onSend(event, emit));
     on<_UploadAssets>(
       (event, emit) async => await _onUploadAssets(event, emit),
@@ -56,8 +59,13 @@ class DirectMessageBloc extends Bloc<DirectMessageEvent, DirectMessageState> {
         filePaths: event.filePaths,
         location: event.location,
       );
-      List<Chat> chats = List.from(data['chats'].map((e) => Chat.fromJson(e)));
-
+      List<Chat> chats = [];
+      for (var chatData in data['chats']) {
+        final chat = await databaseRepository.saveChat(
+          data: chatData,
+        );
+        chats.add(chat);
+      }
       final uploads = data['uploads'];
       if (uploads.isNotEmpty) {
         emit(state.copyWith(chats: chats));
@@ -123,4 +131,5 @@ class DirectMessageBloc extends Bloc<DirectMessageEvent, DirectMessageState> {
   }
 
   final APIRepository apiRepository;
+  final DatabaseRepository databaseRepository;
 }

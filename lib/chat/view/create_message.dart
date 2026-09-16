@@ -198,7 +198,6 @@ class _CreateMessageState extends State<CreateMessage> {
             controller: _controller,
             focusNode: _focusNode,
             autofocus: true,
-            // 🚨 Keyboard opens immediately
             onChanged: (value) {
               context.read<UsersBloc>().add(UsersEvent.get(searchTerm: value));
             },

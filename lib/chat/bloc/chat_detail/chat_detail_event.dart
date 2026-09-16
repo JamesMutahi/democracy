@@ -24,6 +24,12 @@ sealed class ChatDetailEvent with _$ChatDetailEvent {
 
   const factory ChatDetailEvent.markAsRead({required Chat chat}) = _MarkAsRead;
 
+  const factory ChatDetailEvent.acceptRequest({required Chat chat}) =
+      _AcceptRequest;
+
+  const factory ChatDetailEvent.declineRequest({required Chat chat}) =
+      _DeclineRequest;
+
   const factory ChatDetailEvent.unsubscribe({required Chat chat}) =
       _Unsubscribe;
 }

@@ -16,8 +16,9 @@ import 'package:democracy/app/view/widgets/side_menu.dart';
 import 'package:democracy/broadcast/bloc/broadcast_view/broadcast_view_cubit.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/broadcast/view/widgets/minimized.dart';
-import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
+import 'package:democracy/chat/bloc/inbox/inbox_bloc.dart';
+import 'package:democracy/chat/bloc/requests/requests_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
@@ -67,7 +68,13 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
         BlocProvider(
-          create: (context) => ChatsBloc(
+          create: (context) => InboxBloc(
+            webSocketService: context.read<WebSocketService>(),
+            databaseRepository: context.read<DatabaseRepository>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => RequestsBloc(
             webSocketService: context.read<WebSocketService>(),
             databaseRepository: context.read<DatabaseRepository>(),
           ),
@@ -141,6 +148,7 @@ class _Web extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
+    bool showExpandedSideMenu = responsive.largerOrEqualTo(expandSideMenu);
 
     return Scaffold(
       key: scaffoldKey,
@@ -166,9 +174,7 @@ class _Web extends StatelessWidget {
                     Visibility(
                       visible: kIsWeb && !responsive.isMobile,
                       child: Flexible(
-                        flex: responsive.largerOrEqualTo(expandSideMenu)
-                            ? 3
-                            : 1,
+                        flex: showExpandedSideMenu ? 3 : 1,
                         child: ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 300),
                           child: SideMenu(),
@@ -176,7 +182,7 @@ class _Web extends StatelessWidget {
                       ),
                     ),
                     Flexible(
-                      flex: responsive.largerOrEqualTo(expandSideMenu) ? 6 : 7,
+                      flex: showExpandedSideMenu ? 6 : 7,
                       child: ConstrainedBox(
                         constraints: BoxConstraints(maxWidth: 1000),
                         child: SelectionArea(child: AutoRouter()),

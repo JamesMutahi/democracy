@@ -13,6 +13,7 @@ sealed class PreferencesEvent with _$PreferencesEvent {
     required bool allowReplyNotifications,
     required bool allowRepostNotifications,
     required bool allowMessageNotifications,
+    required MessagingPreference messagingPreference,
     required bool allowFollowNotifications,
     required bool allowPetitionNotifications,
     required bool allowPetitionSupporterNotifications,

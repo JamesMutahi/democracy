@@ -6,13 +6,20 @@ import 'package:democracy/post/models/draft_post.dart';
 import 'package:hive_ce/hive_ce.dart';
 
 class DatabaseRepository {
-  DatabaseRepository();
+  late final Future<Box<DraftPost>> _draftBoxFuture;
+  late final Future<Box<Chat>> _chatBoxFuture;
+  late final Future<Box<Message>> _messageBoxFuture;
 
-  // ==================== HELPERS ====================
+  DatabaseRepository() {
+    // Open boxes once during initialization
+    _draftBoxFuture = Hive.openBox<DraftPost>('drafts');
+    _chatBoxFuture = Hive.openBox<Chat>('chats');
+    _messageBoxFuture = Hive.openBox<Message>('messages');
+  }
 
-  Future<Box<DraftPost>> get _draftBox => Hive.openBox<DraftPost>('drafts');
-  Future<Box<Chat>> get _chatBox => Hive.openBox<Chat>('chats');
-  Future<Box<Message>> get _messageBox => Hive.openBox<Message>('messages');
+  Future<Box<DraftPost>> get _draftBox => _draftBoxFuture;
+  Future<Box<Chat>> get _chatBox => _chatBoxFuture;
+  Future<Box<Message>> get _messageBox => _messageBoxFuture;
 
   // ==================== DRAFT POSTS ====================
 
@@ -58,9 +65,64 @@ class DatabaseRepository {
 
   // ==================== CHATS ====================
 
-  Future<List<Chat>> fetchChats() async {
+  Future<List<Chat>> fetchInbox({String? searchTerm}) async {
     final box = await _chatBox;
-    return box.values.toList();
+
+    var chats = box.values.where((chat) => !chat.isMessageRequest).toList();
+
+    _filterAndSortChats(chats: chats, searchTerm: searchTerm);
+
+    return chats;
+  }
+
+  Future<List<Chat>> fetchRequests({String? searchTerm}) async {
+    final box = await _chatBox;
+
+    var chats = box.values
+        .where(
+          (chat) =>
+              chat.isMessageRequest &&
+              chat.requestStatus == RequestStatus.pending,
+        )
+        .toList();
+
+    _filterAndSortChats(chats: chats, searchTerm: searchTerm);
+
+    return chats;
+  }
+
+  List<Chat> _filterAndSortChats({
+    required List<Chat> chats,
+    required String? searchTerm,
+  }) {
+    // Apply local search filter if a search term is provided
+    if (searchTerm != null && searchTerm.trim().isNotEmpty) {
+      final lowerSearchTerm = searchTerm.toLowerCase();
+      chats = chats.where((chat) {
+        // Check if last message text contains the search term
+        final lastMessageText = chat.lastMessage?.text.toLowerCase() ?? '';
+        if (lastMessageText.contains(lowerSearchTerm)) return true;
+
+        // Check if any user's name or username contains the search term
+        for (final user in chat.users) {
+          final nameMatch = user.name.toLowerCase().contains(lowerSearchTerm);
+          final usernameMatch = user.username.toLowerCase().contains(
+            lowerSearchTerm,
+          );
+          if (nameMatch || usernameMatch) return true;
+        }
+
+        return false;
+      }).toList();
+    }
+
+    chats.sort((a, b) {
+      final dateA = a.lastMessage?.createdAt ?? DateTime(1970);
+      final dateB = b.lastMessage?.createdAt ?? DateTime(1970);
+      return dateB.compareTo(dateA);
+    });
+
+    return chats;
   }
 
   Future<Chat> saveChat({required Map<String, dynamic> data}) async {
@@ -89,20 +151,40 @@ class DatabaseRepository {
   void _mergeChat(Chat target, Chat source) {
     target.unreadMessages = source.unreadMessages;
     target.lastMessage = source.lastMessage;
+    target.isMessageRequest = source.isMessageRequest;
+  }
+
+  Future<Chat?> getChat({required int id}) async {
+    final box = await _chatBox;
+    return box.values.firstWhereOrNull((c) => c.id == id);
+  }
+
+  Future<void> updateChat({required Chat chat}) async {
+    final box = await _chatBox;
+    await box.put(chat.key, chat);
   }
 
   Future<void> deleteChat({required int id}) async {
     final chatBox = await _chatBox;
     final messageBox = await _messageBox;
 
-    // Delete all messages belonging to this chat
+    // Find the chat object by its 'id' field
+    final chatToDelete = chatBox.values.firstWhereOrNull((c) => c.id == id);
+
+    if (chatToDelete != null) {
+      // HiveObject.delete() automatically uses the correct internal Hive key
+      await chatToDelete.delete();
+    }
+
+    // Find all messages belonging to this chat
     final messagesToDelete = messageBox.values
         .where((msg) => msg.chatId == id)
-        .map((msg) => msg.id)
         .toList();
 
-    await messageBox.deleteAll(messagesToDelete);
-    await chatBox.delete(id);
+    // Delete each message using HiveObject.delete()
+    for (final msg in messagesToDelete) {
+      await msg.delete();
+    }
   }
 
   // ==================== MESSAGES ====================

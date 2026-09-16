@@ -90,7 +90,6 @@ class _UserPostsState extends State<UserPosts> {
           refreshController: _refreshController,
           enablePullDown: posts.isNotEmpty,
           enablePullUp: state.hasNext,
-          checkVisibility: true,
           showPin: true,
           onRefresh: () {
             context.read<UserPostsBloc>().add(
@@ -208,7 +207,6 @@ class _UserRepliesState extends State<UserReplies> {
                     PostWidgetSelector(
                       key: ValueKey(post.replyTo!.id),
                       post: post.replyTo!,
-                      checkVisibility: true,
                       showBottomThread: true,
                       hideBorder: true,
                       onViewed: () {
@@ -218,7 +216,6 @@ class _UserRepliesState extends State<UserReplies> {
                     PostTile(
                       key: ValueKey(post.id),
                       post: post,
-                      checkVisibility: true,
                       showTopThread: true,
                       onViewed: () {
                         addPostView(context, 'User Replies', post);
@@ -299,7 +296,6 @@ class _LikesState extends State<Likes> {
           refreshController: _refreshController,
           enablePullDown: posts.isNotEmpty,
           enablePullUp: state.hasNext,
-          checkVisibility: true,
           onRefresh: () {
             context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
           },

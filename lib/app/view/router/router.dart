@@ -28,6 +28,7 @@ class AppRouter extends RootStackRouter {
               children: [
                 AutoRoute(path: '', page: HubRoute.page),
                 AutoRoute(path: 'results', page: HubResults.page),
+                if (kIsWeb) ...hubRoutes,
                 RedirectRoute(path: '*', redirectTo: '/hub'),
               ],
             ),
@@ -37,6 +38,7 @@ class AppRouter extends RootStackRouter {
             if (kIsWeb) ...otherRoutes,
           ],
         ),
+        if (!kIsWeb) ...hubRoutes,
         if (!kIsWeb) ...otherRoutes,
 
         CustomRoute(
@@ -133,6 +135,13 @@ class AppRouter extends RootStackRouter {
   ];
 }
 
+final hubRoutes = [
+  AutoRoute(path: 'ballots', page: BallotRoute.page),
+  AutoRoute(path: 'surveys', page: SurveyRoute.page),
+  AutoRoute(path: 'meetings', page: MeetingRoute.page),
+  AutoRoute(path: 'petitions', page: PetitionRoute.page),
+];
+
 final otherRoutes = [
   AutoRoute(path: 'constitution', page: ConstitutionRoute.page),
   AutoRoute(path: 'bookmarks', page: Bookmarks.page),
@@ -143,7 +152,6 @@ final otherRoutes = [
   AutoRoute(path: 'search-results', page: SearchResults.page),
 
   // BALLOTS
-  AutoRoute(path: 'ballots', page: BallotRoute.page),
   AutoRoute(path: 'ballot/:id', page: BallotDetail.page),
 
   // MESSAGES
@@ -181,18 +189,14 @@ final otherRoutes = [
   AutoRoute(path: 'users', page: UsersRoute.page),
 
   // BROADCASTS
-  AutoRoute(path: 'meetings', page: MeetingRoute.page),
   AutoRoute(path: 'meeting/:id', page: MeetingDetail.page),
   AutoRoute(path: 'live-stream/:id', page: LiveStream.page),
 
   // PETITIONS
-  AutoRoute(path: 'petitions', page: PetitionRoute.page),
-
   AutoRoute(path: 'petition/:id', page: PetitionDetail.page),
   AutoRoute(path: 'petition/:id/supporters', page: Supporters.page),
 
   // SURVEYS
-  AutoRoute(path: 'surveys', page: SurveyRoute.page),
   AutoRoute(path: 'survey/:id', page: SurveyDetail.page),
   AutoRoute(path: 'survey/:id/process', page: SurveyProcess.page),
 ];

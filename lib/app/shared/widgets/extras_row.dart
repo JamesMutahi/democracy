@@ -16,6 +16,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class ExtrasRow extends StatelessWidget {
   const ExtrasRow({
@@ -230,6 +231,7 @@ class _ExtraCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
@@ -239,39 +241,46 @@ class _ExtraCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest,
-                  shape: BoxShape.circle,
-                ),
-                child: SvgPicture.asset(
-                  icon,
-                  height: 24,
-                  width: 24,
-                  colorFilter: ColorFilter.mode(
-                    colorScheme.primary,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                text,
-                style: TextStyle(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                  letterSpacing: 0.2,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+          child: !kIsWeb && responsive.isMobile
+              ? _buildIcon(colorScheme)
+              : _buildColumn(colorScheme),
         ),
+      ),
+    );
+  }
+
+  Widget _buildColumn(ColorScheme colorScheme) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildIcon(colorScheme),
+        const SizedBox(height: 6),
+        Text(
+          text,
+          style: TextStyle(
+            color: colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
+            fontSize: 12,
+            letterSpacing: 0.2,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIcon(ColorScheme colorScheme) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        shape: BoxShape.circle,
+      ),
+      child: SvgPicture.asset(
+        icon,
+        height: 24,
+        width: 24,
+        colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
       ),
     );
   }

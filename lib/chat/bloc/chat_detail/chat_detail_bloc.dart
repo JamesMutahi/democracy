@@ -45,6 +45,8 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     on<_Create>((event, emit) => _onCreate(event, emit));
     on<_Get>((event, emit) => _onGet(event, emit));
     on<_MarkAsRead>((event, emit) => _onMarkAsRead(event, emit));
+    on<_AcceptRequest>((event, emit) => _onAcceptRequest(event, emit));
+    on<_DeclineRequest>((event, emit) => _onDeclineRequest(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
@@ -164,6 +166,48 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
         'action': 'mark_as_read',
         'request_id': requestId,
         'pk': event.chat.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onAcceptRequest(
+    _AcceptRequest event,
+    Emitter<ChatDetailState> emit,
+  ) async {
+    emit(ChatDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(ChatDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'accept_request',
+        'request_id': requestId,
+        "chat_id": event.chat.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onDeclineRequest(
+    _DeclineRequest event,
+    Emitter<ChatDetailState> emit,
+  ) async {
+    emit(ChatDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(ChatDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'decline_request',
+        'request_id': requestId,
+        "chat_id": event.chat.id,
       },
     };
     webSocketService.send(message);

@@ -26,6 +26,8 @@ class _ScreenScrollForwarderState extends State<ScreenScrollForwarder> {
       onPointerDown: (event) {
         if (_activePointer != null) return;
 
+        if (event.kind == PointerDeviceKind.mouse) return;
+
         final controller = widget.getActiveController();
         if (controller != null && controller.hasClients) {
           _activePointer = event.pointer;
@@ -33,13 +35,14 @@ class _ScreenScrollForwarderState extends State<ScreenScrollForwarder> {
         }
       },
       onPointerMove: (event) {
+        if (event.kind == PointerDeviceKind.mouse) return;
+
         if (event.pointer == _activePointer) {
           final controller = widget.getActiveController();
           if (controller != null && controller.hasClients) {
             final position = controller.position;
             final delta = _lastY - event.position.dy;
 
-            // FIX: Use minScrollExtent instead of hardcoded 0.0
             final newOffset = (position.pixels + delta).clamp(
               position.minScrollExtent,
               position.maxScrollExtent,
@@ -63,7 +66,6 @@ class _ScreenScrollForwarderState extends State<ScreenScrollForwarder> {
           if (controller != null && controller.hasClients) {
             final position = controller.position;
 
-            // FIX: Use minScrollExtent instead of hardcoded 0.0
             final newOffset = (position.pixels + event.scrollDelta.dy).clamp(
               position.minScrollExtent,
               position.maxScrollExtent,

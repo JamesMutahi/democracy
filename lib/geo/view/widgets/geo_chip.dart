@@ -17,27 +17,49 @@ class GeoChipRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
       children: [
-        if (county != null) GeoChip(title: 'County', text: county!.name),
+        if (county != null)
+          GeoChip(
+            icon: Icons.location_city_outlined,
+            label: 'County',
+            value: county!.name,
+          ),
         if (constituency != null)
-          GeoChip(title: 'Constituency', text: constituency!.name),
-        if (ward != null) GeoChip(title: 'Ward', text: ward!.name),
+          GeoChip(
+            icon: Icons.map_outlined,
+            label: 'Constituency',
+            value: constituency!.name,
+          ),
+        if (ward != null)
+          GeoChip(
+            icon: Icons.pin_drop_outlined,
+            label: 'Ward',
+            value: ward!.name,
+          ),
       ],
     );
   }
 }
 
 class GeoChip extends StatelessWidget {
-  const GeoChip({super.key, required this.title, required this.text});
+  const GeoChip({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
-  final String title;
-  final String text;
+  final IconData icon;
+  final String label;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       margin: EdgeInsets.only(right: 5),
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
@@ -47,17 +69,24 @@ class GeoChip extends StatelessWidget {
         ),
         borderRadius: const BorderRadius.all(Radius.circular(5)),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-              color: Theme.of(context).disabledColor,
-            ),
+          Icon(icon, size: 16, color: colorScheme.primary),
+          const SizedBox(width: 8),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: Theme.of(context).disabledColor,
+                ),
+              ),
+              Text(value, style: Theme.of(context).textTheme.labelMedium),
+            ],
           ),
-          Text(text, style: Theme.of(context).textTheme.labelMedium),
         ],
       ),
     );

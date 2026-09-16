@@ -481,20 +481,11 @@ class _ProfileHeader extends StatelessWidget {
               ),
             ),
           ),
+          Positioned(bottom: -5, left: 16, child: _ProfileImage(user: user)),
           Positioned(
-            bottom: -5,
-            left: 16,
-            child: CircleAvatar(
-              radius: 54,
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: CachedNetworkImageProvider(
-                  user.image,
-                  cacheKey: 'profile ${user.id}',
-                ),
-              ),
-            ),
+            right: 15.0,
+            bottom: 0,
+            child: _ProfileButtons(user: user, isCurrentUser: isCurrentUser),
           ),
         ],
       ),
@@ -587,16 +578,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
               bottom: -50.0,
               child: Opacity(
                 opacity: percent,
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  child: ProfileImage(
-                    userId: user.id,
-                    username: user.username,
-                    imageUrl: user.image,
-                    radius: 47,
-                  ),
-                ),
+                child: _ProfileImage(user: user),
               ),
             ),
           if (!nameIsScrolled)
@@ -606,40 +588,9 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
               bottom: -110.0,
               child: Opacity(
                 opacity: percent,
-                child: Row(
-                  children: [
-                    isCurrentUser
-                        ? OutlinedButton.icon(
-                            onPressed: () =>
-                                context.router.push(const EditProfile()),
-                            icon: const Icon(Symbols.edit_rounded, size: 18),
-                            label: const Text('Edit Profile'),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Theme.of(
-                                context,
-                              ).scaffoldBackgroundColor,
-                            ),
-                          )
-                        : Row(
-                            children: [
-                              if (user.isBlocked)
-                                BlockedButton(user: user)
-                              else ...[
-                                if (user.isMuted) ...[
-                                  MutedButton(user: user),
-                                  const SizedBox(width: 8),
-                                ],
-                                MessageButton(user: user),
-                                const SizedBox(width: 8),
-                                if (user.isFollowed) ...[
-                                  NotificationButton(user: user),
-                                  const SizedBox(width: 8),
-                                ],
-                                FollowButton(user: user),
-                              ],
-                            ],
-                          ),
-                  ],
+                child: _ProfileButtons(
+                  user: user,
+                  isCurrentUser: isCurrentUser,
                 ),
               ),
             ),
@@ -656,6 +607,69 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
+}
+
+class _ProfileImage extends StatelessWidget {
+  const _ProfileImage({required this.user});
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: 50,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      child: ProfileImage(
+        userId: user.id,
+        username: user.username,
+        imageUrl: user.image,
+        radius: 47,
+      ),
+    );
+  }
+}
+
+class _ProfileButtons extends StatelessWidget {
+  const _ProfileButtons({required this.user, required this.isCurrentUser});
+
+  final User user;
+  final bool isCurrentUser;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        isCurrentUser
+            ? OutlinedButton.icon(
+                onPressed: () => context.router.push(const EditProfile()),
+                icon: const Icon(Symbols.edit_rounded, size: 18),
+                label: const Text('Edit Profile'),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                ),
+              )
+            : Row(
+                children: [
+                  if (user.isBlocked)
+                    BlockedButton(user: user)
+                  else ...[
+                    if (user.isMuted) ...[
+                      MutedButton(user: user),
+                      const SizedBox(width: 8),
+                    ],
+                    MessageButton(user: user),
+                    const SizedBox(width: 8),
+                    if (user.isFollowed) ...[
+                      NotificationButton(user: user),
+                      const SizedBox(width: 8),
+                    ],
+                    FollowButton(user: user),
+                  ],
+                ],
+              ),
+      ],
+    );
+  }
 }
 
 class _TabBarAppBarDelegate extends SliverPersistentHeaderDelegate {

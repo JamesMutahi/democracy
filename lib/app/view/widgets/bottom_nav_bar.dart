@@ -64,7 +64,7 @@ class BottomNavBar extends StatelessWidget {
                 ),
               ),
               NavBarItem(
-                asset: 'assets/icons/widgets.svg',
+                asset: 'assets/icons/archive.svg',
                 isActive: currentIndex == 2,
                 onTap: () => tabsRouter.setActiveIndex(2),
               ),

@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'chats_bloc.dart';
+part of 'inbox_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'chats_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$ChatsEvent {
+mixin _$InboxEvent {
 
 
 
@@ -20,7 +20,7 @@ mixin _$ChatsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatsEvent);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InboxEvent);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ChatsEvent()';
+  return 'InboxEvent()';
 }
 
 
 }
 
 /// @nodoc
-class $ChatsEventCopyWith<$Res>  {
-$ChatsEventCopyWith(ChatsEvent _, $Res Function(ChatsEvent) __);
+class $InboxEventCopyWith<$Res>  {
+$InboxEventCopyWith(InboxEvent _, $Res Function(InboxEvent) __);
 }
 
 
-/// Adds pattern-matching-related methods to [ChatsEvent].
-extension ChatsEventPatterns on ChatsEvent {
+/// Adds pattern-matching-related methods to [InboxEvent].
+extension InboxEventPatterns on InboxEvent {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -122,7 +122,7 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Chat? lastChat)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function()?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String searchTerm,  Chat? lastChat)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function()?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.lastChat);case _Received() when received != null:
@@ -145,7 +145,7 @@ return update();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Chat? lastChat)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function()  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String searchTerm,  Chat? lastChat)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function()  update,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.searchTerm,_that.lastChat);case _Received():
@@ -164,7 +164,7 @@ return update();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Chat? lastChat)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function()?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String searchTerm,  Chat? lastChat)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function()?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.lastChat);case _Received() when received != null:
@@ -180,14 +180,14 @@ return update();case _:
 /// @nodoc
 
 
-class _Get implements ChatsEvent {
-  const _Get({this.searchTerm, this.lastChat});
+class _Get implements InboxEvent {
+  const _Get({this.searchTerm = '', this.lastChat});
   
 
- final  String? searchTerm;
+@JsonKey() final  String searchTerm;
  final  Chat? lastChat;
 
-/// Create a copy of ChatsEvent
+/// Create a copy of InboxEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -206,18 +206,18 @@ int get hashCode => Object.hash(runtimeType,searchTerm,lastChat);
 
 @override
 String toString() {
-  return 'ChatsEvent.get(searchTerm: $searchTerm, lastChat: $lastChat)';
+  return 'InboxEvent.get(searchTerm: $searchTerm, lastChat: $lastChat)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$GetCopyWith<$Res> implements $ChatsEventCopyWith<$Res> {
+abstract mixin class _$GetCopyWith<$Res> implements $InboxEventCopyWith<$Res> {
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- String? searchTerm, Chat? lastChat
+ String searchTerm, Chat? lastChat
 });
 
 
@@ -232,12 +232,12 @@ class __$GetCopyWithImpl<$Res>
   final _Get _self;
   final $Res Function(_Get) _then;
 
-/// Create a copy of ChatsEvent
+/// Create a copy of InboxEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastChat = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = null,Object? lastChat = freezed,}) {
   return _then(_Get(
-searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String?,lastChat: freezed == lastChat ? _self.lastChat : lastChat // ignore: cast_nullable_to_non_nullable
+searchTerm: null == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
+as String,lastChat: freezed == lastChat ? _self.lastChat : lastChat // ignore: cast_nullable_to_non_nullable
 as Chat?,
   ));
 }
@@ -248,7 +248,7 @@ as Chat?,
 /// @nodoc
 
 
-class _Received implements ChatsEvent {
+class _Received implements InboxEvent {
   const _Received({required final  Map<String, dynamic> payload}): _payload = payload;
   
 
@@ -260,7 +260,7 @@ class _Received implements ChatsEvent {
 }
 
 
-/// Create a copy of ChatsEvent
+/// Create a copy of InboxEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -279,14 +279,14 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'ChatsEvent.received(payload: $payload)';
+  return 'InboxEvent.received(payload: $payload)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ReceivedCopyWith<$Res> implements $ChatsEventCopyWith<$Res> {
+abstract mixin class _$ReceivedCopyWith<$Res> implements $InboxEventCopyWith<$Res> {
   factory _$ReceivedCopyWith(_Received value, $Res Function(_Received) _then) = __$ReceivedCopyWithImpl;
 @useResult
 $Res call({
@@ -305,7 +305,7 @@ class __$ReceivedCopyWithImpl<$Res>
   final _Received _self;
   final $Res Function(_Received) _then;
 
-/// Create a copy of ChatsEvent
+/// Create a copy of InboxEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
   return _then(_Received(
@@ -320,7 +320,7 @@ as Map<String, dynamic>,
 /// @nodoc
 
 
-class _Update implements ChatsEvent {
+class _Update implements InboxEvent {
   const _Update();
   
 
@@ -340,7 +340,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ChatsEvent.update()';
+  return 'InboxEvent.update()';
 }
 
 

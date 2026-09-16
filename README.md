@@ -1,6 +1,8 @@
 # democracy
 
-A true democracy means that the power lies solely with the people and that the people alone are entitled to it and thus, parties, rulers, the powerful, the hierarchical and other rulers are not allowed to decide on any matters independently or even to make propaganda for their ideas.
+A true democracy means that the power lies solely with the people and that the people alone are
+entitled to it and thus, parties, rulers, the powerful, the hierarchical and other rulers are not
+allowed to decide on any matters independently or even to make propaganda for their ideas.
 
 <img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/a15cef59-8501-4dd0-be23-66b65a29471f" />
 <img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/805315fe-4aa3-45be-b07a-caa2623046fb" />
@@ -15,8 +17,6 @@ A true democracy means that the power lies solely with the people and that the p
 <img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/f3c6e890-e9b1-43ec-8b2c-8532697f678d" />
 <img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/18d3c892-4060-4979-9aef-d0eb92b0d4b4" />
 <img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/26e12fcf-d70e-4415-888f-9c4e1bf7d3d4" />
-
-
 
 ```
 --dart-define-from-file=env.json --web-port=5000
@@ -36,9 +36,10 @@ A true democracy means that the power lies solely with the people and that the p
 }
 ```
 
-
 ```
 flutter build appbundle --no-tree-shake-icons --dart-define-from-file=env.json
 flutter build apk --no-tree-shake-icons --dart-define-from-file=env.json
 flutter install
+
+flutter build web --release --dart-define-from-file=env.json 
 ```

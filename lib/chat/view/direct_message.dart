@@ -158,25 +158,7 @@ class _DirectMessageState extends State<DirectMessage> {
 
         Expanded(child: _buildBody(context)),
 
-        Container(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 16,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-          ),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, -5),
-              ),
-            ],
-          ),
-          child: _buildBottomTextFormField(),
-        ),
+        _buildBottomTextFormField(),
       ],
     );
   }
@@ -289,13 +271,13 @@ class _DirectMessageState extends State<DirectMessage> {
                 refreshController: _refreshController,
                 enablePullUp: state.hasNext,
                 onUserTap: (user) {
-                  setState(() {
-                    if (_selectedUsers.contains(user)) {
-                      _selectedUsers.remove(user);
-                    } else {
-                      _selectedUsers.add(user);
+                  if (_selectedUsers.contains(user)) {
+                    setState(() => _selectedUsers.remove(user));
+                  } else {
+                    if (_selectedUsers.length < 3) {
+                      setState(() => _selectedUsers.add(user));
                     }
-                  });
+                  }
                 },
                 onLoading: () {
                   if (users.isNotEmpty) {
@@ -373,7 +355,7 @@ class _DirectMessageState extends State<DirectMessage> {
                 ),
               );
               Future.delayed(const Duration(seconds: 10), () {
-                if (context.mounted) {
+                if (mounted) {
                   context.loaderOverlay.hide();
                 }
               });

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/geo/models/constituency.dart';
@@ -147,6 +148,11 @@ class APIRepository {
   Future patchMessage({required Message message}) async {
     return await apiProvider.patchMessage(message: message);
   }
+
+  Future deleteChat({required Chat chat}) async {
+    return await apiProvider.deleteChat(chat: chat);
+  }
+
 
   Future deleteMessage({required Message message}) async {
     return await apiProvider.deleteMessage(message: message);

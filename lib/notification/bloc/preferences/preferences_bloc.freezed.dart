@@ -122,12 +122,12 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications,  bool allowPetitionNotifications,  bool allowPetitionSupporterNotifications)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  MessagingPreference messagingPreference,  bool allowFollowNotifications,  bool allowPetitionNotifications,  bool allowPetitionSupporterNotifications)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get();case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
-return update(_that.allowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications,_that.allowFollowNotifications,_that.allowPetitionNotifications,_that.allowPetitionSupporterNotifications);case _:
+return update(_that.allowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications,_that.messagingPreference,_that.allowFollowNotifications,_that.allowPetitionNotifications,_that.allowPetitionSupporterNotifications);case _:
   return orElse();
 
 }
@@ -145,12 +145,12 @@ return update(_that.allowNotifications,_that.allowTagNotifications,_that.allowLi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications,  bool allowPetitionNotifications,  bool allowPetitionSupporterNotifications)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  MessagingPreference messagingPreference,  bool allowFollowNotifications,  bool allowPetitionNotifications,  bool allowPetitionSupporterNotifications)  update,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get();case _Received():
 return received(_that.payload);case _Update():
-return update(_that.allowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications,_that.allowFollowNotifications,_that.allowPetitionNotifications,_that.allowPetitionSupporterNotifications);}
+return update(_that.allowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications,_that.messagingPreference,_that.allowFollowNotifications,_that.allowPetitionNotifications,_that.allowPetitionSupporterNotifications);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -164,12 +164,12 @@ return update(_that.allowNotifications,_that.allowTagNotifications,_that.allowLi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications,  bool allowPetitionNotifications,  bool allowPetitionSupporterNotifications)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  MessagingPreference messagingPreference,  bool allowFollowNotifications,  bool allowPetitionNotifications,  bool allowPetitionSupporterNotifications)?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get();case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
-return update(_that.allowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications,_that.allowFollowNotifications,_that.allowPetitionNotifications,_that.allowPetitionSupporterNotifications);case _:
+return update(_that.allowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications,_that.messagingPreference,_that.allowFollowNotifications,_that.allowPetitionNotifications,_that.allowPetitionSupporterNotifications);case _:
   return null;
 
 }
@@ -285,7 +285,7 @@ as Map<String, dynamic>,
 
 
 class _Update implements PreferencesEvent {
-  const _Update({required this.allowNotifications, required this.allowTagNotifications, required this.allowLikeNotifications, required this.allowReplyNotifications, required this.allowRepostNotifications, required this.allowMessageNotifications, required this.allowFollowNotifications, required this.allowPetitionNotifications, required this.allowPetitionSupporterNotifications});
+  const _Update({required this.allowNotifications, required this.allowTagNotifications, required this.allowLikeNotifications, required this.allowReplyNotifications, required this.allowRepostNotifications, required this.allowMessageNotifications, required this.messagingPreference, required this.allowFollowNotifications, required this.allowPetitionNotifications, required this.allowPetitionSupporterNotifications});
   
 
  final  bool allowNotifications;
@@ -294,6 +294,7 @@ class _Update implements PreferencesEvent {
  final  bool allowReplyNotifications;
  final  bool allowRepostNotifications;
  final  bool allowMessageNotifications;
+ final  MessagingPreference messagingPreference;
  final  bool allowFollowNotifications;
  final  bool allowPetitionNotifications;
  final  bool allowPetitionSupporterNotifications;
@@ -308,16 +309,16 @@ _$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.allowNotifications, allowNotifications) || other.allowNotifications == allowNotifications)&&(identical(other.allowTagNotifications, allowTagNotifications) || other.allowTagNotifications == allowTagNotifications)&&(identical(other.allowLikeNotifications, allowLikeNotifications) || other.allowLikeNotifications == allowLikeNotifications)&&(identical(other.allowReplyNotifications, allowReplyNotifications) || other.allowReplyNotifications == allowReplyNotifications)&&(identical(other.allowRepostNotifications, allowRepostNotifications) || other.allowRepostNotifications == allowRepostNotifications)&&(identical(other.allowMessageNotifications, allowMessageNotifications) || other.allowMessageNotifications == allowMessageNotifications)&&(identical(other.allowFollowNotifications, allowFollowNotifications) || other.allowFollowNotifications == allowFollowNotifications)&&(identical(other.allowPetitionNotifications, allowPetitionNotifications) || other.allowPetitionNotifications == allowPetitionNotifications)&&(identical(other.allowPetitionSupporterNotifications, allowPetitionSupporterNotifications) || other.allowPetitionSupporterNotifications == allowPetitionSupporterNotifications));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.allowNotifications, allowNotifications) || other.allowNotifications == allowNotifications)&&(identical(other.allowTagNotifications, allowTagNotifications) || other.allowTagNotifications == allowTagNotifications)&&(identical(other.allowLikeNotifications, allowLikeNotifications) || other.allowLikeNotifications == allowLikeNotifications)&&(identical(other.allowReplyNotifications, allowReplyNotifications) || other.allowReplyNotifications == allowReplyNotifications)&&(identical(other.allowRepostNotifications, allowRepostNotifications) || other.allowRepostNotifications == allowRepostNotifications)&&(identical(other.allowMessageNotifications, allowMessageNotifications) || other.allowMessageNotifications == allowMessageNotifications)&&(identical(other.messagingPreference, messagingPreference) || other.messagingPreference == messagingPreference)&&(identical(other.allowFollowNotifications, allowFollowNotifications) || other.allowFollowNotifications == allowFollowNotifications)&&(identical(other.allowPetitionNotifications, allowPetitionNotifications) || other.allowPetitionNotifications == allowPetitionNotifications)&&(identical(other.allowPetitionSupporterNotifications, allowPetitionSupporterNotifications) || other.allowPetitionSupporterNotifications == allowPetitionSupporterNotifications));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,allowNotifications,allowTagNotifications,allowLikeNotifications,allowReplyNotifications,allowRepostNotifications,allowMessageNotifications,allowFollowNotifications,allowPetitionNotifications,allowPetitionSupporterNotifications);
+int get hashCode => Object.hash(runtimeType,allowNotifications,allowTagNotifications,allowLikeNotifications,allowReplyNotifications,allowRepostNotifications,allowMessageNotifications,messagingPreference,allowFollowNotifications,allowPetitionNotifications,allowPetitionSupporterNotifications);
 
 @override
 String toString() {
-  return 'PreferencesEvent.update(allowNotifications: $allowNotifications, allowTagNotifications: $allowTagNotifications, allowLikeNotifications: $allowLikeNotifications, allowReplyNotifications: $allowReplyNotifications, allowRepostNotifications: $allowRepostNotifications, allowMessageNotifications: $allowMessageNotifications, allowFollowNotifications: $allowFollowNotifications, allowPetitionNotifications: $allowPetitionNotifications, allowPetitionSupporterNotifications: $allowPetitionSupporterNotifications)';
+  return 'PreferencesEvent.update(allowNotifications: $allowNotifications, allowTagNotifications: $allowTagNotifications, allowLikeNotifications: $allowLikeNotifications, allowReplyNotifications: $allowReplyNotifications, allowRepostNotifications: $allowRepostNotifications, allowMessageNotifications: $allowMessageNotifications, messagingPreference: $messagingPreference, allowFollowNotifications: $allowFollowNotifications, allowPetitionNotifications: $allowPetitionNotifications, allowPetitionSupporterNotifications: $allowPetitionSupporterNotifications)';
 }
 
 
@@ -328,7 +329,7 @@ abstract mixin class _$UpdateCopyWith<$Res> implements $PreferencesEventCopyWith
   factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
 @useResult
 $Res call({
- bool allowNotifications, bool allowTagNotifications, bool allowLikeNotifications, bool allowReplyNotifications, bool allowRepostNotifications, bool allowMessageNotifications, bool allowFollowNotifications, bool allowPetitionNotifications, bool allowPetitionSupporterNotifications
+ bool allowNotifications, bool allowTagNotifications, bool allowLikeNotifications, bool allowReplyNotifications, bool allowRepostNotifications, bool allowMessageNotifications, MessagingPreference messagingPreference, bool allowFollowNotifications, bool allowPetitionNotifications, bool allowPetitionSupporterNotifications
 });
 
 
@@ -345,7 +346,7 @@ class __$UpdateCopyWithImpl<$Res>
 
 /// Create a copy of PreferencesEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? allowNotifications = null,Object? allowTagNotifications = null,Object? allowLikeNotifications = null,Object? allowReplyNotifications = null,Object? allowRepostNotifications = null,Object? allowMessageNotifications = null,Object? allowFollowNotifications = null,Object? allowPetitionNotifications = null,Object? allowPetitionSupporterNotifications = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? allowNotifications = null,Object? allowTagNotifications = null,Object? allowLikeNotifications = null,Object? allowReplyNotifications = null,Object? allowRepostNotifications = null,Object? allowMessageNotifications = null,Object? messagingPreference = null,Object? allowFollowNotifications = null,Object? allowPetitionNotifications = null,Object? allowPetitionSupporterNotifications = null,}) {
   return _then(_Update(
 allowNotifications: null == allowNotifications ? _self.allowNotifications : allowNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowTagNotifications: null == allowTagNotifications ? _self.allowTagNotifications : allowTagNotifications // ignore: cast_nullable_to_non_nullable
@@ -353,7 +354,8 @@ as bool,allowLikeNotifications: null == allowLikeNotifications ? _self.allowLike
 as bool,allowReplyNotifications: null == allowReplyNotifications ? _self.allowReplyNotifications : allowReplyNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowRepostNotifications: null == allowRepostNotifications ? _self.allowRepostNotifications : allowRepostNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowMessageNotifications: null == allowMessageNotifications ? _self.allowMessageNotifications : allowMessageNotifications // ignore: cast_nullable_to_non_nullable
-as bool,allowFollowNotifications: null == allowFollowNotifications ? _self.allowFollowNotifications : allowFollowNotifications // ignore: cast_nullable_to_non_nullable
+as bool,messagingPreference: null == messagingPreference ? _self.messagingPreference : messagingPreference // ignore: cast_nullable_to_non_nullable
+as MessagingPreference,allowFollowNotifications: null == allowFollowNotifications ? _self.allowFollowNotifications : allowFollowNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowPetitionNotifications: null == allowPetitionNotifications ? _self.allowPetitionNotifications : allowPetitionNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowPetitionSupporterNotifications: null == allowPetitionSupporterNotifications ? _self.allowPetitionSupporterNotifications : allowPetitionSupporterNotifications // ignore: cast_nullable_to_non_nullable
 as bool,

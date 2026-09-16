@@ -9,17 +9,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum SearchResultView { users, hashtag, none }
 
+enum TagPosition { top, bottom }
+
 class Tagging extends StatefulWidget {
   const Tagging({
     super.key,
     required this.controller,
     required this.focusNode,
     required this.child,
+    required this.position,
   });
 
   final CustomEditingController controller;
   final FocusNode focusNode;
   final Widget child;
+  final TagPosition position;
 
   @override
   State<Tagging> createState() => _TaggingState();
@@ -191,10 +195,16 @@ class _TaggingState extends State<Tagging> {
             return Positioned(
               left: 16,
               child: CompositedTransformFollower(
-                offset: const Offset(0, -20),
                 link: _layerLink,
-                targetAnchor: Alignment.bottomLeft,
-                followerAnchor: Alignment.topLeft,
+                targetAnchor: widget.position == TagPosition.top
+                    ? Alignment.topLeft
+                    : Alignment.bottomLeft,
+                followerAnchor: widget.position == TagPosition.top
+                    ? Alignment.bottomLeft
+                    : Alignment.topLeft,
+                offset: widget.position == TagPosition.top
+                    ? const Offset(0, -8)
+                    : const Offset(0, 8),
                 child: Material(
                   elevation: 8,
                   borderRadius: const BorderRadius.all(Radius.circular(8)),

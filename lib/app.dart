@@ -7,7 +7,6 @@ import 'package:democracy/app/view/router/route_observer.dart';
 import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_in_app_pip/pip_material_app.dart';
@@ -56,7 +55,6 @@ class _MyAppState extends State<MyApp> {
                   child: FToastBuilder()(context, child),
                   breakpoints: breakpoints,
                 ),
-                scrollBehavior: NoMouseDragScrollBehavior(),
                 title: 'People of Kenya',
                 theme: AppTheme.light,
                 darkTheme: AppTheme.dark,
@@ -113,14 +111,4 @@ class _Listeners extends StatelessWidget {
       child: child,
     );
   }
-}
-
-class NoMouseDragScrollBehavior extends MaterialScrollBehavior {
-  // Override dragDevices to exclude PointerDeviceKind.mouse
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.stylus,
-    PointerDeviceKind.trackpad,
-  };
 }

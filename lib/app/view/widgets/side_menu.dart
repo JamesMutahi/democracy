@@ -27,6 +27,10 @@ class SideMenu extends StatelessWidget {
     final responsive = ResponsiveBreakpoints.of(context);
     final menuController = context.read<MenuControllerCubit>();
     final user = context.read<AuthBloc>().state.user!;
+    bool showIcon =
+        kIsWeb &&
+        responsive.largerThan(MOBILE) &&
+        responsive.smallerThan(expandSideMenu);
 
     return BlocBuilder<RouteCubit, String>(
       builder: (context, currentRoute) {
@@ -85,6 +89,7 @@ class SideMenu extends StatelessWidget {
                                   icon: 'assets/icons/home.svg',
                                   title: 'Home',
                                   selected: currentRoute == HomeRoute.name,
+                                  showIcon: showIcon,
                                 ),
                                 DrawerListTile(
                                   onTap: () {
@@ -94,15 +99,17 @@ class SideMenu extends StatelessWidget {
                                   icon: 'assets/icons/search.svg',
                                   title: 'Explore',
                                   selected: currentRoute == ExploreRoute.name,
+                                  showIcon: showIcon,
                                 ),
                                 DrawerListTile(
                                   onTap: () {
                                     menuController.closeDrawer();
                                     context.navigateTo(const HubRoute());
                                   },
-                                  icon: 'assets/icons/widgets.svg',
+                                  icon: 'assets/icons/archive.svg',
                                   title: 'Hub',
                                   selected: currentRoute == HubRoute.name,
+                                  showIcon: showIcon,
                                 ),
                                 DrawerListTile(
                                   onTap: () {
@@ -112,11 +119,13 @@ class SideMenu extends StatelessWidget {
                                   icon: 'assets/icons/chat.svg',
                                   title: 'Chat',
                                   selected: currentRoute == ChatRoute.name,
+                                  showIcon: showIcon,
                                 ),
                               ],
                               _buildNotificationTile(
                                 menuController,
                                 currentRoute,
+                                showIcon,
                               ),
                               DrawerListTile(
                                 onTap: () {
@@ -128,6 +137,7 @@ class SideMenu extends StatelessWidget {
                                 icon: 'assets/icons/bookmark.svg',
                                 title: 'Bookmarks',
                                 selected: currentRoute == Bookmarks.name,
+                                showIcon: showIcon,
                               ),
                               DrawerListTile(
                                 onTap: () {
@@ -142,6 +152,7 @@ class SideMenu extends StatelessWidget {
                                 title: 'Constitution',
                                 selected:
                                     currentRoute == ConstitutionRoute.name,
+                                showIcon: showIcon,
                               ),
                               DrawerListTile(
                                 onTap: () {
@@ -153,13 +164,12 @@ class SideMenu extends StatelessWidget {
                                 icon: 'assets/icons/settings.svg',
                                 title: 'Settings',
                                 selected: currentRoute == Settings.name,
+                                showIcon: showIcon,
                               ),
                               if (kIsWeb)
                                 Container(
                                   margin: EdgeInsets.only(top: 5),
-                                  child:
-                                      !responsive.isMobile &&
-                                          responsive.smallerThan(expandSideMenu)
+                                  child: showIcon
                                       ? IconButton.filledTonal(
                                           onPressed: () {
                                             _showCreateDialog(context);
@@ -189,6 +199,7 @@ class SideMenu extends StatelessWidget {
                           menuController: menuController,
                           user: user,
                           currentPath: currentRoute,
+                          showIcon: showIcon,
                         ),
                       ],
                     ),
@@ -205,6 +216,7 @@ class SideMenu extends StatelessWidget {
   Widget _buildNotificationTile(
     MenuControllerCubit menuController,
     String currentRoute,
+    bool showIcon,
   ) {
     return BlocBuilder<NotificationsBloc, NotificationsState>(
       builder: (context, state) {
@@ -227,6 +239,7 @@ class SideMenu extends StatelessWidget {
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
                 ),
+          showIcon: showIcon,
         );
       },
     );
@@ -276,11 +289,13 @@ class _ProfileButton extends StatefulWidget {
     required this.menuController,
     required this.user,
     required this.currentPath,
+    required this.showIcon,
   });
 
   final MenuControllerCubit menuController;
   final User user;
   final String currentPath;
+  final bool showIcon;
 
   @override
   State<_ProfileButton> createState() => _ProfileButtonState();
@@ -316,11 +331,7 @@ class _ProfileButtonState extends State<_ProfileButton>
 
   @override
   Widget build(BuildContext context) {
-    final responsive = ResponsiveBreakpoints.of(context);
-
-    return kIsWeb &&
-            !responsive.isMobile &&
-            responsive.smallerThan(expandSideMenu)
+    return widget.showIcon
         ? Container(
             margin: EdgeInsets.only(bottom: 15),
             child: MenuAnchor(
@@ -444,6 +455,7 @@ class DrawerListTile extends StatelessWidget {
     required this.icon,
     this.selected = false,
     this.trailing,
+    required this.showIcon,
   });
 
   final String title;
@@ -451,17 +463,13 @@ class DrawerListTile extends StatelessWidget {
   final String icon;
   final bool selected;
   final Widget? trailing;
+  final bool showIcon;
 
   @override
   Widget build(BuildContext context) {
-    final responsive = ResponsiveBreakpoints.of(context);
-
     return Container(
       margin: EdgeInsets.only(top: 5),
-      child:
-          kIsWeb &&
-              responsive.smallerThan(expandSideMenu) &&
-              !responsive.isMobile
+      child: showIcon
           ? Stack(
               children: [
                 IconButton(

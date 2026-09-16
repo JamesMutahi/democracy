@@ -14,6 +14,9 @@ _Preferences _$PreferencesFromJson(Map<String, dynamic> json) => _Preferences(
   allowReplyNotifications: json['allow_reply_notifications'] as bool,
   allowRepostNotifications: json['allow_repost_notifications'] as bool,
   allowMessageNotifications: json['allow_message_notifications'] as bool,
+  messagingPreference: const MessagingPreferenceConverter().fromJson(
+    json['messaging_preference'] as String,
+  ),
   allowPetitionNotifications: json['allow_petition_notifications'] as bool,
   allowPetitionSupporterNotifications:
       json['allow_petition_supporter_notifications'] as bool,
@@ -28,6 +31,9 @@ Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
       'allow_reply_notifications': instance.allowReplyNotifications,
       'allow_repost_notifications': instance.allowRepostNotifications,
       'allow_message_notifications': instance.allowMessageNotifications,
+      'messaging_preference': const MessagingPreferenceConverter().toJson(
+        instance.messagingPreference,
+      ),
       'allow_petition_notifications': instance.allowPetitionNotifications,
       'allow_petition_supporter_notifications':
           instance.allowPetitionSupporterNotifications,

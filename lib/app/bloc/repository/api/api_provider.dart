@@ -289,6 +289,19 @@ class APIProvider {
     }
   }
 
+  Future deleteChat({required Chat chat}) async {
+    try {
+      Response response = await dio.delete('chat/${chat.id}/');
+      if (response.statusCode == 204) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
   Future deleteMessage({required Message message}) async {
     try {
       Response response = await dio.delete('chat/message/${message.id}/');

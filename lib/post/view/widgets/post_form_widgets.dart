@@ -51,6 +51,7 @@ class PostTextField extends StatelessWidget {
         scrollDirection: Axis.vertical,
         reverse: true,
         child: Tagging(
+          position: TagPosition.bottom,
           controller: controller,
           focusNode: focusNode,
           child: TextFormField(

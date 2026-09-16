@@ -647,7 +647,7 @@ extension ChatDetailEventPatterns on ChatDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Get value)?  get,TResult Function( _MarkAsRead value)?  markAsRead,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Get value)?  get,TResult Function( _MarkAsRead value)?  markAsRead,TResult Function( _AcceptRequest value)?  acceptRequest,TResult Function( _DeclineRequest value)?  declineRequest,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -657,7 +657,9 @@ return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
 return create(_that);case _Get() when get != null:
 return get(_that);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that);case _Unsubscribe() when unsubscribe != null:
+return markAsRead(_that);case _AcceptRequest() when acceptRequest != null:
+return acceptRequest(_that);case _DeclineRequest() when declineRequest != null:
+return declineRequest(_that);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that);case _:
   return orElse();
 
@@ -676,7 +678,7 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Get value)  get,required TResult Function( _MarkAsRead value)  markAsRead,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Get value)  get,required TResult Function( _MarkAsRead value)  markAsRead,required TResult Function( _AcceptRequest value)  acceptRequest,required TResult Function( _DeclineRequest value)  declineRequest,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created():
@@ -686,7 +688,9 @@ return updated(_that);case _Deleted():
 return deleted(_that);case _Create():
 return create(_that);case _Get():
 return get(_that);case _MarkAsRead():
-return markAsRead(_that);case _Unsubscribe():
+return markAsRead(_that);case _AcceptRequest():
+return acceptRequest(_that);case _DeclineRequest():
+return declineRequest(_that);case _Unsubscribe():
 return unsubscribe(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -701,7 +705,7 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Get value)?  get,TResult? Function( _MarkAsRead value)?  markAsRead,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Get value)?  get,TResult? Function( _MarkAsRead value)?  markAsRead,TResult? Function( _AcceptRequest value)?  acceptRequest,TResult? Function( _DeclineRequest value)?  declineRequest,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -711,7 +715,9 @@ return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
 return create(_that);case _Get() when get != null:
 return get(_that);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that);case _Unsubscribe() when unsubscribe != null:
+return markAsRead(_that);case _AcceptRequest() when acceptRequest != null:
+return acceptRequest(_that);case _DeclineRequest() when declineRequest != null:
+return declineRequest(_that);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that);case _:
   return null;
 
@@ -729,7 +735,7 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( Chat chat)?  markAsRead,TResult Function( Chat chat)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( Chat chat)?  markAsRead,TResult Function( Chat chat)?  acceptRequest,TResult Function( Chat chat)?  declineRequest,TResult Function( Chat chat)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -738,7 +744,9 @@ return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.user);case _Get() when get != null:
 return get(_that.chat);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that.chat);case _Unsubscribe() when unsubscribe != null:
+return markAsRead(_that.chat);case _AcceptRequest() when acceptRequest != null:
+return acceptRequest(_that.chat);case _DeclineRequest() when declineRequest != null:
+return declineRequest(_that.chat);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.chat);case _:
   return orElse();
 
@@ -757,7 +765,7 @@ return unsubscribe(_that.chat);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( Chat chat)  markAsRead,required TResult Function( Chat chat)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( Chat chat)  markAsRead,required TResult Function( Chat chat)  acceptRequest,required TResult Function( Chat chat)  declineRequest,required TResult Function( Chat chat)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
@@ -766,7 +774,9 @@ return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
 return create(_that.user);case _Get():
 return get(_that.chat);case _MarkAsRead():
-return markAsRead(_that.chat);case _Unsubscribe():
+return markAsRead(_that.chat);case _AcceptRequest():
+return acceptRequest(_that.chat);case _DeclineRequest():
+return declineRequest(_that.chat);case _Unsubscribe():
 return unsubscribe(_that.chat);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -781,7 +791,7 @@ return unsubscribe(_that.chat);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( Chat chat)?  markAsRead,TResult? Function( Chat chat)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( Chat chat)?  markAsRead,TResult? Function( Chat chat)?  acceptRequest,TResult? Function( Chat chat)?  declineRequest,TResult? Function( Chat chat)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -790,7 +800,9 @@ return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.user);case _Get() when get != null:
 return get(_that.chat);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that.chat);case _Unsubscribe() when unsubscribe != null:
+return markAsRead(_that.chat);case _AcceptRequest() when acceptRequest != null:
+return acceptRequest(_that.chat);case _DeclineRequest() when declineRequest != null:
+return declineRequest(_that.chat);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.chat);case _:
   return null;
 
@@ -1286,6 +1298,138 @@ class __$MarkAsReadCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? chat = null,}) {
   return _then(_MarkAsRead(
+chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
+as Chat,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _AcceptRequest implements ChatDetailEvent {
+  const _AcceptRequest({required this.chat});
+  
+
+ final  Chat chat;
+
+/// Create a copy of ChatDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AcceptRequestCopyWith<_AcceptRequest> get copyWith => __$AcceptRequestCopyWithImpl<_AcceptRequest>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AcceptRequest&&(identical(other.chat, chat) || other.chat == chat));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,chat);
+
+@override
+String toString() {
+  return 'ChatDetailEvent.acceptRequest(chat: $chat)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AcceptRequestCopyWith<$Res> implements $ChatDetailEventCopyWith<$Res> {
+  factory _$AcceptRequestCopyWith(_AcceptRequest value, $Res Function(_AcceptRequest) _then) = __$AcceptRequestCopyWithImpl;
+@useResult
+$Res call({
+ Chat chat
+});
+
+
+
+
+}
+/// @nodoc
+class __$AcceptRequestCopyWithImpl<$Res>
+    implements _$AcceptRequestCopyWith<$Res> {
+  __$AcceptRequestCopyWithImpl(this._self, this._then);
+
+  final _AcceptRequest _self;
+  final $Res Function(_AcceptRequest) _then;
+
+/// Create a copy of ChatDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? chat = null,}) {
+  return _then(_AcceptRequest(
+chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
+as Chat,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _DeclineRequest implements ChatDetailEvent {
+  const _DeclineRequest({required this.chat});
+  
+
+ final  Chat chat;
+
+/// Create a copy of ChatDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeclineRequestCopyWith<_DeclineRequest> get copyWith => __$DeclineRequestCopyWithImpl<_DeclineRequest>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeclineRequest&&(identical(other.chat, chat) || other.chat == chat));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,chat);
+
+@override
+String toString() {
+  return 'ChatDetailEvent.declineRequest(chat: $chat)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeclineRequestCopyWith<$Res> implements $ChatDetailEventCopyWith<$Res> {
+  factory _$DeclineRequestCopyWith(_DeclineRequest value, $Res Function(_DeclineRequest) _then) = __$DeclineRequestCopyWithImpl;
+@useResult
+$Res call({
+ Chat chat
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeclineRequestCopyWithImpl<$Res>
+    implements _$DeclineRequestCopyWith<$Res> {
+  __$DeclineRequestCopyWithImpl(this._self, this._then);
+
+  final _DeclineRequest _self;
+  final $Res Function(_DeclineRequest) _then;
+
+/// Create a copy of ChatDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? chat = null,}) {
+  return _then(_DeclineRequest(
 chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
 as Chat,
   ));

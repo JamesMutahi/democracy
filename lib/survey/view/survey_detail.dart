@@ -316,7 +316,6 @@ class _SurveyDetailState extends State<_SurveyDetail>
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: color,
                   ),
                 ),
                 const SizedBox(height: 8),
