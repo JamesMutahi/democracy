@@ -10,6 +10,7 @@ import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/main_container.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/broadcast/bloc/user_broadcasts/user_broadcasts_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
 import 'package:democracy/post/bloc/likes/likes_bloc.dart';
@@ -33,14 +34,7 @@ const List<Tab> tabs = <Tab>[
   Tab(text: 'Posts'),
   Tab(text: 'Replies'),
   Tab(text: 'Community notes'),
-  Tab(text: 'Petitions'),
-];
-
-const List<Tab> userTabs = <Tab>[
-  Tab(text: 'Posts'),
-  Tab(text: 'Replies'),
-  Tab(text: 'Likes'),
-  Tab(text: 'Community notes'),
+  Tab(text: 'Broadcasts'),
   Tab(text: 'Petitions'),
 ];
 
@@ -198,6 +192,11 @@ class _ProfilePageState extends State<_Profile>
           ),
         ),
         BlocProvider(
+          create: (_) => UserBroadcastsBloc(
+            webSocketService: context.read<WebSocketService>(),
+          ),
+        ),
+        BlocProvider(
           create: (_) => UserPetitionsBloc(
             webSocketService: context.read<WebSocketService>(),
           ),
@@ -253,22 +252,13 @@ class _ProfilePageState extends State<_Profile>
     User currentUser = context.read<AuthBloc>().state.user!;
     bool isCurrentUser = currentUser.id == widget.user.id;
 
-    final activeRoutes = isCurrentUser
-        ? const [
-            ProfilePostsTab(),
-            ProfileRepliesTab(),
-            ProfileLikesTab(),
-            ProfileNotesTab(),
-            ProfilePetitionsTab(),
-          ]
-        : const [
-            ProfilePostsTab(),
-            ProfileRepliesTab(),
-            ProfileNotesTab(),
-            ProfilePetitionsTab(),
-          ];
-
-    final activeTabs = isCurrentUser ? userTabs : tabs;
+    final activeRoutes = const [
+      ProfilePostsTab(),
+      ProfileRepliesTab(),
+      ProfileNotesTab(),
+      ProfileBroadcastsTab(),
+      ProfilePetitionsTab(),
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -319,7 +309,7 @@ class _ProfilePageState extends State<_Profile>
                               dividerColor: Theme.of(
                                 context,
                               ).colorScheme.outlineVariant,
-                              tabs: activeTabs,
+                              tabs: tabs,
                             ),
                           ),
                         ),
@@ -344,7 +334,7 @@ class _ProfilePageState extends State<_Profile>
     return SafeArea(
       bottom: false,
       child: DefaultTabController(
-        length: isCurrentUser ? userTabs.length : tabs.length,
+        length: tabs.length,
         child: NestedScrollView(
           controller: _mobileScrollController,
           floatHeaderSlivers: true,
@@ -373,7 +363,7 @@ class _ProfilePageState extends State<_Profile>
                       dividerColor: Theme.of(
                         context,
                       ).colorScheme.outlineVariant,
-                      tabs: isCurrentUser ? userTabs : tabs,
+                      tabs: tabs,
                     ),
                   ),
                   pinned: true,
@@ -394,9 +384,8 @@ class _ProfilePageState extends State<_Profile>
       children: [
         UserPosts(key: ValueKey(widget.user.id), user: widget.user),
         UserReplies(key: ValueKey(widget.user.id), user: widget.user),
-        if (isCurrentUser)
-          Likes(key: ValueKey(widget.user.id), user: widget.user),
         UserCommunityNotes(key: ValueKey(widget.user.id), user: widget.user),
+        UserBroadcasts(key: ValueKey(widget.user.id), user: widget.user),
         UserPetitions(key: ValueKey(widget.user.id), user: widget.user),
       ],
     );

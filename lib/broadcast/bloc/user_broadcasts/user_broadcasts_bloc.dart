@@ -2,38 +2,44 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
-import 'package:democracy/app/shared/utils/transformers.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'meetings_event.dart';
-part 'meetings_state.dart';
-part 'meetings_bloc.freezed.dart';
+part 'user_broadcasts_bloc.freezed.dart';
+part 'user_broadcasts_state.dart';
+part 'user_broadcasts_event.dart';
 
 const String stream = 'broadcasts';
-const String action = 'list';
+const String action = 'user_broadcasts';
 
-class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
-  MeetingsBloc({required this.webSocketService})
-    : super(const MeetingsState()) {
+class UserBroadcastsBloc
+    extends Bloc<UserBroadcastsEvent, UserBroadcastsState> {
+  UserBroadcastsBloc({required this.webSocketService})
+    : super(UserBroadcastsState()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream &&
           message['payload']['action'] == action) {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) => _onGet(event, emit), transformer: debounce());
+    on<_Get>((event, emit) => _onGet(event, emit));
     on<_Received>((event, emit) => _onReceived(event, emit));
     on<_Add>((event, emit) => _onAdd(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
     on<_Remove>((event, emit) => _onRemove(event, emit));
   }
 
-  void _onGet(_Get event, Emitter<MeetingsState> emit) {
-    emit(state.copyWith(status: MeetingsStatus.loading));
+  Future _onGet(_Get event, Emitter<UserBroadcastsState> emit) async {
+    emit(
+      state.copyWith(
+        status: UserBroadcastsStatus.loading,
+        userId: event.user.id,
+      ),
+    );
     if (!webSocketService.isConnected) {
-      emit(state.copyWith(status: MeetingsStatus.failure));
+      emit(state.copyWith(status: UserBroadcastsStatus.failure));
       return;
     }
 
@@ -41,86 +47,80 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
       'stream': stream,
       'payload': {
         'action': action,
-        'request_id': event.searchTerm,
-        'search_term': event.searchTerm,
+        'request_id': event.user.id,
+        'user': event.user.id,
         'previous_broadcasts': event.previousBroadcasts
             ?.map((broadcast) => broadcast.id)
             .toList(),
-        'is_open': event.isOpen,
-        'sort_by': event.sortBy,
-        'filter_by_region': event.filterByRegion,
-        'start_date': event.startDate?.toIso8601String(),
-        'end_date': event.endDate?.toIso8601String(),
       },
     };
     webSocketService.send(message);
   }
 
-  void _onReceived(_Received event, Emitter<MeetingsState> emit) {
-    emit(state.copyWith(status: MeetingsStatus.loading));
+  Future _onReceived(_Received event, Emitter<UserBroadcastsState> emit) async {
+    emit(state.copyWith(status: UserBroadcastsStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Broadcast> broadcasts = List.from(
         event.payload['data']['results'].map((e) => Broadcast.fromJson(e)),
       );
-      List previousMeetings = event.payload['data']['previous_meetings'] ?? [];
+      List previousBroadcasts =
+          event.payload['data']['previous_broadcasts'] ?? [];
       emit(
         state.copyWith(
-          status: MeetingsStatus.success,
-          searchTerm: event.payload['request_id'],
-          broadcasts: previousMeetings.isEmpty
+          status: UserBroadcastsStatus.success,
+          broadcasts: previousBroadcasts.isEmpty
               ? broadcasts
               : [...state.broadcasts, ...broadcasts],
+          userId: event.payload['request_id'],
           hasNext: event.payload['data']['has_next'],
         ),
       );
     } else {
-      emit(state.copyWith(status: MeetingsStatus.failure));
+      emit(state.copyWith(status: UserBroadcastsStatus.failure));
     }
   }
 
-  void _onAdd(_Add event, Emitter<MeetingsState> emit) {
-    if (event.broadcast.type != BroadcastType.meeting) return;
-
+  void _onAdd(_Add event, Emitter<UserBroadcastsState> emit) {
     final exists = state.broadcasts.any(
-      (element) => element.id == event.broadcast.id,
+          (element) => element.id == event.broadcast.id,
     );
 
     if (!exists) {
       emit(
         state.copyWith(
           broadcasts: [event.broadcast, ...state.broadcasts],
-          status: MeetingsStatus.success,
+          status: UserBroadcastsStatus.success,
         ),
       );
     }
   }
 
-  void _onUpdate(_Update event, Emitter<MeetingsState> emit) {
+  void _onUpdate(_Update event, Emitter<UserBroadcastsState> emit) {
     final index = state.broadcasts.indexWhere(
-      (element) => element.id == event.broadcast.id,
+          (element) => element.id == event.broadcast.id,
     );
     if (index == -1) return;
 
-    final updatedMeetings = List<Broadcast>.from(state.broadcasts);
-    updatedMeetings[index] = event.broadcast;
+    final updatedBroadcasts = List<Broadcast>.from(state.broadcasts);
+    updatedBroadcasts[index] = event.broadcast;
 
     emit(
       state.copyWith(
-        broadcasts: updatedMeetings,
-        status: MeetingsStatus.success,
+        broadcasts: updatedBroadcasts,
+        status: UserBroadcastsStatus.success,
       ),
     );
   }
 
-  void _onRemove(_Remove event, Emitter<MeetingsState> emit) {
-    final updatedMeetings = state.broadcasts
+  void _onRemove(_Remove event, Emitter<UserBroadcastsState> emit) {
+    final updatedBroadcasts = state.broadcasts
         .where((element) => element.id != event.broadcastId)
         .toList();
 
     emit(
       state.copyWith(
-        broadcasts: updatedMeetings,
-        status: MeetingsStatus.success,
+        broadcasts: updatedBroadcasts,
+        status: UserBroadcastsStatus.success,
       ),
     );
   }

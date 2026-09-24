@@ -70,38 +70,6 @@ class _ProfileRepliesTabState extends State<ProfileRepliesTab> {
 }
 
 @RoutePage()
-class ProfileLikesTab extends StatefulWidget {
-  const ProfileLikesTab({super.key});
-
-  @override
-  State<ProfileLikesTab> createState() => _ProfileLikesTabState();
-}
-
-class _ProfileLikesTabState extends State<ProfileLikesTab> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) ActiveScrollController.activate(_scrollController);
-    });
-  }
-
-  @override
-  void dispose() {
-    ActiveScrollController.deactivate(_scrollController);
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Likes(user: context.read<ProfileBloc>().state.user!);
-  }
-}
-
-@RoutePage()
 class ProfileNotesTab extends StatefulWidget {
   const ProfileNotesTab({super.key});
 
@@ -130,6 +98,38 @@ class _ProfileNotesTabState extends State<ProfileNotesTab> {
   @override
   Widget build(BuildContext context) {
     return UserCommunityNotes(user: context.read<ProfileBloc>().state.user!);
+  }
+}
+
+@RoutePage()
+class ProfileBroadcastsTab extends StatefulWidget {
+  const ProfileBroadcastsTab({super.key});
+
+  @override
+  State<ProfileBroadcastsTab> createState() => _ProfileBroadcastsTabState();
+}
+
+class _ProfileBroadcastsTabState extends State<ProfileBroadcastsTab> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ActiveScrollController.activate(_scrollController);
+    });
+  }
+
+  @override
+  void dispose() {
+    ActiveScrollController.deactivate(_scrollController);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return UserBroadcasts(user: context.read<ProfileBloc>().state.user!);
   }
 }
 

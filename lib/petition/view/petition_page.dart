@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
 class PetitionPage extends StatefulWidget {
@@ -32,6 +33,8 @@ class _PetitionPageState extends State<PetitionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -117,12 +120,14 @@ class _PetitionPageState extends State<PetitionPage> {
             },
             body: Petitions(),
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              context.router.push(PetitionCreate());
-            },
-            child: Icon(Symbols.create_rounded),
-          ),
+          floatingActionButton: kIsWeb && responsive.largerThan(MOBILE)
+              ? SizedBox.shrink()
+              : FloatingActionButton(
+                  onPressed: () {
+                    context.router.push(PetitionCreate());
+                  },
+                  child: Icon(Symbols.create_rounded),
+                ),
         ),
       ),
     );

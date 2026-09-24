@@ -1,11 +1,14 @@
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
+import 'package:democracy/broadcast/bloc/user_broadcasts/user_broadcasts_bloc.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:democracy/broadcast/view/widgets/broadcast_listener.dart';
+import 'package:democracy/broadcast/view/widgets/broadcast_tile.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_listener.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
-import 'package:democracy/post/bloc/likes/likes_bloc.dart';
 import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bloc.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
@@ -233,87 +236,6 @@ class _UserRepliesState extends State<UserReplies> {
   }
 }
 
-class Likes extends StatefulWidget {
-  const Likes({super.key, required this.user});
-
-  final User user;
-
-  @override
-  State<Likes> createState() => _LikesState();
-}
-
-class _LikesState extends State<Likes> {
-  final RefreshController _refreshController = RefreshController();
-
-  @override
-  void initState() {
-    context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LikesBloc, LikesState>(
-      buildWhen: (previous, current) {
-        return widget.user.id == current.userId;
-      },
-      builder: (context, state) {
-        final posts = state.posts.toList();
-
-        if (posts.isEmpty && state.status == LikesStatus.loading) {
-          return const BottomLoader();
-        }
-
-        if (state.status == LikesStatus.success) {
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshCompleted();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadComplete();
-          }
-        }
-
-        if (state.status == LikesStatus.failure) {
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshFailed();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadFailed();
-          }
-        }
-
-        return PostListView(
-          posts: posts,
-          loading:
-              state.status == LikesStatus.initial ||
-              (state.status == LikesStatus.initial && posts.isEmpty),
-          failure: state.posts.isNotEmpty
-              ? false
-              : state.status == LikesStatus.failure,
-          onPostsUpdated: (posts) {
-            context.read<LikesBloc>().add(LikesEvent.update(posts: posts));
-          },
-          refreshController: _refreshController,
-          enablePullDown: posts.isNotEmpty,
-          enablePullUp: state.hasNext,
-          onRefresh: () {
-            context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
-          },
-          onLoading: () {
-            context.read<LikesBloc>().add(
-              LikesEvent.get(previousPosts: posts, user: widget.user),
-            );
-          },
-          onFailure: () {
-            context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
-          },
-          origin: 'Likes',
-        );
-      },
-    );
-  }
-}
-
 class UserCommunityNotes extends StatefulWidget {
   const UserCommunityNotes({super.key, required this.user});
 
@@ -425,6 +347,129 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
   }
 }
 
+class UserBroadcasts extends StatefulWidget {
+  const UserBroadcasts({super.key, required this.user});
+
+  final User user;
+
+  @override
+  State<UserBroadcasts> createState() => _UserLikesState();
+}
+
+class _UserLikesState extends State<UserBroadcasts> {
+  final RefreshController _refreshController = RefreshController();
+
+  @override
+  void initState() {
+    context.read<UserBroadcastsBloc>().add(
+      UserBroadcastsEvent.get(user: widget.user),
+    );
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserBroadcastsBloc, UserBroadcastsState>(
+      buildWhen: (previous, current) {
+        return widget.user.id == current.userId;
+      },
+      builder: (context, state) {
+        final broadcasts = state.broadcasts.toList();
+
+        if (state.status == UserBroadcastsStatus.initial) {
+          return const BottomLoader();
+        }
+
+        if (broadcasts.isEmpty &&
+            state.status == UserBroadcastsStatus.loading) {
+          return const BottomLoader();
+        }
+
+        if (state.status == UserBroadcastsStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == UserBroadcastsStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+
+          if (state.broadcasts.isEmpty) {
+            return FailureRetryButton(
+              onPressed: () => context.read<UserPetitionsBloc>().add(
+                UserPetitionsEvent.get(user: widget.user),
+              ),
+            );
+          }
+        }
+
+        return BroadcastListener(
+          onCreate: (broadcast) {
+            context.read<UserBroadcastsBloc>().add(
+              UserBroadcastsEvent.add(broadcast: broadcast),
+            );
+          },
+          onUpdate: (broadcast) {
+            context.read<UserBroadcastsBloc>().add(
+              UserBroadcastsEvent.update(broadcast: broadcast),
+            );
+          },
+          onDelete: (broadcastId) {
+            context.read<UserBroadcastsBloc>().add(
+              UserBroadcastsEvent.remove(broadcastId: broadcastId),
+            );
+          },
+          child: broadcasts.isEmpty
+              ? NoResults(text: 'No broadcasts')
+              : SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: state.hasNext,
+                  header: ClassicHeader(),
+                  controller: _refreshController,
+                  onRefresh: () {
+                    context.read<UserBroadcastsBloc>().add(
+                      UserBroadcastsEvent.get(user: widget.user),
+                    );
+                  },
+                  onLoading: () {
+                    context.read<UserBroadcastsBloc>().add(
+                      UserBroadcastsEvent.get(
+                        user: widget.user,
+                        previousBroadcasts: broadcasts,
+                      ),
+                    );
+                  },
+                  footer: ClassicFooter(),
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Broadcast broadcast = broadcasts[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: BroadcastTile(
+                          key: ValueKey(broadcast.id),
+                          broadcast: broadcast,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: broadcasts.length,
+                  ),
+                ),
+        );
+      },
+    );
+  }
+}
+
 class UserPetitions extends StatefulWidget {
   const UserPetitions({super.key, required this.user});
 
@@ -506,7 +551,7 @@ class _UserPetitionsState extends State<UserPetitions> {
             );
           },
           child: petitions.isEmpty
-              ? NoResults(text: 'This account has no petitions')
+              ? NoResults(text: 'No petitions')
               : SmartRefresher(
                   enablePullDown: true,
                   enablePullUp: state.hasNext,

@@ -144,7 +144,7 @@ final hubRoutes = [
 
 final otherRoutes = [
   AutoRoute(path: 'constitution', page: ConstitutionRoute.page),
-  AutoRoute(path: 'bookmarks', page: Bookmarks.page),
+  AutoRoute(path: 'saved', page: Saved.page),
   AutoRoute(path: 'notifications', page: Notifications.page),
   AutoRoute(path: 'preferences', page: PreferencesRoute.page),
   AutoRoute(path: 'settings', page: Settings.page),
@@ -173,8 +173,8 @@ final otherRoutes = [
     children: [
       AutoRoute(path: '', page: ProfilePostsTab.page),
       AutoRoute(path: 'replies', page: ProfileRepliesTab.page),
-      AutoRoute(path: 'likes', page: ProfileLikesTab.page),
       AutoRoute(path: 'notes', page: ProfileNotesTab.page),
+      AutoRoute(path: 'broadcasts', page: ProfileBroadcastsTab.page),
       AutoRoute(path: 'petitions', page: ProfilePetitionsTab.page),
       RedirectRoute(path: '', redirectTo: ''), // Default tab
     ],

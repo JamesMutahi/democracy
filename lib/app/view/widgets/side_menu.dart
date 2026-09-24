@@ -130,13 +130,13 @@ class SideMenu extends StatelessWidget {
                               DrawerListTile(
                                 onTap: () {
                                   menuController.closeDrawer();
-                                  if (currentRoute != Bookmarks.name) {
-                                    context.router.push(const Bookmarks());
+                                  if (currentRoute != Saved.name) {
+                                    context.router.push(const Saved());
                                   }
                                 },
-                                icon: 'assets/icons/bookmark.svg',
-                                title: 'Bookmarks',
-                                selected: currentRoute == Bookmarks.name,
+                                icon: 'assets/icons/folder-favourite-star.svg',
+                                title: 'Saved',
+                                selected: currentRoute == Saved.name,
                                 showIcon: showIcon,
                               ),
                               DrawerListTile(

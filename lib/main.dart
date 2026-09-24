@@ -41,6 +41,7 @@ import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
 import 'package:democracy/post/bloc/hashtags/hashtags_bloc.dart';
+import 'package:democracy/post/bloc/likes/likes_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/trending_topics/trending_topics_bloc.dart';
@@ -220,6 +221,11 @@ void main() {
                   ),
                   BlocProvider(
                     create: (context) => BookmarksBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => LikesBloc(
                       webSocketService: context.read<WebSocketService>(),
                     ),
                   ),

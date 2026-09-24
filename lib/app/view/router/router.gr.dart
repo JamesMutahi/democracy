@@ -11,63 +11,63 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i49;
 import 'package:collection/collection.dart' as _i62;
-import 'package:democracy/app/shared/pages/location.dart' as _i24;
+import 'package:democracy/app/shared/pages/location.dart' as _i23;
 import 'package:democracy/app/shared/pages/search_results.dart' as _i41;
-import 'package:democracy/app/view/dashboard.dart' as _i12;
-import 'package:democracy/app/view/pages/chat_page.dart' as _i6;
-import 'package:democracy/app/view/pages/explore_page.dart' as _i16;
-import 'package:democracy/app/view/pages/home_page.dart' as _i20;
-import 'package:democracy/app/view/pages/hub.dart' as _i21;
-import 'package:democracy/app/view/root.dart' as _i40;
-import 'package:democracy/app/view/widgets/bookmarks.dart' as _i3;
-import 'package:democracy/app/view/widgets/hub_results.dart' as _i22;
+import 'package:democracy/app/view/dashboard.dart' as _i11;
+import 'package:democracy/app/view/pages/chat_page.dart' as _i5;
+import 'package:democracy/app/view/pages/explore_page.dart' as _i15;
+import 'package:democracy/app/view/pages/home_page.dart' as _i19;
+import 'package:democracy/app/view/pages/hub.dart' as _i20;
+import 'package:democracy/app/view/root.dart' as _i39;
+import 'package:democracy/app/view/widgets/hub_results.dart' as _i21;
+import 'package:democracy/app/view/widgets/saved.dart' as _i40;
 import 'package:democracy/app/view/widgets/settings.dart' as _i42;
-import 'package:democracy/app/view/widgets/wrappers.dart' as _i7;
-import 'package:democracy/auth/view/failure.dart' as _i17;
-import 'package:democracy/auth/view/login.dart' as _i25;
+import 'package:democracy/app/view/widgets/wrappers.dart' as _i6;
+import 'package:democracy/auth/view/failure.dart' as _i16;
+import 'package:democracy/auth/view/login.dart' as _i24;
 import 'package:democracy/auth/view/splash.dart' as _i43;
 import 'package:democracy/ballot/models/ballot.dart' as _i57;
 import 'package:democracy/ballot/view/ballot_detail.dart' as _i1;
 import 'package:democracy/ballot/view/ballot_page.dart' as _i2;
 import 'package:democracy/broadcast/models/broadcast.dart' as _i60;
-import 'package:democracy/broadcast/view/broadcast_create.dart' as _i4;
-import 'package:democracy/broadcast/view/live_stream.dart' as _i23;
-import 'package:democracy/broadcast/view/meeting_detail.dart' as _i26;
-import 'package:democracy/broadcast/view/meeting_page.dart' as _i27;
+import 'package:democracy/broadcast/view/broadcast_create.dart' as _i3;
+import 'package:democracy/broadcast/view/live_stream.dart' as _i22;
+import 'package:democracy/broadcast/view/meeting_detail.dart' as _i25;
+import 'package:democracy/broadcast/view/meeting_page.dart' as _i26;
 import 'package:democracy/chat/models/chat.dart' as _i53;
 import 'package:democracy/chat/models/message.dart' as _i54;
-import 'package:democracy/chat/view/chat_detail.dart' as _i5;
-import 'package:democracy/chat/view/edit_message.dart' as _i14;
+import 'package:democracy/chat/view/chat_detail.dart' as _i4;
+import 'package:democracy/chat/view/edit_message.dart' as _i13;
 import 'package:democracy/constitution/models/section.dart' as _i51;
-import 'package:democracy/constitution/view/constitution.dart' as _i11;
-import 'package:democracy/notification/view/notifications.dart' as _i29;
-import 'package:democracy/notification/view/preferences.dart' as _i36;
+import 'package:democracy/constitution/view/constitution.dart' as _i10;
+import 'package:democracy/notification/view/notifications.dart' as _i28;
+import 'package:democracy/notification/view/preferences.dart' as _i35;
 import 'package:democracy/petition/models/petition.dart' as _i59;
-import 'package:democracy/petition/view/petition_create.dart' as _i30;
-import 'package:democracy/petition/view/petition_detail.dart' as _i31;
-import 'package:democracy/petition/view/petition_page.dart' as _i32;
+import 'package:democracy/petition/view/petition_create.dart' as _i29;
+import 'package:democracy/petition/view/petition_detail.dart' as _i30;
+import 'package:democracy/petition/view/petition_page.dart' as _i31;
 import 'package:democracy/petition/view/widgets/supporters.dart' as _i44;
 import 'package:democracy/post/models/post.dart' as _i56;
-import 'package:democracy/post/view/community_note_create.dart' as _i8;
-import 'package:democracy/post/view/community_note_detail.dart' as _i9;
-import 'package:democracy/post/view/community_notes.dart' as _i10;
-import 'package:democracy/post/view/draft_posts.dart' as _i13;
-import 'package:democracy/post/view/post_create.dart' as _i33;
-import 'package:democracy/post/view/post_detail.dart' as _i34;
-import 'package:democracy/post/view/post_update.dart' as _i35;
-import 'package:democracy/post/view/widgets/reposts.dart' as _i39;
+import 'package:democracy/post/view/community_note_create.dart' as _i7;
+import 'package:democracy/post/view/community_note_detail.dart' as _i8;
+import 'package:democracy/post/view/community_notes.dart' as _i9;
+import 'package:democracy/post/view/draft_posts.dart' as _i12;
+import 'package:democracy/post/view/post_create.dart' as _i32;
+import 'package:democracy/post/view/post_detail.dart' as _i33;
+import 'package:democracy/post/view/post_update.dart' as _i34;
+import 'package:democracy/post/view/widgets/reposts.dart' as _i38;
 import 'package:democracy/survey/models/survey.dart' as _i58;
 import 'package:democracy/survey/view/survey_detail.dart' as _i45;
 import 'package:democracy/survey/view/survey_page.dart' as _i46;
 import 'package:democracy/survey/view/survey_process/page.dart' as _i47;
 import 'package:democracy/user/models/user.dart' as _i61;
-import 'package:democracy/user/view/edit_profile.dart' as _i15;
-import 'package:democracy/user/view/pages/follow_recommendations.dart' as _i18;
-import 'package:democracy/user/view/pages/following.dart' as _i19;
-import 'package:democracy/user/view/pages/muted_and_blocked.dart' as _i28;
+import 'package:democracy/user/view/edit_profile.dart' as _i14;
+import 'package:democracy/user/view/pages/follow_recommendations.dart' as _i17;
+import 'package:democracy/user/view/pages/following.dart' as _i18;
+import 'package:democracy/user/view/pages/muted_and_blocked.dart' as _i27;
 import 'package:democracy/user/view/pages/users.dart' as _i48;
-import 'package:democracy/user/view/profile.dart' as _i38;
-import 'package:democracy/user/view/widgets/tab_routes.dart' as _i37;
+import 'package:democracy/user/view/profile.dart' as _i37;
+import 'package:democracy/user/view/widgets/tab_routes.dart' as _i36;
 import 'package:flutter/foundation.dart' as _i50;
 import 'package:flutter/material.dart' as _i52;
 import 'package:latlong2/latlong.dart' as _i55;
@@ -140,23 +140,7 @@ class BallotRoute extends _i49.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i3.Bookmarks]
-class Bookmarks extends _i49.PageRouteInfo<void> {
-  const Bookmarks({List<_i49.PageRouteInfo>? children})
-    : super(Bookmarks.name, initialChildren: children);
-
-  static const String name = 'Bookmarks';
-
-  static _i49.PageInfo page = _i49.PageInfo(
-    name,
-    builder: (data) {
-      return const _i3.Bookmarks();
-    },
-  );
-}
-
-/// generated route for
-/// [_i4.BroadcastCreate]
+/// [_i3.BroadcastCreate]
 class BroadcastCreate extends _i49.PageRouteInfo<BroadcastCreateArgs> {
   BroadcastCreate({
     _i50.Key? key,
@@ -179,7 +163,7 @@ class BroadcastCreate extends _i49.PageRouteInfo<BroadcastCreateArgs> {
         orElse: () =>
             BroadcastCreateArgs(type: queryParams.getString('type', 'meeting')),
       );
-      return _i4.BroadcastCreate(key: args.key, type: args.type);
+      return _i3.BroadcastCreate(key: args.key, type: args.type);
     },
   );
 }
@@ -208,7 +192,7 @@ class BroadcastCreateArgs {
 }
 
 /// generated route for
-/// [_i5.ChatDetail]
+/// [_i4.ChatDetail]
 class ChatDetail extends _i49.PageRouteInfo<ChatDetailArgs> {
   ChatDetail({
     _i50.Key? key,
@@ -230,7 +214,7 @@ class ChatDetail extends _i49.PageRouteInfo<ChatDetailArgs> {
       final args = data.argsAs<ChatDetailArgs>(
         orElse: () => ChatDetailArgs(chatId: pathParams.getInt('id')),
       );
-      return _i5.ChatDetail(key: args.key, chatId: args.chatId);
+      return _i4.ChatDetail(key: args.key, chatId: args.chatId);
     },
   );
 }
@@ -259,7 +243,7 @@ class ChatDetailArgs {
 }
 
 /// generated route for
-/// [_i6.ChatPage]
+/// [_i5.ChatPage]
 class ChatRoute extends _i49.PageRouteInfo<void> {
   const ChatRoute({List<_i49.PageRouteInfo>? children})
     : super(ChatRoute.name, initialChildren: children);
@@ -269,13 +253,13 @@ class ChatRoute extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i6.ChatPage();
+      return const _i5.ChatPage();
     },
   );
 }
 
 /// generated route for
-/// [_i7.ChatWrapper]
+/// [_i6.ChatWrapper]
 class ChatWrapper extends _i49.PageRouteInfo<void> {
   const ChatWrapper({List<_i49.PageRouteInfo>? children})
     : super(ChatWrapper.name, initialChildren: children);
@@ -285,13 +269,13 @@ class ChatWrapper extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i7.ChatWrapper();
+      return const _i6.ChatWrapper();
     },
   );
 }
 
 /// generated route for
-/// [_i8.CommunityNoteCreate]
+/// [_i7.CommunityNoteCreate]
 class CommunityNoteCreate extends _i49.PageRouteInfo<CommunityNoteCreateArgs> {
   CommunityNoteCreate({
     _i50.Key? key,
@@ -313,7 +297,7 @@ class CommunityNoteCreate extends _i49.PageRouteInfo<CommunityNoteCreateArgs> {
       final args = data.argsAs<CommunityNoteCreateArgs>(
         orElse: () => CommunityNoteCreateArgs(postId: pathParams.getInt('id')),
       );
-      return _i8.CommunityNoteCreate(key: args.key, postId: args.postId);
+      return _i7.CommunityNoteCreate(key: args.key, postId: args.postId);
     },
   );
 }
@@ -342,7 +326,7 @@ class CommunityNoteCreateArgs {
 }
 
 /// generated route for
-/// [_i9.CommunityNoteDetail]
+/// [_i8.CommunityNoteDetail]
 class CommunityNoteDetail extends _i49.PageRouteInfo<CommunityNoteDetailArgs> {
   CommunityNoteDetail({
     _i50.Key? key,
@@ -364,7 +348,7 @@ class CommunityNoteDetail extends _i49.PageRouteInfo<CommunityNoteDetailArgs> {
       final args = data.argsAs<CommunityNoteDetailArgs>(
         orElse: () => CommunityNoteDetailArgs(postId: pathParams.getInt('id')),
       );
-      return _i9.CommunityNoteDetail(key: args.key, postId: args.postId);
+      return _i8.CommunityNoteDetail(key: args.key, postId: args.postId);
     },
   );
 }
@@ -393,7 +377,7 @@ class CommunityNoteDetailArgs {
 }
 
 /// generated route for
-/// [_i10.CommunityNotes]
+/// [_i9.CommunityNotes]
 class CommunityNotes extends _i49.PageRouteInfo<CommunityNotesArgs> {
   CommunityNotes({
     _i50.Key? key,
@@ -415,7 +399,7 @@ class CommunityNotes extends _i49.PageRouteInfo<CommunityNotesArgs> {
       final args = data.argsAs<CommunityNotesArgs>(
         orElse: () => CommunityNotesArgs(postId: pathParams.getInt('id')),
       );
-      return _i10.CommunityNotes(key: args.key, postId: args.postId);
+      return _i9.CommunityNotes(key: args.key, postId: args.postId);
     },
   );
 }
@@ -444,7 +428,7 @@ class CommunityNotesArgs {
 }
 
 /// generated route for
-/// [_i11.ConstitutionPage]
+/// [_i10.ConstitutionPage]
 class ConstitutionRoute extends _i49.PageRouteInfo<ConstitutionRouteArgs> {
   ConstitutionRoute({
     _i50.Key? key,
@@ -474,7 +458,7 @@ class ConstitutionRoute extends _i49.PageRouteInfo<ConstitutionRouteArgs> {
           selectionMode: queryParams.getBool('select', false),
         ),
       );
-      return _i11.ConstitutionPage(
+      return _i10.ConstitutionPage(
         key: args.key,
         sectionId: args.sectionId,
         selectionMode: args.selectionMode,
@@ -516,7 +500,7 @@ class ConstitutionRouteArgs {
 }
 
 /// generated route for
-/// [_i11.ConstitutionView]
+/// [_i10.ConstitutionView]
 class ConstitutionView extends _i49.PageRouteInfo<ConstitutionViewArgs> {
   ConstitutionView({
     _i50.Key? key,
@@ -545,7 +529,7 @@ class ConstitutionView extends _i49.PageRouteInfo<ConstitutionViewArgs> {
           selectionMode: queryParams.getBool('select', false),
         ),
       );
-      return _i11.ConstitutionView(
+      return _i10.ConstitutionView(
         key: args.key,
         centeredSection: args.centeredSection,
         selectionMode: args.selectionMode,
@@ -587,7 +571,7 @@ class ConstitutionViewArgs {
 }
 
 /// generated route for
-/// [_i12.Dashboard]
+/// [_i11.Dashboard]
 class Dashboard extends _i49.PageRouteInfo<void> {
   const Dashboard({List<_i49.PageRouteInfo>? children})
     : super(Dashboard.name, initialChildren: children);
@@ -597,13 +581,13 @@ class Dashboard extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i12.Dashboard();
+      return const _i11.Dashboard();
     },
   );
 }
 
 /// generated route for
-/// [_i13.DraftPosts]
+/// [_i12.DraftPosts]
 class DraftPosts extends _i49.PageRouteInfo<void> {
   const DraftPosts({List<_i49.PageRouteInfo>? children})
     : super(DraftPosts.name, initialChildren: children);
@@ -613,13 +597,13 @@ class DraftPosts extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i13.DraftPosts();
+      return const _i12.DraftPosts();
     },
   );
 }
 
 /// generated route for
-/// [_i14.EditMessage]
+/// [_i13.EditMessage]
 class EditMessage extends _i49.PageRouteInfo<EditMessageArgs> {
   EditMessage({
     _i52.Key? key,
@@ -638,7 +622,7 @@ class EditMessage extends _i49.PageRouteInfo<EditMessageArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<EditMessageArgs>();
-      return _i14.EditMessage(
+      return _i13.EditMessage(
         key: args.key,
         chat: args.chat,
         message: args.message,
@@ -673,7 +657,7 @@ class EditMessageArgs {
 }
 
 /// generated route for
-/// [_i15.EditProfile]
+/// [_i14.EditProfile]
 class EditProfile extends _i49.PageRouteInfo<void> {
   const EditProfile({List<_i49.PageRouteInfo>? children})
     : super(EditProfile.name, initialChildren: children);
@@ -683,13 +667,13 @@ class EditProfile extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i15.EditProfile();
+      return const _i14.EditProfile();
     },
   );
 }
 
 /// generated route for
-/// [_i16.ExplorePage]
+/// [_i15.ExplorePage]
 class ExploreRoute extends _i49.PageRouteInfo<void> {
   const ExploreRoute({List<_i49.PageRouteInfo>? children})
     : super(ExploreRoute.name, initialChildren: children);
@@ -699,13 +683,13 @@ class ExploreRoute extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i16.ExplorePage();
+      return const _i15.ExplorePage();
     },
   );
 }
 
 /// generated route for
-/// [_i17.FailurePage]
+/// [_i16.FailurePage]
 class FailureRoute extends _i49.PageRouteInfo<void> {
   const FailureRoute({List<_i49.PageRouteInfo>? children})
     : super(FailureRoute.name, initialChildren: children);
@@ -715,13 +699,13 @@ class FailureRoute extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i17.FailurePage();
+      return const _i16.FailurePage();
     },
   );
 }
 
 /// generated route for
-/// [_i18.FollowRecommendations]
+/// [_i17.FollowRecommendations]
 class FollowRecommendations extends _i49.PageRouteInfo<void> {
   const FollowRecommendations({List<_i49.PageRouteInfo>? children})
     : super(FollowRecommendations.name, initialChildren: children);
@@ -731,13 +715,13 @@ class FollowRecommendations extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i18.FollowRecommendations();
+      return const _i17.FollowRecommendations();
     },
   );
 }
 
 /// generated route for
-/// [_i19.FollowingPage]
+/// [_i18.FollowingPage]
 class FollowingRoute extends _i49.PageRouteInfo<FollowingRouteArgs> {
   FollowingRoute({
     _i50.Key? key,
@@ -763,7 +747,7 @@ class FollowingRoute extends _i49.PageRouteInfo<FollowingRouteArgs> {
           userName: pathParams.getString('name'),
         ),
       );
-      return _i19.FollowingPage(
+      return _i18.FollowingPage(
         key: args.key,
         userId: args.userId,
         userName: args.userName,
@@ -804,7 +788,7 @@ class FollowingRouteArgs {
 }
 
 /// generated route for
-/// [_i20.HomePage]
+/// [_i19.HomePage]
 class HomeRoute extends _i49.PageRouteInfo<void> {
   const HomeRoute({List<_i49.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
@@ -814,13 +798,13 @@ class HomeRoute extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i20.HomePage();
+      return const _i19.HomePage();
     },
   );
 }
 
 /// generated route for
-/// [_i21.HubPage]
+/// [_i20.HubPage]
 class HubRoute extends _i49.PageRouteInfo<void> {
   const HubRoute({List<_i49.PageRouteInfo>? children})
     : super(HubRoute.name, initialChildren: children);
@@ -830,13 +814,13 @@ class HubRoute extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i21.HubPage();
+      return const _i20.HubPage();
     },
   );
 }
 
 /// generated route for
-/// [_i22.HubResults]
+/// [_i21.HubResults]
 class HubResults extends _i49.PageRouteInfo<HubResultsArgs> {
   HubResults({
     _i50.Key? key,
@@ -885,7 +869,7 @@ class HubResults extends _i49.PageRouteInfo<HubResultsArgs> {
           filterCount: queryParams.getInt('filterCount', 0),
         ),
       );
-      return _i22.HubResults(
+      return _i21.HubResults(
         key: args.key,
         searchTerm: args.searchTerm,
         filterByRegion: args.filterByRegion,
@@ -953,7 +937,7 @@ class HubResultsArgs {
 }
 
 /// generated route for
-/// [_i7.HubWrapper]
+/// [_i6.HubWrapper]
 class HubWrapper extends _i49.PageRouteInfo<void> {
   const HubWrapper({List<_i49.PageRouteInfo>? children})
     : super(HubWrapper.name, initialChildren: children);
@@ -963,13 +947,13 @@ class HubWrapper extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i7.HubWrapper();
+      return const _i6.HubWrapper();
     },
   );
 }
 
 /// generated route for
-/// [_i23.LiveStream]
+/// [_i22.LiveStream]
 class LiveStream extends _i49.PageRouteInfo<LiveStreamArgs> {
   LiveStream({
     _i52.Key? key,
@@ -991,7 +975,7 @@ class LiveStream extends _i49.PageRouteInfo<LiveStreamArgs> {
       final args = data.argsAs<LiveStreamArgs>(
         orElse: () => LiveStreamArgs(broadcastId: pathParams.getInt('id')),
       );
-      return _i23.LiveStream(key: args.key, broadcastId: args.broadcastId);
+      return _i22.LiveStream(key: args.key, broadcastId: args.broadcastId);
     },
   );
 }
@@ -1020,7 +1004,7 @@ class LiveStreamArgs {
 }
 
 /// generated route for
-/// [_i24.Location]
+/// [_i23.Location]
 class Location extends _i49.PageRouteInfo<LocationArgs> {
   Location({
     _i52.Key? key,
@@ -1038,7 +1022,7 @@ class Location extends _i49.PageRouteInfo<LocationArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<LocationArgs>();
-      return _i24.Location(key: args.key, onLocation: args.onLocation);
+      return _i23.Location(key: args.key, onLocation: args.onLocation);
     },
   );
 }
@@ -1067,7 +1051,7 @@ class LocationArgs {
 }
 
 /// generated route for
-/// [_i25.LoginPage]
+/// [_i24.LoginPage]
 class LoginRoute extends _i49.PageRouteInfo<void> {
   const LoginRoute({List<_i49.PageRouteInfo>? children})
     : super(LoginRoute.name, initialChildren: children);
@@ -1077,13 +1061,13 @@ class LoginRoute extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i25.LoginPage();
+      return const _i24.LoginPage();
     },
   );
 }
 
 /// generated route for
-/// [_i26.MeetingDetail]
+/// [_i25.MeetingDetail]
 class MeetingDetail extends _i49.PageRouteInfo<MeetingDetailArgs> {
   MeetingDetail({
     _i50.Key? key,
@@ -1105,7 +1089,7 @@ class MeetingDetail extends _i49.PageRouteInfo<MeetingDetailArgs> {
       final args = data.argsAs<MeetingDetailArgs>(
         orElse: () => MeetingDetailArgs(broadcastId: pathParams.getInt('id')),
       );
-      return _i26.MeetingDetail(key: args.key, broadcastId: args.broadcastId);
+      return _i25.MeetingDetail(key: args.key, broadcastId: args.broadcastId);
     },
   );
 }
@@ -1134,7 +1118,7 @@ class MeetingDetailArgs {
 }
 
 /// generated route for
-/// [_i27.MeetingPage]
+/// [_i26.MeetingPage]
 class MeetingRoute extends _i49.PageRouteInfo<void> {
   const MeetingRoute({List<_i49.PageRouteInfo>? children})
     : super(MeetingRoute.name, initialChildren: children);
@@ -1144,13 +1128,13 @@ class MeetingRoute extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i27.MeetingPage();
+      return const _i26.MeetingPage();
     },
   );
 }
 
 /// generated route for
-/// [_i28.MutedAndBlocked]
+/// [_i27.MutedAndBlocked]
 class MutedAndBlocked extends _i49.PageRouteInfo<void> {
   const MutedAndBlocked({List<_i49.PageRouteInfo>? children})
     : super(MutedAndBlocked.name, initialChildren: children);
@@ -1160,13 +1144,13 @@ class MutedAndBlocked extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i28.MutedAndBlocked();
+      return const _i27.MutedAndBlocked();
     },
   );
 }
 
 /// generated route for
-/// [_i29.Notifications]
+/// [_i28.Notifications]
 class Notifications extends _i49.PageRouteInfo<void> {
   const Notifications({List<_i49.PageRouteInfo>? children})
     : super(Notifications.name, initialChildren: children);
@@ -1176,13 +1160,13 @@ class Notifications extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i29.Notifications();
+      return const _i28.Notifications();
     },
   );
 }
 
 /// generated route for
-/// [_i30.PetitionCreate]
+/// [_i29.PetitionCreate]
 class PetitionCreate extends _i49.PageRouteInfo<void> {
   const PetitionCreate({List<_i49.PageRouteInfo>? children})
     : super(PetitionCreate.name, initialChildren: children);
@@ -1192,13 +1176,13 @@ class PetitionCreate extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i30.PetitionCreate();
+      return const _i29.PetitionCreate();
     },
   );
 }
 
 /// generated route for
-/// [_i31.PetitionDetail]
+/// [_i30.PetitionDetail]
 class PetitionDetail extends _i49.PageRouteInfo<PetitionDetailArgs> {
   PetitionDetail({
     _i50.Key? key,
@@ -1220,7 +1204,7 @@ class PetitionDetail extends _i49.PageRouteInfo<PetitionDetailArgs> {
       final args = data.argsAs<PetitionDetailArgs>(
         orElse: () => PetitionDetailArgs(petitionId: pathParams.getInt('id')),
       );
-      return _i31.PetitionDetail(key: args.key, petitionId: args.petitionId);
+      return _i30.PetitionDetail(key: args.key, petitionId: args.petitionId);
     },
   );
 }
@@ -1249,7 +1233,7 @@ class PetitionDetailArgs {
 }
 
 /// generated route for
-/// [_i32.PetitionPage]
+/// [_i31.PetitionPage]
 class PetitionRoute extends _i49.PageRouteInfo<void> {
   const PetitionRoute({List<_i49.PageRouteInfo>? children})
     : super(PetitionRoute.name, initialChildren: children);
@@ -1259,13 +1243,13 @@ class PetitionRoute extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i32.PetitionPage();
+      return const _i31.PetitionPage();
     },
   );
 }
 
 /// generated route for
-/// [_i7.PetitionWrapper]
+/// [_i6.PetitionWrapper]
 class PetitionWrapper extends _i49.PageRouteInfo<void> {
   const PetitionWrapper({List<_i49.PageRouteInfo>? children})
     : super(PetitionWrapper.name, initialChildren: children);
@@ -1275,13 +1259,13 @@ class PetitionWrapper extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i7.PetitionWrapper();
+      return const _i6.PetitionWrapper();
     },
   );
 }
 
 /// generated route for
-/// [_i33.PostCreate]
+/// [_i32.PostCreate]
 class PostCreate extends _i49.PageRouteInfo<PostCreateArgs> {
   PostCreate({
     _i50.Key? key,
@@ -1316,7 +1300,7 @@ class PostCreate extends _i49.PageRouteInfo<PostCreateArgs> {
       final args = data.argsAs<PostCreateArgs>(
         orElse: () => const PostCreateArgs(),
       );
-      return _i33.PostCreate(
+      return _i32.PostCreate(
         key: args.key,
         replyTo: args.replyTo,
         repostOf: args.repostOf,
@@ -1390,7 +1374,7 @@ class PostCreateArgs {
 }
 
 /// generated route for
-/// [_i34.PostDetail]
+/// [_i33.PostDetail]
 class PostDetail extends _i49.PageRouteInfo<PostDetailArgs> {
   PostDetail({
     _i50.Key? key,
@@ -1412,7 +1396,7 @@ class PostDetail extends _i49.PageRouteInfo<PostDetailArgs> {
       final args = data.argsAs<PostDetailArgs>(
         orElse: () => PostDetailArgs(postId: pathParams.getInt('id')),
       );
-      return _i34.PostDetail(key: args.key, postId: args.postId);
+      return _i33.PostDetail(key: args.key, postId: args.postId);
     },
   );
 }
@@ -1441,7 +1425,7 @@ class PostDetailArgs {
 }
 
 /// generated route for
-/// [_i35.PostUpdate]
+/// [_i34.PostUpdate]
 class PostUpdate extends _i49.PageRouteInfo<PostUpdateArgs> {
   PostUpdate({
     _i52.Key? key,
@@ -1463,7 +1447,7 @@ class PostUpdate extends _i49.PageRouteInfo<PostUpdateArgs> {
       final args = data.argsAs<PostUpdateArgs>(
         orElse: () => PostUpdateArgs(draftId: pathParams.getInt('id')),
       );
-      return _i35.PostUpdate(key: args.key, draftId: args.draftId);
+      return _i34.PostUpdate(key: args.key, draftId: args.draftId);
     },
   );
 }
@@ -1492,7 +1476,7 @@ class PostUpdateArgs {
 }
 
 /// generated route for
-/// [_i7.PostWrapper]
+/// [_i6.PostWrapper]
 class PostWrapper extends _i49.PageRouteInfo<void> {
   const PostWrapper({List<_i49.PageRouteInfo>? children})
     : super(PostWrapper.name, initialChildren: children);
@@ -1502,13 +1486,13 @@ class PostWrapper extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i7.PostWrapper();
+      return const _i6.PostWrapper();
     },
   );
 }
 
 /// generated route for
-/// [_i36.PreferencesPage]
+/// [_i35.PreferencesPage]
 class PreferencesRoute extends _i49.PageRouteInfo<void> {
   const PreferencesRoute({List<_i49.PageRouteInfo>? children})
     : super(PreferencesRoute.name, initialChildren: children);
@@ -1518,29 +1502,29 @@ class PreferencesRoute extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i36.PreferencesPage();
+      return const _i35.PreferencesPage();
     },
   );
 }
 
 /// generated route for
-/// [_i37.ProfileLikesTab]
-class ProfileLikesTab extends _i49.PageRouteInfo<void> {
-  const ProfileLikesTab({List<_i49.PageRouteInfo>? children})
-    : super(ProfileLikesTab.name, initialChildren: children);
+/// [_i36.ProfileBroadcastsTab]
+class ProfileBroadcastsTab extends _i49.PageRouteInfo<void> {
+  const ProfileBroadcastsTab({List<_i49.PageRouteInfo>? children})
+    : super(ProfileBroadcastsTab.name, initialChildren: children);
 
-  static const String name = 'ProfileLikesTab';
+  static const String name = 'ProfileBroadcastsTab';
 
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i37.ProfileLikesTab();
+      return const _i36.ProfileBroadcastsTab();
     },
   );
 }
 
 /// generated route for
-/// [_i37.ProfileNotesTab]
+/// [_i36.ProfileNotesTab]
 class ProfileNotesTab extends _i49.PageRouteInfo<void> {
   const ProfileNotesTab({List<_i49.PageRouteInfo>? children})
     : super(ProfileNotesTab.name, initialChildren: children);
@@ -1550,13 +1534,13 @@ class ProfileNotesTab extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i37.ProfileNotesTab();
+      return const _i36.ProfileNotesTab();
     },
   );
 }
 
 /// generated route for
-/// [_i38.ProfilePage]
+/// [_i37.ProfilePage]
 class ProfileRoute extends _i49.PageRouteInfo<ProfileRouteArgs> {
   ProfileRoute({
     _i50.Key? key,
@@ -1579,7 +1563,7 @@ class ProfileRoute extends _i49.PageRouteInfo<ProfileRouteArgs> {
         orElse: () =>
             ProfileRouteArgs(username: pathParams.getString('username')),
       );
-      return _i38.ProfilePage(key: args.key, username: args.username);
+      return _i37.ProfilePage(key: args.key, username: args.username);
     },
   );
 }
@@ -1608,7 +1592,7 @@ class ProfileRouteArgs {
 }
 
 /// generated route for
-/// [_i37.ProfilePetitionsTab]
+/// [_i36.ProfilePetitionsTab]
 class ProfilePetitionsTab extends _i49.PageRouteInfo<void> {
   const ProfilePetitionsTab({List<_i49.PageRouteInfo>? children})
     : super(ProfilePetitionsTab.name, initialChildren: children);
@@ -1618,13 +1602,13 @@ class ProfilePetitionsTab extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i37.ProfilePetitionsTab();
+      return const _i36.ProfilePetitionsTab();
     },
   );
 }
 
 /// generated route for
-/// [_i37.ProfilePostsTab]
+/// [_i36.ProfilePostsTab]
 class ProfilePostsTab extends _i49.PageRouteInfo<void> {
   const ProfilePostsTab({List<_i49.PageRouteInfo>? children})
     : super(ProfilePostsTab.name, initialChildren: children);
@@ -1634,13 +1618,13 @@ class ProfilePostsTab extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i37.ProfilePostsTab();
+      return const _i36.ProfilePostsTab();
     },
   );
 }
 
 /// generated route for
-/// [_i37.ProfileRepliesTab]
+/// [_i36.ProfileRepliesTab]
 class ProfileRepliesTab extends _i49.PageRouteInfo<void> {
   const ProfileRepliesTab({List<_i49.PageRouteInfo>? children})
     : super(ProfileRepliesTab.name, initialChildren: children);
@@ -1650,13 +1634,13 @@ class ProfileRepliesTab extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i37.ProfileRepliesTab();
+      return const _i36.ProfileRepliesTab();
     },
   );
 }
 
 /// generated route for
-/// [_i7.ProfileWrapper]
+/// [_i6.ProfileWrapper]
 class ProfileWrapper extends _i49.PageRouteInfo<void> {
   const ProfileWrapper({List<_i49.PageRouteInfo>? children})
     : super(ProfileWrapper.name, initialChildren: children);
@@ -1666,13 +1650,13 @@ class ProfileWrapper extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i7.ProfileWrapper();
+      return const _i6.ProfileWrapper();
     },
   );
 }
 
 /// generated route for
-/// [_i39.RepostsAndQuotes]
+/// [_i38.RepostsAndQuotes]
 class RepostsAndQuotes extends _i49.PageRouteInfo<RepostsAndQuotesArgs> {
   RepostsAndQuotes({
     _i50.Key? key,
@@ -1694,7 +1678,7 @@ class RepostsAndQuotes extends _i49.PageRouteInfo<RepostsAndQuotesArgs> {
       final args = data.argsAs<RepostsAndQuotesArgs>(
         orElse: () => RepostsAndQuotesArgs(postId: pathParams.getInt('id')),
       );
-      return _i39.RepostsAndQuotes(key: args.key, postId: args.postId);
+      return _i38.RepostsAndQuotes(key: args.key, postId: args.postId);
     },
   );
 }
@@ -1723,7 +1707,7 @@ class RepostsAndQuotesArgs {
 }
 
 /// generated route for
-/// [_i40.RootRoute]
+/// [_i39.RootRoute]
 class RootRoute extends _i49.PageRouteInfo<void> {
   const RootRoute({List<_i49.PageRouteInfo>? children})
     : super(RootRoute.name, initialChildren: children);
@@ -1733,7 +1717,23 @@ class RootRoute extends _i49.PageRouteInfo<void> {
   static _i49.PageInfo page = _i49.PageInfo(
     name,
     builder: (data) {
-      return const _i40.RootRoute();
+      return const _i39.RootRoute();
+    },
+  );
+}
+
+/// generated route for
+/// [_i40.Saved]
+class Saved extends _i49.PageRouteInfo<void> {
+  const Saved({List<_i49.PageRouteInfo>? children})
+    : super(Saved.name, initialChildren: children);
+
+  static const String name = 'Saved';
+
+  static _i49.PageInfo page = _i49.PageInfo(
+    name,
+    builder: (data) {
+      return const _i40.Saved();
     },
   );
 }

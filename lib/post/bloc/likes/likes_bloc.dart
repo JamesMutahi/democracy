@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -28,7 +27,7 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
   }
 
   void _onGet(_Get event, Emitter<LikesState> emit) {
-    emit(state.copyWith(status: LikesStatus.loading, userId: event.user.id));
+    emit(state.copyWith(status: LikesStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: LikesStatus.failure));
       return;
@@ -38,8 +37,6 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
       'stream': stream,
       'payload': {
         'action': action,
-        'request_id': event.user.id,
-        'user': event.user.id,
         'previous_posts': event.previousPosts?.map((post) => post.id).toList(),
       },
     };
