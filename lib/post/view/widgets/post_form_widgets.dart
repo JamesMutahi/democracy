@@ -153,7 +153,6 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
 
   @override
   void dispose() {
-    widget.controller.dispose();
     keyboardSubscription.cancel();
     super.dispose();
   }

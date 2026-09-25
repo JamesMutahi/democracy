@@ -12,6 +12,7 @@ import 'package:democracy/ballot/bloc/ballot/ballot_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
+import 'package:democracy/ballot/models/summary.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/ballot/view/widgets/summary.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
@@ -217,8 +218,8 @@ class _BallotDetailState extends State<_BallotDetail> {
           );
         },
         child: SingleChildScrollView(
-          controller: isWebLayout ? _scrollController: null,
-          physics: isWebLayout ? NeverScrollableScrollPhysics(): null,
+          controller: isWebLayout ? _scrollController : null,
+          physics: isWebLayout ? NeverScrollableScrollPhysics() : null,
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,6 +352,19 @@ class _BallotDetailState extends State<_BallotDetail> {
                   ),
                 ),
 
+              if (_changingVote)
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: OutlinedButton.icon(
+                      onPressed: () => setState(() => _changingVote = false),
+                      icon: const Icon(Icons.cancel_rounded, size: 18),
+                      label: const Text('Cancel'),
+                    ),
+                  ),
+                ),
+
               const SizedBox(height: 24),
 
               if (!_changingVote && !widget.ballot.hasEnded)
@@ -394,10 +408,67 @@ class _BallotDetailState extends State<_BallotDetail> {
                     ),
                   ),
                 const SizedBox(height: 16),
-                BallotSummaryWidget(summary: widget.ballot.summary!),
+                Visibility(
+                  visible: widget.ballot.hasEnded,
+                  child:
+                      widget.ballot.summary != null &&
+                          widget.ballot.summary!.status ==
+                              SummaryStatus.completed
+                      ? BallotSummaryWidget(summary: widget.ballot.summary!)
+                      : _buildSummaryPlaceholder(
+                          Theme.of(context).primaryColor,
+                        ),
+                ),
               ],
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSummaryPlaceholder(Color color) {
+    final summary = widget.ballot.summary;
+    String message;
+    IconData icon;
+
+    if (summary == null) {
+      message = 'Summary has not been generated yet.';
+      icon = Icons.hourglass_empty;
+    } else {
+      switch (summary.status) {
+        case SummaryStatus.pending:
+          message = 'Summary is pending.';
+          icon = Icons.hourglass_empty;
+          break;
+        case SummaryStatus.processing:
+          message = 'Summary is being generated...';
+          icon = Icons.autorenew;
+          break;
+        case SummaryStatus.failed:
+          message = 'Summary generation failed.';
+          icon = Icons.error_outline;
+          break;
+        default:
+          message = 'Summary is not available.';
+          icon = Icons.info_outline;
+      }
+    }
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 64, color: Colors.grey[400]),
+            const SizedBox(height: 16),
+            Text(
+              message,
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
@@ -425,7 +496,7 @@ class OptionTile extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 6),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected
               ? colorScheme.primaryContainer

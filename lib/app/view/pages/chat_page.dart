@@ -256,6 +256,7 @@ class _ChatPageState extends State<ChatPage>
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
           CustomAppBar(
+            key: ValueKey('chat page'),
             middle: Text('Chat', style: Theme.of(context).textTheme.titleLarge),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(112.0),

@@ -141,6 +141,12 @@ class _PostUpdateState extends State<_PostUpdate> {
     }
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   void _createPost() {
     context.loaderOverlay.show();
 

@@ -88,7 +88,10 @@ class SideMenu extends StatelessWidget {
                                   },
                                   icon: 'assets/icons/home.svg',
                                   title: 'Home',
-                                  selected: currentRoute == HomeRoute.name,
+                                  selected: [
+                                    RootRoute.name,
+                                    HomeRoute.name,
+                                  ].contains(currentRoute),
                                   showIcon: showIcon,
                                 ),
                                 DrawerListTile(

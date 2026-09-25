@@ -72,6 +72,7 @@ class _HubState extends State<HubPage> {
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
           CustomAppBar(
+            key: ValueKey('hub page'),
             middle: Text('Hub', style: Theme.of(context).textTheme.titleLarge),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(60.0),

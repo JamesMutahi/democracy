@@ -123,6 +123,7 @@ class _ExplorePageState extends State<ExplorePage>
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
           CustomAppBar(
+            key: ValueKey('explore page'),
             middle: Text(
               'Explore',
               style: Theme.of(context).textTheme.titleLarge,
@@ -520,7 +521,7 @@ class _TrendingTopicTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '#$topic',
+                      topic,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
